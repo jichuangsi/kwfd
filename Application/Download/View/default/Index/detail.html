@@ -1,0 +1,54 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container" style="min-height: 400px">
+        <div class="row">
+            <div class="col-md-8" style="padding-right:0px">
+                <!---------------------------------------->
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">{$data.title}</div>               
+                    <div class="detaildatetime">发布时间：{$data.createtime|date='Y-m-d H:i',###}</div>
+			        <div class="detailcontent">
+					  <if condition="$data['price'] gt 0 ">
+					  <button class="btn btn-primary" onClick="window.location.href='{:U('cart?id='.$data['id'])}'">购买后才可以下载</button>
+					  <else /> 
+					  <button class="btn btn-primary" onClick="window.location.href='{:U('Home/File/download?id='.$data['file'])}'">点击下载</button>
+					  </if>
+					  <button class="btn btn-primary" onClick="window.location.href='{:U('Home/File/download?id='.$data['file'])}'">点击测试直接下载</button>
+					  <BR>
+					 {$data.content}
+					</div>
+					<div style="padding: 20px">
+                       {:hook('localComment', array('path'=>MODULE_NAME."/index/$data[id]", 'uid'=>1))}
+                    </div>
+				</div>
+				<!---------------------------------------->
+            </div>
+            <div class="col-md-4">
+                <!---------------------------------------->
+				  <div class="common_block_border blog_position">
+                    <div class="common_block_title">全站热门</div>
+					 <assign name="num" value="1" />
+                     <volist name="hotdata" id="vo">
+                       <div class="clearfix" style="position: relative">         
+                         <div class="col-md-12">
+                           <div>
+                                <span class="rank_num">{$num++}</span><h3 class="text-more" style="float:left"><a title="{$vo['title']}" href="{:U('Detail',array('id'=>$vo['id']))}">{$vo["title"]|msubstr=0,20}</a></h3>
+                           </div>
+                         </div>
+                      </div>
+					  <div class="col-md-12">
+                         <div style="border-bottom: 1px dashed rgb(204, 204, 204);margin: 10px 0px"></div>
+					  </div>
+		             </volist>
+                      <div style="margin:0px 15px;height:10px;clear:both"></div>
+                  </div>
+				<!---------------------------------------->
+            </div>
+			
+        </div>
+
+    </div>
+</block>

@@ -1,0 +1,17 @@
+<script>
+    $(document).ready(function () {
+        $('.jui-tabs').tabs();
+    });
+</script>
+<div class="jui-tabs">
+    <ul>
+        <volist name="tabs" id="tab">
+            <li><a href="#tab_{$tab.name}">{$tab.title}</a></li>
+        </volist>
+    </ul>
+    <volist name="tabs" id="tab">
+        <div id="tab_{$tab.name}">
+            {$tab.content}
+        </div>
+    </volist>
+</div>

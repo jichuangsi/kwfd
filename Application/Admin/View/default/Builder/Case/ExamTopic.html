@@ -1,0 +1,285 @@
+<php>//dump($field);</php>
+<input type="hidden" name="id" value="{$field.value.id}" id="t_id">
+<style type="text/css">
+    .examul{margin:0px;padding:0px;list-style-type:none}
+    .examul li{border-bottom:1px solid #cccccc;padding:5px 0px;line-height:30px}
+    .examitem{float:left;width:auto;margin:0px 5px}
+    .exmatitle{width:100px}
+    .pointer{cursor:pointer}
+    .clear{font-size:0px;line-height:0px;clear:both}
+</style>
+<script type="text/javascript">
+function bindMovePositionEvent(){
+    //上移
+    $("img.upbtn").each(function(){
+        $(this).unbind('click').click(function(){
+            var $tr = $(this).parents("li");
+            if ($tr.index() != 0)
+            {
+                $tr.prev().before($tr);
+            }
+            else
+            {
+                alert('已经是第一个了。');
+            }
+        });
+    });
+    //下移
+    $("img.downbtn").each(function(){
+        $(this).unbind('click').click(function(){
+            var $tr = $(this).parents("li");
+            var trLength = $("img.downbtn").length;
+            if ($tr.index() != trLength - 1)
+            {
+                $tr.next().after($tr);
+            }
+            else
+            {
+                alert('已经是最后一个了。');
+            }
+        });
+    });
+}
+    $(function(){
+        bindMovePositionEvent();
+    });
+    var selectquestionwindow;
+    var actived_button = null;
+    function selectquestion(_this,url,grp)
+    {
+        actived_button = $(_this);
+        url += '/grp/'+grp;
+        console.log(url);
+        $.dialog({
+            id: 'selectquestion',
+            title: '选题',
+            content:'url:'+url,
+            width: 800,
+            height: 500,
+            fixed: true,
+            drag: true,
+            resize: false,
+            lock: true,
+            ok: function(){
+                var length = selectquestionwindow.frames[0].window.$("input[name='id[]']").length;
+                actived_button.closest('li').find('input[name="questionnum[]"]').val(length);
+                actived_button.closest('li').find('input[name="questionnum[]"]').siblings('span').html(length);
+//                $("#"+(selectquestionwindow.$("input[name='type']").val())+"_num").html(selectquestionwindow.frames[0].window.$("input[name='id[]']").length);
+//                $("#"+(selectquestionwindow.$("input[name='type']").val())+"_questionnum").val(selectquestionwindow.frames[0].window.$("input[name='id[]']").length);
+                var questionarr=null;
+                var fills = 0;
+                $.each(selectquestionwindow.frames[0].window.$("input[name='id[]']"), function(i,val){
+                    if(questionarr==null)
+                    {
+                        fills += $(val).data('fills');
+                        questionarr=val.value;
+                    }
+                    else
+                    {
+                        fills += $(val).data('fills');
+                        questionarr+=","+val.value;
+                    }
+                });
+                //alert(questionarr);
+//                $("#"+(selectquestionwindow.$("input[name='type']").val())+"_questions").val(questionarr);
+                actived_button.siblings('#single_choice_questions').val(questionarr);
+                actived_button.closest('li').find('input[name="item_questions[]"]').val(questionarr);
+                actived_button.closest('li').find('input[name="item_fills[]"]').val(fills);
+//                console.log(fills);
+                return true;
+            },
+            okVal: '保存',
+            close: function(){
+                //alert(selectquestionwindow.$("input[name='type']").val());
+                //alert(selectquestionwindow.frames[0].window.$("input[name='id[]']").length);
+                calc_total();
+                return true;
+            },
+            cancelVal: '关闭',
+            cancel: true
+        });
+    }
+
+    function calc_total(){
+        var total = 0;
+        $('#metas_controls ul.examul li').each(function (index, ele) {
+            var score = $(ele).find('input[name="score[]"]').val();
+            var questionnum = $(ele).find('input[name="questionnum[]"]').val();
+            var val_input = $(ele).find('input[name="item_questions[]"]');
+            var fillsnum = $(ele).find('input[name="item_fills[]"]').val();
+            if('fill_questions'==val_input.attr('id')){
+                //填空题
+                total += score*fillsnum;
+            }else{
+                total += score*questionnum;
+            }
+
+        });
+        var label = $('#metas_controls').prevAll('label#metas_label');
+        label.text( label.text().replace(/\s*\(.*\)/,'')+' (试卷总分：'+total+'分)');
+        if(total>100)
+            alert('试卷分值超过100');
+    }
+
+    function bind_calc(){
+        $('#metas_controls input[type=text]').unbind('change').change(function(){
+            calc_total();
+        });
+    }
+    $(document).ready(function () {
+        bind_calc();
+        calc_total();
+    })
+</script>
+<ul class="examul">
+    <php>
+
+        //foreach($keyList[sizeof($keyList)-1]['value'] as $key=>$val)
+        //$json=json_decode($field['value']);
+        $json=json_decode(json_encode($field['value']));
+        //dump($keyList[0]['value']);
+        //dump($field['value']);
+        $questionTypeArr=array(
+        'single_choice' => '单选题',
+        'choice' => '多选题',
+        'fill' => '填空题',
+        'determine' => '判断题',
+        'essay' => '问答题',
+        'material' => '材料题',
+        'context' => '文本段落',
+        );
+        //dump($mate);
+        foreach($json->question_type_seq as $key=>$val)
+        {
+        if($val=='context'){
+    </php><php>//dump($json);</php>
+
+    <li>
+        <div class="examitem pointer">
+            <img src="__IMG__/moveup.png" style="margin-top:7px" class="upbtn">
+        </div>
+        <div class="examitem pointer">
+            <img src="__IMG__/movedown.png" style="margin-top:7px"  class="downbtn">
+        </div>
+        <div class="examitem">
+            <input name="question_type_seq[]" type="hidden" value="{$val}">
+        </div>
+        <div class="examitem exmatitle" style="font-weight:bold">{$questionTypeArr[$val]}</div>
+        <div class="examitem" style="display: none;">题目分值:<input name="score[]" type="text" class="text" style="width:50px" value="{$json->score[$key]}"></div>
+        <div class="examitem" style="display: none;">已选题数：<span id="{$val}_num" style="background-color:#ffffff;width:20px;display:inline-block;">{$json->questionnum[$key]}</span>  <input id="{$val}_questionnum" name="questionnum[]" type="hidden" value="{$json->questionnum[$key]}">题</div>
+        <div class="examitem">
+            <input id="{$val}_questions" name="item_questions[]" type="hidden" value="{$json->itemquestions[$key]}">
+            <input id="{$val}_fills" name="item_fills[]" type="hidden" value="{$json->fillsnum[$key]}">
+            <textarea style="width: 306px;vertical-align: middle;" id="{$val}_questions" name="item_questions[]" >{$json->itemquestions[$key]}</textarea> </div>
+        <div class="exam-remove"><a onclick="exam_remove(this)">X</a></div>
+        <div class="clear"></div>
+    </li>
+    <php>
+    }else{
+    </php><php>//dump($json);</php>
+    <li>
+        <div class="examitem pointer">
+            <img src="__IMG__/moveup.png" style="margin-top:7px" class="upbtn">
+        </div>
+        <div class="examitem pointer">
+            <img src="__IMG__/movedown.png" style="margin-top:7px"  class="downbtn">
+        </div>
+        <div class="examitem">
+            <input name="question_type_seq[]" type="hidden" value="{$val}">
+        </div>
+        <div class="examitem exmatitle" style="font-weight:bold">{$questionTypeArr[$val]}</div>
+        <div class="examitem"><php> if ($val == 'fill') echo '每空'; else echo '题目';</php>分值:<input name="score[]" type="text" class="text" style="width:50px" value="{$json->score[$key]}"></div>
+        <div class="examitem">已选题数：<span id="{$val}_num" style="background-color:#ffffff;width:20px;display:inline-block;">{$json->questionnum[$key]}</span>  <input id="{$val}_questionnum" name="questionnum[]" type="hidden" value="{$json->questionnum[$key]}">题</div>
+        <div class="examitem">
+            <input id="{$val}_questions" name="item_questions[]" type="hidden" value="{$json->itemquestions[$key]}">
+            <input id="{$val}_fills" name="item_fills[]" type="hidden" value="{$json->fillsnum[$key]}">
+            <button type="button" class="btn"
+                    onClick='selectquestion(this,"{:U("selectquestion",array("type"=>$val,"id"=>$keyList[0]["value"]))}",{$key+1})'>选题
+            </button>
+        </div>
+        <div class="exam-remove"><a onclick="exam_remove(this)">X</a></div>
+        <div class="clear"></div>
+    </li>
+    <php>
+    }
+        }
+        $json=json_decode($field['value']);
+        //foreach($json.question_type_seq as $key=>$val);
+        //dump($json);
+    </php>
+</ul>
+<ul>
+    <li>&nbsp;</li>
+    <li>
+        <volist name="questionTypeArr" id="q_type">
+            <button type="button" class="btn btn-question-add" data-type="{$key}" data-type-title="{$q_type}">添加{$q_type}</button>
+        </volist>
+    </li>
+    <li>&nbsp;</li>
+</ul>
+<style>
+    .exam-remove a{
+        cursor: pointer;
+    }
+</style>
+<script>
+    function exam_remove(_this){
+        $(_this).parent().parent().remove();
+    }
+    $(document).ready(function () {
+       $('.btn-question-add').click(function () {
+           var t_id = $("#t_id").val();
+           var type = $(this).attr('data-type');
+           var type_title = $(this).attr('data-type-title');
+           $exam_list = $('.examul');
+           var new_item = '';
+           if(type == 'context'){
+               new_item += '<li>';
+               new_item += '<div class="examitem pointer">';
+               new_item += '<img src="__IMG__/moveup.png" style="margin-top:7px" class="upbtn">';
+               new_item += '</div>';
+               new_item += '<div class="examitem pointer">';
+               new_item += '<img src="__IMG__/movedown.png" style="margin-top:7px"  class="downbtn">';
+               new_item += '</div>';
+               new_item += '<div class="examitem">';
+               new_item += '<input name="question_type_seq[]" type="hidden" value="'+type+'">';
+               new_item += '</div>';
+               new_item += '<div class="examitem exmatitle" style="font-weight:bold">'+type_title+'</div>';
+               new_item += '<div class="examitem" style="display: none;">题目分值:<input name="score[]" type="text" class="text" style="width:50px" value="2"></div>';
+               new_item += '<div class="examitem" style="display: none;">已选题数：<span id="'+type+'_num" style="background-color:#ffffff;width:20px;display:inline-block;">0</span>  <input id="'+type+'_questionnum" name="questionnum[]" type="hidden" value="0">题</div>';
+               new_item += '<div class="examitem">' +
+                       '<input id="'+type+'_questions" name="item_questions[]" type="hidden" data-fills="0" value="0">' +
+                       '<input id="'+type+'_fills" name="item_fills[]" type="hidden" value="0">' +
+                       '<textarea style="width: 306px;vertical-align: middle;" id="'+type+'_questions" name="item_questions[]"></textarea></div>';
+               new_item += '<div class="exam-remove"><a onclick="exam_remove(this)">X</a></div>';
+               new_item += '<div class="clear"></div>';
+               new_item += '</li>';
+           }else{
+               new_item += '<li>';
+               new_item += '<div class="examitem pointer">';
+               new_item += '<img src="__IMG__/moveup.png" style="margin-top:7px" class="upbtn">';
+               new_item += '</div>';
+               new_item += '<div class="examitem pointer">';
+               new_item += '<img src="__IMG__/movedown.png" style="margin-top:7px"  class="downbtn">';
+               new_item += '</div>';
+               new_item += '<div class="examitem">';
+               new_item += '<input name="question_type_seq[]" type="hidden" value="'+type+'">';
+               new_item += '</div>';
+               new_item += '<div class="examitem exmatitle" style="font-weight:bold">'+type_title+'</div>';
+               new_item += '<div class="examitem">题目分值:<input name="score[]" type="text" class="text" style="width:50px" value="2"></div>';
+               new_item += '<div class="examitem">已选题数：<span id="'+type+'_num" style="background-color:#ffffff;width:20px;display:inline-block;">0</span>  <input id="'+type+'_questionnum" name="questionnum[]" type="hidden" value="0">题</div>';
+               if(t_id){
+                   new_item += '<div class="examitem"><input id="'+type+'_questions" name="item_questions[]" type="hidden" value="0"><input id="'+type+'_fills" name="item_fills[]" type="hidden" value="0"><button type="button" class="btn" onClick='+'selectquestion(this,"{:U("selectquestion",array("id"=>$keyList[0]["value"]),'_random_')}/type/'+type+'")>选题</button></div>';
+               }else{
+                   new_item += '<div class="examitem"><input id="'+type+'_questions" name="item_questions[]" type="hidden" value="0"><input id="'+type+'_fills" name="item_fills[]" type="hidden" value="0"><button type="button" class="btn" onClick='+'selectquestion(this,"{:U("selectquestion",array("id"=>0),'_random_')}/type/'+type+'")>选题</button></div>';
+               }
+
+               new_item += '<div class="exam-remove"><a onclick="exam_remove(this)">X</a></div>';
+               new_item += '<div class="clear"></div>';
+               new_item += '</li>';
+           }
+           $exam_list.append(new_item);
+           bindMovePositionEvent();
+       });
+    });
+</script>

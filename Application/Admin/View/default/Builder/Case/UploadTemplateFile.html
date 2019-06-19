@@ -1,0 +1,40 @@
+<div class="controls">
+    <input type="text" value="{$field['value']}" class="text input-middle" id="filepath_{$field.name}" readonly/>
+    <span style="display: inline-block;"><input type="file" id="upload_file_{$field.name}"></span>
+    <input type="hidden" name="{$field.name}" id="file_id_{$field.name}" value="{$field['value']}"/>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    });
+    /* 初始化上传插件 */
+    $("#upload_file_{$field.name}").uploadify({
+        "height"          : 30,
+        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+        "fileObjName"     : "download",
+        "buttonText"      : "<if condition='!empty($field["opt"]["button"])'>{$field["opt"]["button"]}<else />选择文件</if>",
+        "uploader"        : "{$field.opt.server}",
+        "width"           : 120,
+        'removeTimeout'	  : 1,
+        'fileTypeExts'	  : '*.*;',
+        "onUploadSuccess" : callback_{$field.name},
+    'onFallback' : function() {
+        alert('未检测到兼容版本的Flash.');
+    }
+    });
+    function callback_{$field.name}(file, data){
+        var data = $.parseJSON(data);
+        var src = '';
+        $("#filepath_{$field.name}").val('');
+        if(data.status){
+            $("#file_id_{$field.name}").val(data.data.path);
+            $("#filepath_{$field.name}").val(data.data.path);
+        } else {
+            updateAlert(data.info);
+            setTimeout(function(){
+                $('#top-alert').find('button').click();
+//                $(that).removeClass('disabled').prop('disabled',false);
+            },1500);
+        }
+    }
+</script>

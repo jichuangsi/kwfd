@@ -1,0 +1,70 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+<style>
+.bot_div ul{overflow:hidden; padding:0px 0 30px 0px;list-style:none}
+.bot_div ul li{float:left; width:182px; height:72px; border:1px solid #e6e6e6; border-radius:5px; margin:0 22px 0 0;}
+.bot_div ul li.current{border:1px solid #f32613;}
+.bot_div ul li a{width:179px; height:69px; border-radius:5px;}
+.bot_div ul li a img{border-radius:5px;}
+</style>
+<script type="text/javascript">
+		$(function(){		
+			$('.bot_div ul li').click(function(e) {
+				$(this).addClass('current').siblings().removeClass('current');
+				var id=$(this).find("a").attr("attr-id")
+				 $("input[name='paytype']").val(id);
+				 $("#thisform").attr("action",id);
+			});
+		})
+	</script>
+<div class="container" style="margin-top:0px;min-height: 400px">
+<div class="panel panel-cart">
+    <div class="panel-heading">
+     <h3 class="panel-title">订单已经生成</h3>
+    </div>
+  
+<div class="panel-body">
+
+ <div class="row" >
+  <div class="col-md-12">
+<form id="thisform" action="{:U('/Payoff/Alipay/index')}"  method="post">
+订单号：{$data['orderid']}<input type="hidden"  name="orderid" class="form-control" id="orderid" value="{$orderid}"><br><br>
+金额：{$data['pricetotal']} 元<input type="hidden" name="money" class="form-control" id="goodprice" value="50"><br><br>
+请选择支付方式：<br><br>
+<input type="hidden" name="paytype" value="{:U('/Payoff/Alipay/index')}" checked=""/>
+<div class="bot_div">
+	<ul>
+	    <if condition="modC('ALIPAY_STATUS','','Config') eq '1'"> 
+		   <li class=""><a attr-id="{:U('/Payoff/Alipay/index')}"><img src="__IMG__/zxzf_pic_01.jpg"></a></li>	
+		</if>
+		<if condition="modC('WXPAY_STATUS','','Config') eq '1'"> 
+		   <li class=""><a attr-id="{:U('/Payoff/Wxpay/index')}"><img src="__IMG__/zxzf_pic_03.jpg"></a></li>
+		</if>
+	</ul>
+</div>
+<button type="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;确&nbsp;定&nbsp;&nbsp;&nbsp;</button><br><br>
+</form>
+<script type="text/javascript">
+
+$(function(){
+  //$("#form").submit();   //current
+  if($('.bot_div ul li').length>0)
+  {
+      var url=$('.bot_div ul li:eq(0)').find("a:eq(0)").attr("attr-id");
+	  $('.bot_div ul li:eq(0)').addClass('current');
+	  $("input[name='paytype']").val(url);
+	  $("#thisform").attr("action",url);
+  }
+});
+</script>
+
+  </div>
+  </div></div>
+ </div>
+</div>
+
+</block>
+
+
+

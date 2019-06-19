@@ -1,0 +1,22 @@
+<script type="text/javascript">
+    $(function() {
+        //var sampleTags = ['c++', 'java', 'php', 'coldfusion', 'javascript', 'asp', 'ruby', 'python', 'c', 'scala', 'groovy', 'haskell', 'perl', 'erlang', 'apl', 'cobol', 'go', 'lua'];
+        $('#singleFieldTags').tagit({
+            //availableTags: sampleTags,
+            // This will make Tag-it submit a single form value, as a comma-delimited field.
+            singleField: true,
+            singleFieldNode: $('#tags')
+        });
+    });
+</script>
+<input type="hidden" name="tags" id="tags" value="{$field.value}" class="text input-large" >
+<ul id="singleFieldTags" style="background-color:#ffffff"></ul>
+<php>
+    $system_tags_list=D('Tag/Tag')->where('status=1 and companyid='.session('user_auth.companyid'))->select();
+</php>
+<div style="margin:5px 0px 0px 0px">
+    <a class="btn-mini" href="{:U('admin/tag/lists')}" target="_blank">系统标签(管理标签)：</a>
+    <volist name="system_tags_list" id="tag">
+        <a class="btn-mini" onClick="javascript:$('#singleFieldTags').tagit('createTag','{$tag.title}');return false;">{$tag.title}</a>
+    </volist>
+</div>

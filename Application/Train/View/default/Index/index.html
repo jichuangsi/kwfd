@@ -1,0 +1,50 @@
+<extend name="./Application/Common/View/base/common.html" />
+<!--extend name="Base/common"/-->
+<block name="body">
+<style type="text/css">
+.ullist{margin:0px 0px 0px 0px;padding:0px;list-style-type:none;border-top:1px solid #DFDFDF }
+.ullist li{margin:0px;padding:0px 0px 0px 30px;border-bottom:1px solid #DFDFDF;height:48px;font-size:16px;line-height:48px}
+.ullist li.ico1{ background:url(__IMG__/ico1.png) left center no-repeat #ffffff}
+.ullist li.ico2{ background:url(__IMG__/ico2.png) left center no-repeat #ffffff}
+.ullist li.ico3{ background:url(__IMG__/ico3.png) left center no-repeat #ffffff}
+.ullist li.ico4{ background:url(__IMG__/ico4.png) left center no-repeat #ffffff}
+.ullist li a{ display:block; margin-left:23px; height:48px; line-height:48px; background:url(__IMG__/next.png) right center no-repeat #ffffff }
+
+.coursetitle{height:48px;padding-left:20px;font-size:16px;line-height:48px; font-weight:bold}
+.detailtitle{margin:20px 0px 0px 0px;padding:0px;list-style-type:none;border-bottom:1px solid #DFDFDF; height:50px; line-height:50px; font-size:16px; text-align:center }
+.detailcontent{margin:20px 0px 0px 0px;padding:0px;list-style-type:none; }
+.ulqyzqparent{background-color:#F8F8F8; border-bottom:0px solid #ff0000;}
+.ulqyzq{margin:0px 0px 0px 0px;padding:0px;list-style-type:none; clear:both}
+.ulqyzq li{margin:0px;padding:10px 0px 3px 0px; width:33%; float:left;border-bottom:0px solid #A9AAAF; text-align:center;}
+.ulqyzq li a{ border-bottom:3px solid #F8F8F8; font-size:16px; color:#1E5F95; font-weight:bold }
+.ulqyzq li a.active{ border-bottom:3px solid #175F91;}
+
+</style>
+
+    <div id="ui-header">
+			<div class="fixed">
+				<a class="ui-btn-left_pre" href="javascript:displayitx(0)"></a>
+				<a class="ui-title" id="popmenu">企业培训</a>
+				<a class="ui-btn-right_home" href="/index.php"></a>
+			</div>
+	</div>
+    <div id="overlay"></div>
+    <div class="Listpage">
+			<div class="top46"></div>
+			<div class="ulqyzqparent">
+			  <ul class="ulqyzq">
+			   <li><a href="http://qiye.dailytech.cn/index.php?s=/notice/index/index.html">通知公告</a></li>
+			   <li><a href="http://qiye.dailytech.cn/index.php?s=/train/index/index.html" class="active">企业培训</a></li>
+			   <li><a href="http://qiye.dailytech.cn/index.php?s=/custom/index/index.html">定制服务</a></li>
+			  </ul>
+			 <div class="clr"></div>
+			</div>
+			<ul class="ullist">
+			     <li class="ico1"> <a href="{:U('Train/Index/course')}">我的企业课程</a></li>
+			     <li class="ico2"> <a href="{:U('Train/Index/progress')}">我的学习进度</a></li>
+			     <li class="ico3"> <a href="{:U('Train/Index/circles')}">我的企业学圈</a></li>
+			     <li class="ico4"> <a href="{:U('Train/Index/score')}">我的企业学分</a></li>
+			 </ul>
+	</div>
+
+</block>

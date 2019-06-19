@@ -1,0 +1,29 @@
+<!-- 底部
+================================================== -->
+<block name="footer">
+<div style="padding: 5px"></div>
+<div class="footer-jumbotron footer_bar">
+    <div class="container" >
+	    <div class="row" style="text-align:center">
+		{:modC('COPY_RIGHT','','Config')}
+	   
+         
+        </div>
+    </div>
+</div>
+</block>
+ 
+<include file="Public/js"/>
+
+<block name="script">
+</block> <!-- 用于加载js代码 -->
+<script>
+    $(function() {
+        $("img.lazy").lazyload({effect: "fadeIn",threshold:200,failure_limit : 100});
+    });  
+</script>
+<!-- 页面footer钩子，一般用于加载插件JS文件和JS代码 -->
+ 
+<div class="hidden"><!-- 用于加载统计代码等隐藏元素 -->
+    <block name="hidden"></block>
+</div>

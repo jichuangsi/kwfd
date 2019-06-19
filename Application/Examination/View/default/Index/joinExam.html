@@ -1,0 +1,44 @@
+<extend name="Base/common"/>
+<block name="body">
+    <link type="text/css" rel="stylesheet" href="__CSS__/blog.css"/>
+   
+    <div class="container" style="min-height: 400px">
+     <form id="examHandle" action="{:U('Examination/Index/examHandle')}" method="post">
+        <volist name="topics" id="vo" key="k">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="common_block_border">
+                        <div class="common_block_title">（{$k}）{$vo.content}</div>
+                        <div style="padding:0 20px">
+                            <input type="radio" name='{$vo.id}' value="a"/>&nbsp;&nbsp;{$vo.ao}<br/>
+                            <input type="radio" name='{$vo.id}' value="b"/>&nbsp;&nbsp;{$vo.bo}<br/>
+                            <input type="radio" name='{$vo.id}' value="c"/>&nbsp;&nbsp;{$vo.co}<br/>
+                            <input type="radio" name='{$vo.id}' value="d"/>&nbsp;&nbsp;{$vo.do}<br/>
+                            <br/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </volist>
+         <input type="hidden" value="{$tid}" name="tid"/>
+      </form>
+        <if condition="count($topics) eq 0">
+            <div style="font-size:3em;padding:2em 0;color: #ccc;text-align: center">现在还没有题目哦。O(∩_∩)O~</div>
+            <else/>
+            <p class="pull-left">
+                <input type="button" onClick="paperSub()" class="btn btn-primary" value="试卷提交">
+            </p>
+        </if>
+    </div>
+    <script>
+        //试卷提交
+        function paperSub(){
+               var flag=0;
+                $(".common_block_border").each(function(){
+                    if(!$(this).find("input[type='radio']:checked").val()){flag=1;return;}
+                  });
+               if(flag){ toast.error("请检查题目是否答完！", '温馨提示');return; }
+               else{document.getElementById('examHandle').submit();}
+        }
+    </script>
+</block>

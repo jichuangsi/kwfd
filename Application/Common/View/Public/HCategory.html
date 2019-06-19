@@ -1,0 +1,24 @@
+<volist name="tree" id="list">
+	<dl class="cate-item" style="display:block;clear:both">
+		<dt class="cf"><a href="#"><b>{$list.title}:</b></a>
+		</dt>
+		<div class="hdd">
+		        <php>
+				$arr=$_GET;
+				 
+				unset($arr[$list["entitle"]])
+				</php>
+		        <a href="{:U('Product/index/index',$arr)}" <if condition="$_GET[$list['entitle']] eq ''">class="active"</if>>全部</a>
+            <notempty name="list['_']">
+		
+                <php>
+                  //var_dump($list['_']);				
+                </php>
+				<volist name="list['_']" id="sublist">
+				<a href="{:U('Product/index/index',array_merge($_GET,array($list["entitle"]=>''.$sublist["id"])))}" <if condition="$_GET[$list['entitle']] eq $sublist['id']">class="active"</if>>{$sublist.title}</a>
+				</volist>
+		
+		    </notempty>
+		</div>
+	</dl>
+</volist>

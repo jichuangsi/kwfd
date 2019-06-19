@@ -1,0 +1,135 @@
+<div class="plot_panel">
+    <script>
+        function showAlertDialog(msg,title){
+            if(!title) title = '提示';
+            if(!msg) msg = '';
+            $( ".dialog-message:eq(1)" ).attr('title',title);
+            $( ".dialog-message:eq(1)" ).html('<p>'+msg+'</p>');
+            $( ".dialog-message:eq(1)" ).dialog({
+                modal: true,
+                buttons: {
+                    Ok: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+        }
+
+        var jqplotConfig = {
+            Poly: {
+                seriesDefaults: {
+//                    renderer: $.jqplot.BarRenderer,
+                    pointLabels: {show: true}
+                },
+                axes: {
+                    xaxis: {
+                        renderer: $.jqplot.CategoryAxisRenderer,
+                        ticks: []
+                    }
+                },
+                legend: {
+                    show: false,
+                    location: 'e',
+                    placement: 'outside'
+                }
+            },
+            Pie:{
+                seriesDefaults:{
+                    renderer:$.jqplot.PieRenderer,
+                    rendererOptions: {
+                        showDataLabels: true
+                    }
+                },
+                legend:{
+                    show: true,
+                    placement: 'inside',
+                    rendererOptions: {
+                        numberRows: 1
+                    },
+                    location: 's'
+                }
+            },
+            BarVertical: {
+                seriesDefaults: {
+                    renderer: $.jqplot.BarRenderer,
+                    pointLabels: {show: true}
+                },
+                axes: {
+                    xaxis: {
+                        renderer: $.jqplot.CategoryAxisRenderer,
+                        ticks: []
+                    }
+                },
+                legend: {
+                    show: false,
+                    location: 'e',
+                    placement: 'outside'
+                }
+            },
+            BarHorizontal:{
+                seriesDefaults: {
+                    renderer:$.jqplot.BarRenderer,
+                    pointLabels: { show: true, location: 'e', edgeTolerance: -15 },
+                    shadowAngle: 135,
+                    rendererOptions: {
+                        barDirection: 'horizontal'
+                    }
+                },
+                legend: {
+                    show: false,
+                    location: 'e',
+                    placement: 'outside'
+                },
+                axes: {
+                    yaxis: {
+                        renderer: $.jqplot.CategoryAxisRenderer,
+                        ticks: []
+                    }
+                }
+            }
+        }
+
+        $(document).ready(function () {
+            $.jqplot.config.enablePlugins = true;
+            $.jqplot._noToImageButton = true;
+            $('.jui-datepicker').datepicker({
+                dateFormat:'yy-mm-dd'
+            });
+            $('.jui-button').button();
+
+            var definedConfig = {$plotConf|json_encode};
+            var config = jqplotConfig[definedConfig.type];
+            config.title = definedConfig.title;
+            if(definedConfig.type == 'Poly') {
+                config.axes.xaxis.ticks = definedConfig.xticks;
+            }else if(definedConfig.type == 'Pie') {
+
+            }else if(definedConfig.type == 'BarVertical'){
+                config.axes.xaxis.ticks = definedConfig.xticks;
+            }else if(definedConfig.type == 'BarHorizontal'){
+                config.axes.yaxis.ticks = definedConfig.yticks;
+            }
+
+            console.log('definedConfig',definedConfig);
+            console.log('config',config);
+            if($.isEmptyObject(definedConfig.data[0])){
+                definedConfig.data[0] = [0];
+            }
+            $.jqplot('jq_plot', definedConfig.data, config);
+        });
+    </script>
+    <div>
+        <form action="" method="post">
+            {$datepicker}
+            <a class="jui-button jq-plot-query" onclick="$(this).closest('form').submit();">查询</a>
+            <div class="pull-right">
+                {$selector}
+            </div>
+        </form>
+    </div>
+    <div id="jq_plot" style="width: 90%;">
+    </div>
+    <div class="dialog-message" title="">
+        <p></p>
+    </div>
+</div>

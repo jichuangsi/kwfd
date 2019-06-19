@@ -1,0 +1,56 @@
+<style>
+#signinusersul{list-style-type:none}
+#signinusersul li{border-bottom:1px solid #cccccc;height:30px}
+#signinusersul li div.left{ width:100px;float:left;line-height:30px}
+#signinusersul li div.right{width:100px;float:right;text-align:right;line-height:30px;cursor:pointer}
+
+</style>
+<div><button onclick="javascript:selectsigninusers();return false;" class="btn btn-return" style="clear:both">点击这里选择用户</button></div>
+<ul id="signinusersul">
+<php>
+//var_dump($field["value"]);
+$json=json_decode($field["value"],true);
+//var_dump($json);
+foreach($json[0] as $key=>$val)
+{
+</php>
+<li id="{$json[1][$key]}"><div class="left">{$json[0][$key]}<input type="hidden" id="{$field.name}[]" name="{$field.name}[]" value="{$json[0][$key]}"/><input type="hidden"  id="{$field.name}id[]"  name="{$field.name}id[]" value="{$json[1][$key]}"/></div><div class="right" onclick="deletesigninusers({$json[1][$key]})">删除</div></li>
+<php>
+}
+</php>
+</ul>
+<script type="text/javascript">
+var signincuserswindow;
+
+function deletesigninusers(id)
+{
+  $("#signinusersul li[id='"+id+"']").remove();
+}
+function signinuserscallback(title,id)
+{
+  //alert(title+" "+id)
+  if($("#signinusersul li[id='"+id+"']").length>0)return;
+  
+  
+  $("#signinusersul").append('<li id="'+id+'"><div class="left">'+title+'<input type="hidden" id="{$field.name}[]" name="{$field.name}[]" value="'+title+'"/><input type="hidden"  id="{$field.name}id[]"  name="{$field.name}id[]" value="'+id+'"/></div><div class="right" onclick="deletesigninusers('+id+')">删除</div></li>');
+  //signincuserswindow.close();
+}
+    function selectsigninusers()
+    {
+		var url="{:U('Activity/selectsigninusers')}";
+		signincuserswindow=$.dialog({
+            id: 'signincuserswindow',
+            title: '选择用户',
+            content:'url:'+url,
+            width: 300,
+            height: 300,
+            fixed: true,
+            drag: true,
+            resize: false,
+            lock: true,
+			cancelVal: '关闭',
+            cancel: true
+        });
+    }
+
+</script>

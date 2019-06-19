@@ -1,0 +1,1 @@
+<?php if (!defined('THINK_PATH')) exit();?>Aboutus/setstatus?status=-1&ids=4

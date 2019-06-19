@@ -1,0 +1,71 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+<style>
+.bot_div ul{overflow:hidden; padding:0px 0 30px 0px;list-style:none}
+.bot_div ul li{float:left; width:182px; height:72px; border:1px solid #e6e6e6; border-radius:5px; margin:0 22px 0 0;}
+.bot_div ul li.current{border:1px solid #f32613;}
+.bot_div ul li a{width:179px; height:69px; border-radius:5px;}
+.bot_div ul li a img{border-radius:5px;}
+</style>
+<script type="text/javascript">
+
+	</script>
+<div class="container" style="margin-top:0px;min-height: 400px">
+<div class="panel panel-cart">
+    <div class="panel-heading">
+     <h3 class="panel-title">订单支付中</h3>
+    </div>
+  
+<div class="panel-body">
+
+ <div class="row" >
+  <div class="col-md-12" style="min-height: 600px">
+<form id="thisform" action="#"  method="post">
+订单号：{$data['orderid']}<input type="hidden"  name="orderid" class="form-control" id="orderid" value="{$orderid}"><br><br>
+金额：{$data['pricetotal']} 元<input type="hidden" name="money" class="form-control" id="goodprice" value="50"><br><br>
+请打开微信扫下面的二维码完成支付：<br><br>
+  <div style="text-align:center">
+     <img alt="模式二扫码支付" src="extend/Wxpay/example/qrcode.php?data=<?php echo urlencode($url);?>" style="width:250px;height:250px;"/>
+  </div>
+
+</form>
+<script type="text/javascript">
+var timer=null;
+$(function(){
+  //$("#form").submit();
+  timer = setInterval(checkpay, 6000);
+});
+
+function checkpay() {
+            $.ajax({
+                url:"{:U('checkpay')}",
+                type:"post",
+                data:{orderid:"<php> echo $data['orderid'];</php>"},
+                success:function(data){
+                    //window.clearInterval(timer);
+                    //console.log("over..");
+					if(data.status==1)
+					{
+					   window.location.href="{:U('returnurl',array('orderid'=>$data['orderid']))}";
+					   window.clearInterval(timer);
+					}
+                },
+                error:function(e){
+                    alert("网络错误，请联系网站管理员！！");
+                    window.clearInterval(timer);
+                }
+            }); 
+}
+</script>
+
+  </div>
+  </div>
+  </div>
+ </div>
+</div>
+
+</block>
+
+
+

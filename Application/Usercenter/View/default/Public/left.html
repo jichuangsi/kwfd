@@ -1,0 +1,175 @@
+<script type="text/javascript">
+function initMenu() {
+  $('#menu ul').hide();
+  $('#menu ul').children('.current').parent().show();
+  //$('#menu ul:first').show();
+  $('#menu li a').click(
+    function() {
+      var checkElement = $(this).next();
+      if((checkElement.is('ul')) && (checkElement.is(':visible'))) {
+        return false;
+        }
+      if((checkElement.is('ul')) && (!checkElement.is(':visible'))) {
+        $('#menu ul:visible').slideUp('normal');
+		$('#menu .label').html('+');
+        checkElement.slideDown('normal');
+		$(this).find(".label").html('-');
+        return false;
+        }
+      }
+    );
+}
+ 
+$(document).ready(function() {
+  initMenu();
+  $('#menu li a').each(function(){
+     //alert($(this).attr("href")+"|"+"<php>echo strtolower(CONTROLLER_NAME);</php>");
+     if($(this).attr("href").toLowerCase().indexOf("<php>echo strtolower(CONTROLLER_NAME);</php>")!=-1)
+	 {
+	   $(this).addClass("active");
+	 }
+  });
+  $('#menuxs div a').each(function(){
+     //alert($(this).attr("href")+"|"+"<php>echo strtolower(CONTROLLER_NAME);</php>");
+     if($(this).attr("href").toLowerCase().indexOf("<php>echo strtolower(CONTROLLER_NAME);</php>")!=-1)
+	 {
+	   $(this).addClass("btn-primary");
+	 }
+  });  
+
+});
+</script>	
+
+<style>
+
+ul#menu, ul#menu ul {
+  list-style-type:none;
+  margin: 0;
+  padding: 0;
+}
+
+ul#menu a {
+  display: block;
+  text-decoration: none;	
+}
+ul#menu li{
+  margin-top: 1px;
+}
+ul#menu li ul li{
+  margin-top: 0px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+ul#menu li a {
+  background: #f1f1f1;
+  color: #555555;	
+  padding: 0.5em;
+}
+ul#menu li a .label {
+	margin: 0 5px 0 0;
+	float: right;
+	padding:0px 5px;
+	width:20px;
+	height:20px;
+	background-color:#dadada; 
+    -moz-border-radius: 10px; /* Mozilla浏览器的私有属性 */ 
+    -webkit-border-radius: 10px; /* Webkit浏览器的私有属性 */ 
+    border-radius: 10px; /* 四个半径值分别是左上角、右上角、右下角和左下角 */ 
+	border:0px solid #03AE87;
+	font-size:12px; 
+	line-height:18px;
+}
+ul#menu li a:hover,ul#menu li a.active {
+  background: #3d72fe;
+  color:#ffffff;
+}
+ 
+ul#menu li ul li a {
+  background: #ffffff;
+  color: #555555;
+  padding-left: 20px;
+}
+
+ul#menu li ul li a:hover,ul#menu li ul .current a {
+  background: #fafafa;
+  border-left: 5px #03AE87 solid;
+  padding-left: 15px;
+  color:#555555;
+}
+</style>
+
+<div style="">
+    <ul id="menu" class="hidden-xs">
+ 
+		<li><a href="{:U('/Usercenter/config/index')}">个人信息</a></li>
+		 
+		<li><a href="{:U('/Usercenter/Order/index')}">我的订单</a></li> 
+		
+		<li><a href="{:U('/Usercenter/Live/index')}">我的课程</a></li>
+		
+		<li><a href="{:U('/Usercenter/Examination/index')}">我的考试</a></li>
+		
+	</ul>
+	<div class="container visible-xs">
+					   <div class="row" id="menuxs">
+					     
+                           <div class="col-xs-4"><a title="{$vo['title']}" class="btn  btn-default" style="margin-top:10px" href="{:U('/Usercenter/config/index')}">个人信息</a></div>
+		                   <div class="col-xs-4"><a title="{$vo['title']}" class="btn  btn-default" style="margin-top:10px" href="{:U('/Usercenter/Order/index')}">我的订单</a></div>
+                           <div class="col-xs-4"><a title="{$vo['title']}" class="btn  btn-default" style="margin-top:10px" href="{:U('/Usercenter/Live/index')}">我的课程</a></div>
+		                   <div class="col-xs-4"><a title="{$vo['title']}" class="btn  btn-default" style="margin-top:10px" href="{:U('/Usercenter/Examination/index')}">我的考试</a></div>
+					   </div>
+	</div>
+
+</div>
+ <div class="me" style="display:none">
+    <div class="side">
+
+      <div class="avatar-mod clearfix">
+        <a href="/u/1608920/" class="avatar"><img src="/default/user.jpg" /></a>
+        <div class="infos">
+          <div class="nickname"><a href="/u/1608920/" title="秘失">秘失</a></div>
+          <div class="icons">
+            <a class="user-level user-level-1" title="1级(16学分), 升级还需14学分!" href="/help/#help_user_level" target="_blank">1 级</a>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-mod">
+          <ul class="user-stats clearfix">
+            <li><a href="/me/point"><strong>16</strong>学分</a></li>
+            <li><a href="/me/coin"><strong>0</strong>金币</a></li>
+          </ul>
+      </div>
+
+      <div class="menu-mod clearfix">
+        <ul class="menus">
+          <li ><a href="/me/"><i class="feature-icon feature-icon-home"></i>我的首页</a></li>
+          <li ><a href="/me/feed"><i class="feature-icon feature-icon-feed"></i>好友动态<span id="feed-counter" class="counter"></span></a></li>
+          <li ><a href="/me/learn"><i class="feature-icon feature-icon-learn"></i>学习计划</a></li>
+          <li ><a href="/me/teach"><i class="feature-icon feature-icon-teach"></i>创建课程</a></li>
+          <li ><a href="/me/note"><i class="feature-icon feature-icon-note"></i>笔记</a></li>
+          <li ><a href="/me/question"><i class="feature-icon feature-icon-faq"></i>问答</a></li>
+          <li ><a href="/me/group/discussion"><i class="feature-icon feature-icon-group"></i>小组<span id="group-counter" class="counter"></span></a></li>
+          <li ><a href="/task/"><i class="feature-icon feature-icon-task"></i>任务</a></li>
+          <li ><a href="/me/course/favorite"><i class="feature-icon feature-icon-favorite"></i>收藏夹</a></li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <ul class="menus">
+          <li ><a href="/me/following"><i class="feature-icon feature-icon-friend"></i>好友</a></li>
+          <li ><a href="{:U('/usercenter/message/message/tab/unread')}"><i class="feature-icon feature-icon-notification"></i>通知</a></li>
+          <li ><a href="/message/"><i class="feature-icon feature-icon-message"></i>私信</a></li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <ul class="menus">
+          <li ><a href="{:U('/usercenter/money/coin')}"><i class="feature-icon feature-icon-coin"></i>我的帐户</a></li>
+		  <li ><a href="{:U('/usercenter/money/orders')}"><i class="feature-icon feature-icon-coin"></i>我的订单</a></li>
+          <li class="active"><a href="/account/"><i class="feature-icon feature-icon-setting"></i>账户设置</a></li>
+        </ul>
+      </div>
+ </div>	  
+</div>

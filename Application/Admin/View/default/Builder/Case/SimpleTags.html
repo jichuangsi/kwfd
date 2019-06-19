@@ -1,0 +1,26 @@
+<style type="text/css">
+    ul.tagit {
+        background-color:#fff;
+    }
+</style>
+<script type="text/javascript">
+    $(function() {
+        var tagSource{$field.name} = {$field.opt.sourceTags|json_encode};
+        $('#simpleTags{$field.name}').tagit({
+            showAutocompleteOnFocus:true,
+            removeConfirmation:true,
+            tagLimit: {$field.opt.numberTags},
+            availableTags: tagSource{$field.name},
+            singleField: true,
+            <php>if(!$field['opt']['isCanNew']){</php>
+            beforeTagAdded: function(event, ui) {
+                if(-1 == $.inArray(ui.tagLabel,tagSource{$field.name})){
+                    tagSource{$field.name} = $.unique(tagSource{$field.name});
+                    return false;
+                }
+            }
+            <php>}</php>
+        });
+    });
+</script>
+<input type="text" id="simpleTags{$field.name}" name="{$field.name}" value="{$field.value}" class="text input-large" />

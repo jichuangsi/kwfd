@@ -1,0 +1,170 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="header">
+
+<link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+<link rel="stylesheet" href="__STATIC__/FlexSlider/flexslider.css" type="text/css" media="screen" />
+<script defer src="__STATIC__/FlexSlider/jquery.flexslider.js"></script>
+<script type="text/javascript">
+    $(function(){
+        //window.location.href="http://127.0.0.1/edu/index.php?s=news/index/index.html";
+    })
+	$(window).load(function(){
+      $('.flexslider').flexslider({
+        animation: "slide"
+      });
+    });
+</script>
+<style>
+ 
+</style>
+ <div class="slider" style="margin-top:-15px">
+        <div class="flexslider">
+          <ul class="slides">
+		        <volist name="poster" id="_poster">
+  	    		<li>
+  	    	       <img src="{$_poster['image']|get_cover='path'}" class="hidden-xs"/><img src="{$_poster['appimage']|get_cover='path'}" class="visible-xs"/>
+  	    		</li>
+				</volist>
+          </ul>
+        </div>
+ </div>
+ <div style="height:15px"></div>
+</block>
+<block name="body">
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container" style="min-height: 400px;">
+        <div class="row">
+            <div class="col-md-12">
+                <!---------------------------------------->
+				<div class="common_block_border">
+                    <div class="common_block_title">最新课程</div>
+                    
+                      <ul>
+					    <volist name="livehotdata" id="vo">
+					     <li class="rmb-box">
+                    
+					        <div class="rmb-product-detail">
+									<a href="{:U('/Live/index/Detail',array('id'=>$vo["id"]))}" target="_blank">
+										<img src="{$vo['image']|get_cover='path'}" data-echo="{$vo['image']|get_cover='path'}">	
+									</a>													 
+								</div>  
+ 
+							   <div class="rmb-product-desc">
+									<div class="rmb-product-explain"><a href="{:U('/Live/index/Detail',array('id'=>$vo["id"]))}" target="_blank">{$vo.title}</a></div>
+									<div class="rmb-product-price">
+									    <span>&yen;<bb>&nbsp;{$vo.price}</bb></span>
+									</div>
+						       </div>
+
+					     </li> 
+					    </volist>
+					  </ul>
+					 <div style="clear:both;height:0px"></div>
+					 <if condition="count($livehotdata) eq 0">
+                        <div style="font-size:3em;padding:2em 0;color: #ccc;text-align: center;height:200px">该分类下现在还没有内容哦。O(∩_∩)O~</div>
+					 <else />
+                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/Live/Index/index')}" class="btn btn-default">&nbsp;&nbsp;更多课程 >&nbsp;&nbsp;</a></div>
+                     </if>
+				</div>
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">视频点播</div>
+                     
+                      <ul>
+					    <volist name="vodhotdata" id="vo">
+					     <li class="rmb-box">
+                    
+					        <div class="rmb-product-detail">
+									<a href="{:U('/Vod/Index/Detail',array('id'=>$vo["id"]))}" target="_blank">
+										<img src="{$vo['image']|get_cover='path'}" data-echo="{$vo['image']|get_cover='path'}">	
+									</a>													 
+								</div>  
+ 
+                               <div class="rmb-product-desc">
+									<div class="rmb-product-explain"><a href="{:U('/Vod/index/Detail',array('id'=>$vo["id"]))}" target="_blank">{$vo.title}</a></div>
+									<div class="rmb-product-price">
+									   <span>{$vo.createtime|date='Y-m-d',###}</span>
+									</div>
+						       </div>
+					     </li> 
+					    </volist>
+					  </ul>
+					 <div style="clear:both;height:0px"></div>
+					 <if condition="count($livehotdata) eq 0">
+                        <div style="font-size:3em;padding:2em 0;color: #ccc;text-align: center;height:200px">该分类下现在还没有内容哦。O(∩_∩)O~</div>
+					 <else />
+                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/Vod/Index/index')}" class="btn btn-default">&nbsp;&nbsp;更多视频 >&nbsp;&nbsp;</a></div>
+                     </if>
+					 
+				</div>
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">名师风采</div>
+                    
+                      <ul>
+					    <volist name="teachers" id="vo">
+					     <li class="rmb-box">
+                    
+					        <div class="rmb-product-detail">
+									<a href="{:U('/Teacher/index/Detail',array('id'=>$vo["uid"]))}" target="_blank">
+										<img src="<php>echo str_replace('.','_128_128.',$vo['path']);</php>" data-echo="<php>echo str_replace('.','_128_128.',$vo['path']);</php>">	
+									</a>													 
+								</div>  
+								<div class="rmb-product-desc">
+									<div class="rmb-product-explain"><a href="{:U('/Teacher/index/Detail',array('id'=>$vo["uid"]))}" target="_blank">{$vo.nickname}</a></div>
+									<p class="rmb-product-price">
+										{$vo.signature}
+									</p>
+						    </div>
+        
+					     </li> 
+					    </volist>
+					  </ul>
+					 <div style="clear:both;height:0px"></div>
+					 <if condition="count($livehotdata) eq 0">
+                        <div style="font-size:3em;padding:2em 0;color: #ccc;text-align: center;height:200px">该分类下现在还没有内容哦。O(∩_∩)O~</div>
+					 <else />
+                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/Teacher/Index/index')}" class="btn btn-default">&nbsp;&nbsp;更多名师 >&nbsp;&nbsp;</a></div>
+                     </if>						
+				</div>
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">最新资讯</div>
+                    
+                      <volist name="newshotdata" id="vo">
+                      <div class="newsli" style="" transitionparent>                     
+					    <section  style="padding:0px 10px 10px 10px;">
+						    <div>
+                                <h4><a title='{$vo["title"]}' href="{:U('/News/Index/Detail',array('id'=>$vo["id"]))}">{$vo["title"]|strip_tags|msubstr=0,26,"utf-8",true}</a></h4>
+                            </div>
+                            <div style="position: relative;min-height:110px;height:auto!important;height:110px;">
+							  <a title='{$vo["title"]}' href="{:U('News/Index/Detail',array('id'=>$vo["id"]))}"><img src="{$vo['image']|get_cover='path'}" width="150" height="100" style="position: absolute" transition></a>
+                              <div style="margin-left:160px">
+                                   
+                                   <div class="newslicontent">
+                                        <span style="display:none">{$vo["createtime"]|date='Y-m-d H:i:s',###}</span>
+                                        <p style="font-size:14px;color:#666666;line-height:25px">{$vo["content"]|strip_tags|msubstr=0,93,"utf-8",true}</p>
+                                   </div>
+                              </div>
+                            </div>
+                            <hr style="margin:5px 0px;">
+                       </section>
+				      </div>
+					</volist>
+					<if condition="count($newshotdata) eq 0">
+                        <div style="font-size:3em;padding:2em 0;color: #ccc;text-align: center;height:500px">该分类下现在还没有内容哦。O(∩_∩)O~</div>
+					<else />
+                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/News/Index/index')}" class="btn btn-default">&nbsp;&nbsp;更多资讯 >&nbsp;&nbsp;</a></div>
+                    </if>
+					<div style="clear:both;width:1px;height:1px"></div>
+				</div>
+				
+				
+				<!---------------------------------------->
+            </div>
+            
+        </div>
+
+    </div>
+</block>

@@ -1,0 +1,95 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    
+	<assign name="az" value="abcdefghijklmnopqrstuvwxyz" />
+
+<div class="container sub_menu">
+
+  <div class="common_block_border">
+    <div class="common_block_title">{$questionPaperdata['name']}</div>
+    <div style="margin: 15px">
+	{$questionPaperdata['description']}
+	</div>
+  </div>
+</div>
+<div class="container" style="min-height: 400px">
+        <div class="row">
+            <div class="col-md-9" style="padding-right:0px">
+                <!---------------------------------------->
+
+<ul class="examul">
+<php>
+$questionTypeArr=array(
+	    	                       'single_choice' => '单选题',
+	    	                       'choice' => '多选题',
+	    	                       'fill' => '填空题',
+	    	                       'determine' => '判断题',
+	    	                       'essay' => '问答题',
+	    	                       'material' => '材料题',
+                           );
+$json=json_decode($questionPaperdata['metas']);
+foreach($json->question_type_seq as $key=>$val)
+{
+</php>
+<li>
+   <div class="common_block_border">
+    <div class="common_block_title">{$questionTypeArr[$val]}</div>
+  <php>
+  $map['id']  = array('in',$json->itemquestions->$val);
+  $list=D('Examination/Question')->where($map)->select();
+  foreach($list as $_key=>$data)
+  {
+    if($data['type']=='material')
+	{
+	  $mapsub['parentId']  = array('eq',$data['id']);
+	  $subdata=D('Examination/Question')->where($mapsub)->select();
+	  //dump($subdata);
+	}
+  </php>
+  <div style="margin: 20px">
+		     <include file="./Application/Examination/View/default/Index/viewquestionpaper.html" />
+  </div>
+  <php>
+  }
+  </php>
+  </div>
+</li>
+
+<php>
+}
+</php>
+</ul>
+<php>//dump($questionPaperdata);</php>
+<php>//dump($subdata);</php>
+				<!---------------------------------------->
+            </div>
+            <div class="col-md-3">
+                <!---------------------------------------->
+				   <div class="common_block_border blog_position">
+                    <div class="common_block_title">时间不限</div>
+					 
+                      <div style="margin: 15px">
+					    <php>
+					       for($i=0;$i<10;$i++)
+						   {
+					    </php>
+						<a href="javascript:;" data-anchor="#question19" class="btn btn-default btn-index pull-left  active" style="margin:0px 10px 10px 0px">{$i+1}</a>
+						<php>
+						   }
+					    </php>
+						<button class="btn btn-primary btn-block">我要交卷</button>
+						<div class="clearfix mtm mbm"></div>
+					  </div>
+                  </div>
+				  
+				<!---------------------------------------->
+            </div>
+
+			
+        </div>
+
+    </div>
+	
+</block>

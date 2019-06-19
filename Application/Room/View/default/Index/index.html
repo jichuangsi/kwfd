@@ -1,0 +1,108 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="header">
+<div class="container sub_menu">
+<div class="common_block_border blog_position">
+                     <div class="common_block_title">检索</div>
+					 <div class="prop-attrs tag_div">
+							<div class="attr">
+								<div class="a-key">分类：</div>
+								<div class="a-values">
+									<div class="v-fold">
+										<ul class="f-list">
+										   <li name="11" ><a href="{:U('News/index/index')}">全部<em name="11"></em></a></li>
+										   <li name="11" ><a href="{:U('News/index/index?category=1')}">行业动态<em name="11"></em></a></li>
+										   <li name="12" ><a href="{:U('News/index/index?category=2')}">公司新闻<em name="12"></em></a></li>									
+										</ul>
+								    </div>
+								    <div class="v-option hide" option="more" onclick="moreExpandValue(this);"><span class="o-more unfold"><b></b>更多</span></div>
+									<div class="v-option hide" onclick="lessExpandValue(this);"><span class="o-more fold"><b></b>收起</span></div>
+								</div>
+							</div>
+					 </div>
+					 <div class="prop-attrs tag_div">
+							<div class="attr">
+								<div class="a-key">分类：</div>
+								<div class="a-values">
+									<div class="v-fold">
+										<ul class="f-list">
+										   <li name="11" ><a href="{:U('News/index/index')}">全部<em name="11"></em></a></li>
+										   <li name="11" ><a href="{:U('News/index/index?category=1')}">行业动态<em name="11"></em></a></li>
+										   <li name="12" ><a href="{:U('News/index/index?category=2')}">公司新闻<em name="12"></em></a></li>									
+										</ul>
+								    </div>
+								    <div class="v-option hide" option="more" onclick="moreExpandValue(this);"><span class="o-more unfold"><b></b>更多</span></div>
+									<div class="v-option hide" onclick="lessExpandValue(this);"><span class="o-more fold"><b></b>收起</span></div>
+								</div>
+							</div>
+					 </div>
+                     <div style="margin:1px"></div>
+                </div>
+</div>
+</block>
+<block name="body">
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container" style="min-height: 400px">
+        <div class="row">
+            <div class="col-md-8">
+                <!---------------------------------------->
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">新闻资讯</div>
+					<volist name="contents" id="vo">
+                      <div style="padding:0 20px">                     
+					    <section  style="padding:0px 0px 10px 0px;">
+                            <div style="position: relative">
+							  <a title='{$vo["title"]}' href="{:U('Room/Index/Detail',array('id'=>$vo["id"]))}"><img src="/edu/{$vo['image']|get_cover='path'}" width="150" height="100" style="position: absolute"></a>
+                              <a title='{$vo["title"]}' href="{:U('Room/Index/Detail',array('id'=>$vo["id"]))}"><img src="__IMG__/play.png" style="position: absolute;left:51px;top:26px"></a>
+							  <div style="margin-left:160px">
+                                   <div>
+                                        <h4><a title='{$vo["title"]}' href="{:U('Room/Index/Detail',array('id'=>$vo["id"]))}">{$vo["title"]}</a></h4>
+                                   </div>
+                                   <div>
+                                        <span><a href="/thinkox/index.php?s=/usercenter/index/index/uid/1.html" ucard="1" data-hasqtip="0"></a>{$vo["createtime"]|date='Y-m-d H:i:s',###}</span>
+                                        <p class="summary">{$vo["content"]|strip_tags|msubstr=0,90,"utf-8",true}</p>
+                                   </div>
+                              </div>
+                            </div>
+                            <hr style="margin:5px 0px">
+                       </section>
+				      </div>
+					</volist>
+					<if condition="count($contents) eq 0">
+                        <div style="font-size:3em;padding:2em 0;color: #ccc;text-align: center">该分类下现在还没有内容哦。O(∩_∩)O~</div>
+                    </if>
+					<div class="text-right" style="margin-right:20px">
+                       {:getPagination($totalPageCount,8)}
+                    </div>
+				</div>
+				<!---------------------------------------->
+            </div>
+            <div class="col-md-4">
+                <!---------------------------------------->
+				   <div class="common_block_border blog_position">
+                    <div class="common_block_title">全站热门</div>
+					 <assign name="num" value="1" />
+                     <volist name="hotdata" id="vo">
+                       <div class="clearfix" style="position: relative">         
+                         <div class="col-md-12">
+                           <div>
+                                <span class="rank_num">{$num++}</span><h3 class="text-more" style="float:left"><a title="{$vo['title']}" href="{:U('News/Index/Detail',array('id'=>$vo['id']))}">{$vo["title"]|msubstr=0,20}</a></h3>
+                           </div>
+                         </div>
+                      </div>
+					  <div class="col-md-12">
+                         <div style="border-bottom: 1px dashed rgb(204, 204, 204);margin: 10px 0px"></div>
+					  </div>
+		             </volist>
+                      <div style="margin: 15px"></div>
+                  </div>
+				  
+				<!---------------------------------------->
+            </div>
+
+			
+        </div>
+
+    </div>
+</block>

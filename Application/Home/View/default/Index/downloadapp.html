@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<title>集创思在线教学系统</title>
+<style type="text/css">
+#weixin-tip {
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	background: rgba(0, 0, 0, 0.8);
+	filter: alpha(opacity = 80);
+	width: 100%;
+	height: 100%;
+	z-index: 100;
+}
+
+#weixin-tip p {
+	text-align: center;
+	margin-top: 10%;
+	padding: 0 5%;
+	position: relative;
+}
+
+#weixin-tip p img {
+	max-width: 100%;
+	height: auto;
+}
+
+#weixin-tip .close {
+	color: #fff;
+	padding: 5px;
+	font: bold 20px/24px simsun;
+	text-shadow: 0 1px 0 #ddd;
+	position: absolute;
+	top: 0;
+	left: 5%;
+}
+</style>
+</head>
+<body>
+	<div id="weixin-tip">
+		<p>
+			<img src="__IMG__/live_weixin.png" alt="微信打开" />
+			<!-- 如需点击按钮关闭遮罩层，则开放如下注释 -->
+			<!-- <span id="close" title="关闭" class="close">×</span> -->
+		</p>
+	</div>
+	<script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript">
+		var userAgent = navigator.userAgent, app = navigator.appVersion;
+		var isIOS = userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+		$(function() {
+			var $winHeight = $(window).height();
+			var $btn = $('#btns>a');
+			var $tip = $('#weixin-tip');
+			var $close = $('#close');
+
+			function is_weixin() {
+				var ua = navigator.userAgent.toLowerCase();
+				if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			var isWeixin = is_weixin();
+			if (isWeixin) {
+				if (isIOS) {
+					$('#weixin-tip img').attr('src', '__IMG__/live_weixin_ios.png');
+				}
+				/* 点击按钮显示 
+				$btn.click(function() {
+					$tip.css('height', $winHeight);
+					$tip.show();
+					return false;
+				});
+				$close.click(function() {
+					$tip.hide();
+				});
+				$tip.click(function() {
+					$tip.hide();
+				}); */
+				
+				$tip.css('height', $winHeight);
+				$tip.show();
+			} else {
+				if (isIOS) {
+					//window.location.href="https://itunes.apple.com"; 
+				} else {
+					window.location.href="https://www.mingtianjian.net/tomcat/software/zaixianjiaoxue/android/pgy.apk"; 
+				}
+			}
+		});
+	</script>
+</html>

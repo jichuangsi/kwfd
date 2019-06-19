@@ -1,0 +1,48 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+<style>
+.detailcontent img{max-width:756px}
+</style>
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <!---------------------------------------->
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">{$data.title}</div>               
+                    <div class="detaildatetime">发布时间：{$data.createtime|date='Y-m-d H:i',###}</div>
+			        <div class="detailcontent">{$data.content}</div>
+					<div style="padding: 20px">
+                       {:hook('localComment', array('path'=>MODULE_NAME."/index/$data[id]", 'uid'=>1))}
+                    </div>
+				</div>
+				<!---------------------------------------->
+            </div>
+            <div class="col-md-3">
+                <!---------------------------------------->
+				  <div class="common_block_border blog_position">
+                    <div class="common_block_title">全站热门</div>
+					 <assign name="num" value="1" />
+                     <volist name="hotdata" id="vo">
+                       <div class="clearfix" style="position: relative">         
+                         <div class="col-md-12">
+                           <div>
+                                <span class="rank_num">{$num++}</span><h3 class="text-more" style="float:left"><a title="{$vo['title']}" href="{:U('News/Index/Detail',array('id'=>$vo['id']))}">{$vo["title"]|msubstr=0,10}</a></h3>
+                           </div>
+                         </div>
+                      </div>
+					  <div class="col-md-12">
+                         <div style="border-bottom: 1px dashed rgb(204, 204, 204);margin: 10px 0px"></div>
+					  </div>
+		             </volist>
+                      <div style="margin:0px 15px;height:10px;clear:both"></div>
+                  </div>
+				<!---------------------------------------->
+            </div>
+			
+        </div>
+
+    </div>
+</block>

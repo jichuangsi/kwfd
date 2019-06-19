@@ -1,0 +1,1 @@
+<?php if (!defined('THINK_PATH')) exit();?>Feedback/setstatus?status=-1&ids=5

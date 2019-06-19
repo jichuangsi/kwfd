@@ -1,0 +1,4 @@
+<label class="textarea">
+    <textarea name="{$field.name}">{$field.value|htmlspecialchars}</textarea>
+    {:hook('adminArticleEdit', array('name'=>$field['name'],'value'=>$field['value']))}
+</label>

@@ -1,0 +1,13 @@
+<script>
+    $(document).ready(function () {
+       $('.jui-button-set').buttonset();
+    });
+</script>
+<div class="jui-button-set">
+    {//$options|print_r}
+    <volist name="options" id="option">
+        <input type="radio" id="plain_selector_{$option.id}_{$key}" name="plain_selector"
+               value="{$option.id}" <if condition="$option['selected']"> checked </if> >
+        <label for="plain_selector_{$option.id}_{$key}">{$option.name}</label>
+    </volist>
+</div>

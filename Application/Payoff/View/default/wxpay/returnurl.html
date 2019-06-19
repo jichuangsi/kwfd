@@ -1,0 +1,52 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+<style>
+.bot_div ul{overflow:hidden; padding:0px 0 30px 0px;list-style:none}
+.bot_div ul li{float:left; width:182px; height:72px; border:1px solid #e6e6e6; border-radius:5px; margin:0 22px 0 0;}
+.bot_div ul li.current{border:1px solid #f32613;}
+.bot_div ul li a{width:179px; height:69px; border-radius:5px;}
+.bot_div ul li a img{border-radius:5px;}
+</style>
+<script type="text/javascript">
+
+	</script>
+<div class="container" style="margin-top:0px;min-height: 400px">
+<div class="panel panel-cart">
+    <div class="panel-heading">
+     <h3 class="panel-title">订单支付完成</h3>
+    </div>
+  
+<div class="panel-body">
+
+ <div class="row" >
+  <div class="col-md-12">
+<form id="thisform" action="#"  method="post">
+订单号：{$data['orderid']}<input type="hidden"  name="orderid" class="form-control" id="orderid" value="{$orderid}"><br><br>
+金额：{$data['pricetotal']} 元<input type="hidden" name="money" class="form-control" id="goodprice" value="50"><br><br>
+支付方式：<br><br>
+<input type="hidden" name="paytype" value="{:U('/Payoff/Alipay/index')}" checked=""/>
+<div class="bot_div">
+	<ul>
+		<li class="current"><a attr-id="{:U('/Payoff/Alipay/index')}"><img src="__IMG__/zxzf_pic_03.jpg"></a></li>						
+		 
+	</ul>
+</div>
+<a href="{:U('Home/Index/index')}" class="btn btn-primary">&nbsp;&nbsp;&nbsp;返回首页&nbsp;&nbsp;&nbsp;</a>
+</form>
+<script type="text/javascript">
+
+$(function(){
+  //$("#form").submit();
+});
+</script>
+
+  </div>
+  </div></div>
+ </div>
+</div>
+
+</block>
+
+
+

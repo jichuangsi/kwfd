@@ -1,0 +1,161 @@
+<assign name="questionanswer" value="$keyList[sizeof($keyList)-1].value" />
+<php>$jsonanswer=json_decode($questionanswer,true);//dump($keyList[sizeof($keyList)-1])</php>
+<assign name="SingleChoice" value="$field.value" />
+<assign name="az" value="abcdefghijklmnopqrstuvwxyz" />
+<php>$json=json_decode($SingleChoice);//dump($json);</php>
+<textarea id="itemmodel" name="itemmodel" cols="" rows="" style="display:none ">
+                                     <table width="100%"  border="0" cellspacing="10" cellpadding="0" style="margin:5px 0px" id="choice_item_{NUM}">
+                                         <tr>
+                                             <td width="60"><label class="item-label">选项{NUM}</label></td>
+                                             <td>
+							        <textarea id="choice{NUM}" name="item[]">[/textarea]							
+							        <input type="hidden" name="parse" value="0">
+                                             </td>
+                                             <td width="100" align="center">
+                                                 <label><input class="answer" name="answer[]" type=checkbox value="{NUM}">正确答案</label>
+                                             </td>
+                                             <td width="80" align="center">
+                                                 <button class="btn" onclick="delitem('choice_item_{NUM}');return false">删除</button>
+                                             </td>
+                                         </tr>
+                                     </table>
+						  
+                        </textarea>
+<textarea id="editormodel" name="editormodel" cols="" rows="" style="display:none ">
+						var editor{NUM};
+					editor{NUM} = KindEditor.create('textarea[id="choice{NUM}"]', {
+						allowFileManager : false,
+						themesPath: KindEditor.basePath,
+						width: '100%',
+						height: '100px',
+						resizeType: 1,
+						pasteType : 2,
+						urlType : 'absolute',
+						items : [
+						'source', '|','fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+						'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+						'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+						fileManagerJson : '{:U('fileManagerJson')}',
+						//uploadJson : '{:U('uploadJson')}' }
+						uploadJson : '{:addons_url("EditorForAdmin://Upload/ke_upimg")}'
+					});
+
+	
+					//传统表单提交同步
+					$('textarea[id="choice{NUM}"]').closest('form').submit(function(){
+						editor{NUM}.sync();
+					});
+					//ajax提交之前同步
+					$('button[type="submit"],#submit,.ajax-post').click(function(){
+						editor{NUM}.sync();
+					});
+						</textarea>
+<script type="text/javascript">
+    var az='abcdefghijklmnopqrstuvwxyz';
+    $(function(){
+        if($("#items table").length==0)
+        {
+            for(var i=0;i<4;i++)
+            {
+                additem();
+            }
+        }
+    })
+    function additem()
+    {
+        if($("#items table").length>=10)
+        {
+            alert('选项最多十个!');
+            return;
+        }
+        var NUM=az.substr($("#items table").length,1).toUpperCase()
+        var html=$("#itemmodel").val().replace(/{NUM}/ig,NUM);
+        html=html.replace('[/textarea]','</textarea>');
+        //alert(html);
+        $("#items").append(html);
+        html=$("#editormodel").val().replace(/{NUM}/ig,NUM);
+        eval(html);
+    }
+    function delitem(id)
+    {
+        if($("#items table").length>2)
+        {
+            $("#"+id).remove();
+            for(var i=0;i<$("#items table").length;i++)
+            {
+                //alert(i+" "+az.substr(i,1).toUpperCase());
+                $("#items table").eq(i).find('label[class="item-label"]').eq(0).html('选项'+az.substr(i,1).toUpperCase());
+                $("#items table").eq(i).find('input[class="answer"]').eq(0).val(az.substr(i,1).toUpperCase());
+            }
+        }
+        else
+        {
+            alert("选项至少二个!");
+        }
+    }
+</script>
+<div id="items">
+    <php> //dump($json);dump($json->choices);
+        foreach($json->choices as $key=>$val)
+        {
+        //dump($key."=".$val);
+    </php>
+    <table width="100%"  border="0" cellspacing="10" cellpadding="0" style="margin:5px 0px" id="choice_item_{$az|msubstr=$key,1,'utf-8',false|strtoupper}">
+        <tr>
+            <td width="60"><label class="item-label">选项{$az|msubstr=$key,1,"utf-8",false|strtoupper}</label></td>
+            <td>
+                <textarea id="choice{$az|msubstr=$key,1,'utf-8',false|strtoupper}" name="item[]">{$val|base64_decode|stripslashes}</textarea>
+                <!--hook('adminArticleEdit', array('name'=>strtoupper(msubstr($az,$key,1,'utf-8',false)),'value'=>$val))-->
+
+                <input type="hidden" name="parse" value="0">
+
+                <link rel="stylesheet" href="__STATIC__/kindeditor/default/default.css" />
+                <script charset="utf-8" src="__STATIC__/kindeditor/kindeditor-min.js"></script>
+                <script charset="utf-8" src="__STATIC__/kindeditor/zh_CN.js"></script>
+                <script type="text/javascript">
+                    var editor{$az|msubstr=$key,1,"utf-8",false|strtoupper};
+                    KindEditor.ready(function(K) {
+                        editor{$az|msubstr=$key,1,"utf-8",false|strtoupper} = K.create('textarea[id="choice{$az|msubstr=$key,1,"utf-8",false|strtoupper}"]', {
+                            allowFileManager : false,
+                            themesPath: K.basePath,
+                            width: '100%',
+                            height: '100px',
+                            resizeType: 1,
+                            pasteType : 2,
+                            urlType : 'absolute',
+                            items : [
+                                'source', '|','fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                                'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+                            fileManagerJson : '{:U('fileManagerJson')}',
+                            //uploadJson : '{:U('uploadJson')}' }
+                            uploadJson : '{:addons_url("EditorForAdmin://Upload/ke_upimg")}'
+                        });
+                    });
+
+                    $(function(){
+                        //传统表单提交同步
+                        $('textarea[id="choice{$az|msubstr=$key,1,"utf-8",false|strtoupper}"]').closest('form').submit(function(){
+                            editor{$az|msubstr=$key,1,"utf-8",false|strtoupper}.sync();
+                        });
+                        //ajax提交之前同步
+                        $('button[type="submit"],#submit,.ajax-post').click(function(){
+                            editor{$az|msubstr=$key,1,"utf-8",false|strtoupper}.sync();
+                        });
+                    })
+                </script>
+            </td>
+            <td width="100" align="center">
+                <label><input class="answer" name="answer[]" type="checkbox" <php>if(in_array(strtoupper(msubstr($az,$key,1,'utf-8',false)),$jsonanswer)){echo 'checked';}</php> value="{$az|msubstr=$key,1,'utf-8',false|strtoupper}">正确答案</label>
+            </td>
+            <td width="80" align="center">
+                <button class="btn" onclick="delitem('choice_item_{$az|msubstr=$key,1,'utf-8',false|strtoupper}');return false">删除</button>
+            </td>
+        </tr>
+    </table>
+
+    <php>
+        }
+    </php>
+</div>
+<button class="btn" style="margin:10px 0px 0px 60px" onclick='additem();return false'>新增选项</button>

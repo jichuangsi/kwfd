@@ -1,0 +1,410 @@
+<switch name="data.type">      
+    <case value="single_choice">
+		<a name="{$questionnum}"></a>	    
+		<div class="leftdiv">
+          <div class="testpaper-question-seq">{$questionnum}</div>
+          <div class="testpaper-question-score">{$data['score']}分</div>
+		</div>
+		<div class="rightdiv">{$data.stem}</div>
+		<php>
+		$itemquestionanswer=json_decode($data['answer'],false);
+		//dump($itemquestionanswer);
+		$questionanswer=json_decode($answer[$data['id']],false);
+		//dump(base64_decode($questionanswer[0]));
+		
+        $answericon="wrong";
+		if(sizeof($questionanswer)>0)
+		{
+		  if(base64_decode($questionanswer[0])==$itemquestionanswer[0])
+		  {
+		     $answericon="right";
+		  }
+		}
+		</php>
+		<div style="position:relative">
+		  <img src="./Public/Examination/images/{$answericon}.png" width="100" height="100" style="position:absolute;right:0px;top:-40px"/>
+		  <div style="position:absolute;right:25px;top:60px;width:50px">
+		得分:<input class="form-control " style="margin:5px 0px;" type="text" data-type="fill"
+		     <if condition="$mark[$data['id']] gt 0"> 
+			   value="{$mark[$data['id']]}"    
+		     <else />
+		       <if condition="$answericon eq 'right' "> value="{$data['score']}"    <else /> value="0" </if>
+			 </if>
+		     name="score_{$data['id']}">
+		  </div>
+		</div>
+	    
+	    <php> 
+		$jsonitems=json_decode($data['metas'],false);//dump($jsonitems);
+		//dump($jsonitems->choices);
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<table width="100%"  border="0" cellspacing="0" cellpadding="0" class="marginleft40">
+                    <tr>
+                       <td width=30>{$az|msubstr=$key,1,'utf-8',false|strtoupper}:</td>
+                       <td>{$val|base64_decode|stripslashes}</td>
+                    </tr>
+                </table>
+				<php>
+			}
+		</php>
+		<php> //dump($jsonitems->choices);
+		//echo base64_decode($answer[$data['id']]);
+		    
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<label class="radio-inline marginleft40" ><input type="radio" data-type="choice" 
+				name="question_{$data['id']}" 
+				<php>
+				if(in_array(base64_encode(strtoupper(msubstr($az,$key,1,'utf-8',false))),$questionanswer))
+				{
+				</php>
+				 checked="checked" 
+                <php>
+				}
+				</php>
+				value="{$az|msubstr=$key,1,'utf-8',false|strtoupper}">&nbsp;{$az|msubstr=$key,1,'utf-8',false|strtoupper}</label>
+				<php>
+			}
+		</php>
+		<php>$jsonanswer=json_decode($data['answer'],true);//dump($jsonanswer);</php>
+		<hr  class="hrdotted marginleft40">
+		<div class="marginleft40">正确答案是：
+		<php> 
+			foreach($jsonanswer as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<label>{$val}</label>
+				<php>
+			}
+		</php>
+		</div>
+		<div  class="marginleft40">
+		解析:<br>
+		{$data['analysis']}
+		</div>
+	</case>    
+	<case value="choice">
+		<a name="{$questionnum}"></a>
+	    <div class="leftdiv">
+          <div class="testpaper-question-seq">{$questionnum}</div>
+          <div class="testpaper-question-score">{$data['score']}分</div>
+		</div>
+		<div class="rightdiv">{$data.stem}</div>
+		<php>
+		$itemquestionanswer=json_decode($data['answer'],false);
+		$questionanswer=json_decode($answer[$data['id']],false);
+		//dump(base64_decode($questionanswer[0]));
+        $answericon="wrong";
+		if(sizeof($questionanswer)==sizeof($itemquestionanswer))
+		{
+		   $answericon="right";
+		   foreach($itemquestionanswer as $key=>$val)
+		   {
+             if(base64_decode($questionanswer[$key])!=$val)
+			 {
+			    $answericon="wrong";
+				break;
+			 }
+		   }
+		}
+		</php>
+		<div style="position:relative">
+		  <img src="./Public/Examination/images/{$answericon}.png" width="100" height="100" style="position:absolute;right:0px;top:-40px"/>
+		  <div style="position:absolute;right:25px;top:60px;width:50px">
+		得分:<input class="form-control " style="margin:5px 0px;" type="text" data-type="fill"
+		     <if condition="$mark[$data['id']] gt 0"> 
+			   value="{$mark[$data['id']]}"    
+		     <else />
+		       <if condition="$answericon eq 'right' "> value="{$data['score']}"    <else /> value="0" </if>
+			 </if>
+		     name="score_{$data['id']}">
+		  </div>
+		</div>
+	    <php>
+		$jsonitems=json_decode($data['metas'],false);//dump($jsonitems);
+		//dump($jsonitems->choices);
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<table width="100%"  border="0" cellspacing="0" cellpadding="0" class="marginleft40">
+                    <tr>
+                       <td width=30>{$az|msubstr=$key,1,'utf-8',false|strtoupper}:</td>
+                       <td>{$val|base64_decode|stripslashes}</td>
+                    </tr>
+                </table>
+				<php>
+			}
+		</php>
+		<php> 
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<label class="checkbox-inline marginleft40"><input type="checkbox" data-type="choice" 
+				<php>
+				if(in_array(base64_encode(strtoupper(msubstr($az,$key,1,'utf-8',false))),$questionanswer))
+				{
+				</php>
+				 checked="checked" 
+                <php>
+				}
+				</php>
+				name="question_{$data['id']}[]" value="{$az|msubstr=$key,1,'utf-8',false|strtoupper}">&nbsp;{$az|msubstr=$key,1,'utf-8',false|strtoupper}</label>
+				<php>
+			}
+		</php>
+		<php>$jsonanswer=json_decode($data['answer'],true);//dump($jsonanswer);</php>
+		<hr class="hrdotted marginleft40">
+		<div class="marginleft40">正确答案是：
+		<php> 
+			foreach($jsonanswer as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<label>{$val}</label>
+				<php>
+			}
+		</php>
+		</div>
+		<br>
+		<div class="marginleft40">
+		解析:<br>
+		{$data['analysis']}
+		</div>
+	</case>
+	<case value="fill">
+		<a name="{$questionnum}"></a>
+	    <php>
+		    $title=$data['stem'];
+			//dump($title);
+		    preg_match_all('/\\[\\[.+?\\]\\]/i' ,$data['stem'] ,$res);
+			//dump($res);
+			$i=0;
+			foreach($res[0] as $key=>$val)
+            {
+                $title=str_replace($val,"<span style='text-decoration:underline;color:#ff0000'>  (".++$i.")  </span>",$title);
+
+				//$val=preg_replace('/(\\[\\[|\\]\\])/','',$val);
+				//echo $val;
+            }
+			</php>
+			<div class="leftdiv">
+              <div class="testpaper-question-seq">{$questionnum}</div>
+              <div class="testpaper-question-score">{$data['score']}分</div>
+		    </div>
+	  	    <div class="rightdiv">{$title}</div>
+        <php>
+		$itemquestionanswer=json_decode($data['answer'],false);
+		$questionanswer=json_decode($answer[$data['id']],false);
+		//dump($questionanswer);
+		//dump($itemquestionanswer);
+        $answericon="wrong";
+		if(sizeof($questionanswer)==sizeof($itemquestionanswer))
+		{
+		   $answericon="right";
+		   foreach($itemquestionanswer as $key=>$val)
+		   {
+             //dump(base64_decode($questionanswer[$key][0]));
+		     //dump(base64_decode($val[0]));
+			 //echo "--------------------------------";
+			 $pos = strpos("|".base64_decode($val[0])."|","|".base64_decode($questionanswer[$key][0])."|");
+			 //if($questionanswer[$key][0]!=$val[0])
+			 if($pos === false)
+			 {
+			    $answericon="wrong";
+				break;
+			 }
+		   }
+		}
+		</php>
+		    <div style="position:relative;clear:both">
+		     <img src="./Public/Examination/images/{$answericon}.png" width="100" height="100" style="position:absolute;right:0px;top:-40px"/>
+			 <div style="position:absolute;right:25px;top:60px;width:50px">
+		得分:<input class="form-control " style="margin:5px 0px;" type="text" data-type="fill"
+		     <if condition="$mark[$data['id']] gt 0"> 
+			   value="{$mark[$data['id']]}"    
+		     <else />
+		       <if condition="$answericon eq 'right' "> value="{$data['score']}"    <else /> value="0" </if>
+			 </if>
+		     name="score_{$data['id']}">
+		     </div>
+		    </div>
+			<php>
+			//echo $title;
+			$i=0;
+			foreach($res[0] as $key=>$val)
+            {
+                </php>
+				   <div class="marginleft40"><input class="form-control " style="margin:5px 0px" type="text" data-type="fill" 
+				   value="<php>if(sizeof($questionanswer)>=($key+1)) echo base64_decode($questionanswer[$key][0]);</php>"
+				   name="question_{$data['id']}[]" placeholder="填空({++$i})答案，请填在这里"></div>
+				<php>
+            }
+			</php>
+			<hr class="hrdotted marginleft40">
+			<div class="marginleft40">正确答案
+			<php>
+			//dump($data['answer']);
+			$jsonanswer=json_decode($data['answer'],true);
+			foreach($jsonanswer as $key=>$val)
+			{
+				//dump($key."=".stripslashes(base64_decode($val[0])));
+				</php>
+				   <div>填空({$key+1})：{$val[0]|base64_decode|stripslashes} </div>
+				<php>
+			}
+		    </php>
+			</div>
+		
+		<div class="marginleft40">
+		解析:<br>
+		{$data['analysis']}</div>
+	</case>
+	<case value="determine">
+		<a name="{$questionnum}"></a>
+	    <div class="leftdiv">
+          <div class="testpaper-question-seq">{$questionnum}</div>
+          <div class="testpaper-question-score">{$data['score']}分</div>
+		</div>
+		<div class="rightdiv">{$data.stem}</div>
+		<php>
+		$itemquestionanswer=json_decode($data['answer'],false);
+		$questionanswer=json_decode($answer[$data['id']],false);
+		//dump(base64_decode($questionanswer[0]));
+        $answericon="wrong";
+		if(sizeof($questionanswer)==sizeof($itemquestionanswer))
+		{
+		  if(base64_decode($questionanswer[0])==$itemquestionanswer[0])
+		  {
+		     $answericon="right";
+		  }
+		}
+		</php>
+		<div style="position:relative;clear:both">
+		  <img src="./Public/Examination/images/{$answericon}.png" width="100" height="100" style="position:absolute;right:0px;top:-40px"/>
+		  <div style="position:absolute;right:25px;top:60px;width:50px">
+		得分:<input class="form-control " style="margin:5px 0px;" type="text" data-type="fill"
+		     <if condition="$mark[$data['id']] gt 0"> 
+			   value="{$mark[$data['id']]}"    
+		     <else />
+		       <if condition="$answericon eq 'right' "> value="{$data['score']}"    <else /> value="0" </if>
+			 </if>
+		     name="score_{$data['id']}">
+		  </div>
+		</div>
+	    <php> 
+		$data['metas']='{"choices":["正确","错误"]}';
+		$jsonitems=json_decode($data['metas'],false);//dump($jsonitems);
+		//dump($jsonitems->choices);
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<php>
+			}
+		</php>
+		<php> //dump($jsonitems);
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				
+				</php>
+				<label  class="radio-inline marginleft40"><input type="radio" data-type="choice"
+				<php>
+				if(in_array(base64_encode(1-$key),$questionanswer))
+				{
+				</php>
+				 checked="checked" 
+                <php>
+				}
+				</php>
+				name="question_{$data['id']}" value="<php>echo 1-$key;</php>">{$val}</label>
+				<php>
+			}
+		</php>
+		<php>$jsonanswer=json_decode($data['answer'],true);//dump($jsonanswer);</php>
+		<hr class="hrdotted marginleft40">
+		<div  class="marginleft40">正确答案是：
+		<php> 
+			foreach($jsonanswer as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<label>{$jsonitems->choices[1-$val]}</label>
+				<php>
+			}
+		</php>
+		</div>
+		
+		<div  class="marginleft40">
+		解析:<br>
+		{$data['analysis']}
+		</div>
+	</case>
+	<case value="essay">
+		<a name="{$questionnum}"></a>
+	    <div class="leftdiv">
+          <div class="testpaper-question-seq">{$questionnum}</div>
+          <div class="testpaper-question-score">{$data['score']}分</div>
+		</div>
+		<div class="rightdiv">{$data.stem}</div>
+		<div style="position:relative;clear:both">
+		  <img src="./Public/Examination/images/notice.png" width="100" height="100" style="position:absolute;right:0px;top:-40px"/>
+		  <div style="position:absolute;right:25px;top:60px;width:50px">
+		得分:<input class="form-control " style="margin:5px 0px;" type="text" data-type="fill"
+		     <if condition="$mark[$data['id']] gt 0"> 
+			   value="{$mark[$data['id']]}"    
+		     <else />
+		       value="0"
+			 </if>
+		     name="score_{$data['id']}">
+		  </div>
+		</div>
+		<div class="marginleft40">
+		<textarea class="form-control" name="question_{$data['id']}" cols="" rows="6"><php>
+			 $questionanswer=json_decode($answer[$data['id']],false);
+			 if(sizeof($questionanswer)>0)
+			 {
+			    echo base64_decode($questionanswer[0]);
+			 }
+			 </php>
+		</textarea>
+	    </div>
+		<hr class="hrdotted marginleft40">
+		<php>
+		$jsonanswer=json_decode($data['answer'],true);//dump($jsonanswer);</php>
+		<div class="marginleft40">正确答案是：
+			{$jsonanswer[0]|base64_decode|stripslashes}
+		</div>
+		<br class="marginleft40">
+		<div class="marginleft40">解析:<br>{$data['analysis']}</div>
+	</case>
+	<case value="material">
+	    <div class="well">{$data.stem}</div>
+		<php>$subnum=0;</php>
+		<volist name="subdata" id="data"> 
+		     <php>
+			 $data['score']=$json->score->$data['type'];
+			 </php>
+             <include file='./Application/Hz/View/default/Index/correcttopicchild.html'/>
+			 <php>
+              if(sizeof($subdata)>1 && $subnum%2==0)
+              {
+                    echo '<hr style="margin: 20px 0px">';
+              }
+             </php>
+			 <php>
+			    $subnum+=1;
+                $questionnum+=1;
+             </php>
+		</volist>
+	</case>
+	<default />找不到试题类型。
+</switch>

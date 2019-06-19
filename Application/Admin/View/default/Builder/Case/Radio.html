@@ -1,0 +1,8 @@
+<volist name="field.opt" id="option">
+    <php>
+        $checked = $field['value']==$key ? 'checked' : '';
+        $inputId = "id_$field[name]_$key";
+    </php>
+    <input id="{$inputId}" name="{$field.name}" value="{$key}" type="radio" {$checked}/>
+    <label for="{$inputId}">{$option|htmlspecialchars}</label>
+</volist>

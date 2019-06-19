@@ -1,0 +1,269 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+<style>
+       .nav-tabs > li > a {
+         padding:8px 20px;
+        }
+		.nav-tabs > li.active > a
+		{
+		  color:#3d72fe;
+		}
+        .nav-tabs {
+           padding:0px 0px 0px 10px;
+        }
+		.nav-tabs > li > a {
+           line-height:18px;
+        }
+		
+.whole{
+	margin: 7px 0;
+	padding: 5px 0;
+}
+font{
+	color: #dd2222;
+	margin: 0 2px;
+}
+.whole::before{clear: both;}
+.whole .whole-left{
+	width: 90px;
+	text-align: right;
+	margin-right: 3px;
+	font-weight: normal;
+	float: left;
+	line-height: 38px;
+	border: #ccc 0px solid;
+	clear:left;
+}
+.whole .whole-right{
+	width: auto;
+	margin:0px;
+	padding:0px;
+	background-color: #fff;
+	border: #ccc 0px solid;
+	border-radius: 0px;
+	color: #333;font-size: 14px;
+	float:left;
+	line-height: 38px;
+	clear:right;
+}
+.whole-right span{margin:0px;
+	padding:0px;}
+.red1{
+	font-size:20px;line-height:33px;font-weight:bold;color:#3d72fe
+}
+.kejscontent img{max-width: 100%;}
+
+</style>
+<script>
+$(function(){
+
+$('#myModal').on('shown.bs.modal', function (e) {
+            // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零
+            $(this).css('display', 'block');
+            var modalHeight=$(window).height() / 2 - $('#myModal .modal-dialog').height() / 2;
+            $(this).find('.modal-dialog').css({
+ 
+                'margin-top': modalHeight
+            });
+        });
+
+
+
+ $('#myTab a').click(function (e) {
+  window.location.hash = e.target.hash;
+
+ })
+ $('.showcontent').click(function (e) {
+    //alert($(this).attr("id"));
+	$(".modal-title").html($(this).html());
+	$(".modal-body").html($("#content_"+$(this).attr("id")).html());
+    $("#myModal").modal('show');
+
+ })
+ 
+})
+</script> 
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container" style="min-height: 400px">
+        <div class="row">
+            <div class="col-md-9">
+                <!---------------------------------------->
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">{$data.title}</div>               
+                    <div class="detaildatetime">发布时间：{$data.createtime|date='Y-m-d H:i',###}</div>
+					<div style="padding: 0px 10px 10px 10px;display:none">           
+					 <if condition="$data['price'] gt 0 ">
+					  <button class="btn btn-primary" onClick="window.location.href='{:U('cart?id='.$data['id'])}'">购买后才可以进入课堂</button>
+					  <else /> 
+					  <button class="btn btn-primary" onClick="#">进入课堂</button>
+					  </if>
+					  <button class="btn btn-primary" onClick="window.open('{:U('gotomeeting?id='.$data['id'])}')">测试直接进入课堂</button>
+					  <BR>
+					</div>
+                    <div style="margin:10px">					
+			         <div class="row">
+					  <div class="col-md-6" style="border:0px solid #ff0000">
+					    <img src="{$data['image']|get_cover='path'}" data-echo="{$data['image']|get_cover='path'}" width="100%" style="max-height:250px">	
+					  </div>
+					  <div class="col-md-6">
+					      <div class="whole">
+							<div class="whole-left">价格：</div>
+							<div class="whole-right"><span class="red1">¥{$data.price}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="text-decoration:line-through;display:none">原价:¥4399</span></div>
+						  </div>
+						  <div class="whole">
+							<div class="whole-left">上课时间：</div>
+							<div class="whole-right">{$data.starttime|date='Y年m月d H:i',###} ~ {$data.endtime|date='m月d H:i',###}</div>
+						  </div>
+						  <div class="whole">
+							<div class="whole-left">学习人数：</div>
+							<div class="whole-right">{:count($orderlist)}人</div>
+						  </div>
+						  <div class="whole">
+							<div class="whole-left">服务承诺：</div>
+							<div class="whole-right">支付保障&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;开课前随时退</div>
+						  </div>
+                          <div class="whole">
+							<div class="whole-left">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+							
+							<div class="whole-right" style="margin-top:30px"><a href="{:U('Cart',array('id'=>$data["id"]))}" class="btn btn-primary">&nbsp;&nbsp;立即报名&nbsp;&nbsp;</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('gotomeeting',array('id'=>$data["id"]))}" class="btn btn-primary hidden">&nbsp;&nbsp;联系我们&nbsp;&nbsp;</a></div>
+						  </div>
+					  </div>
+					 </div>
+					</div>
+					<!---------------------------------------------------------------------------->
+					<div style="margin:0px 0px">
+					  <ul id="myTab" class="nav nav-tabs">
+                        <li class="active"><a href="#kcjs" data-toggle="tab">课程介绍</a></li>
+                        <li><a href="#jxdg" data-toggle="tab">教学大纲</a></li>
+	                    <li><a href="#pingjia" data-toggle="tab">课程评价</a></li>
+                      </ul>
+ 
+                      <div class="common_block_title" style="margin-left:10px;position:relative">课程介绍
+					     <a name="kcjs" style=" position:absolute;top:-120px"></a>
+					  </div> 					  
+                      <div style="min-height:200px;margin:0px 10px" class="kejscontent">
+                        {$data.content}
+					  </div>
+					  
+					  <div class="common_block_title" style="margin-left:10px;position:relative">教学大纲
+					     <a name="jxdg" style=" position:absolute;top:-120px"></a>
+					  </div>  
+                      <div style="min-height:200px;margin:0px 10px">
+					    <!--img src="__IMG__/jxdg.png"/-->
+					    <!-------------------------------->
+						<notempty name="chapters['_']">
+						      <volist name="chapters['_']" id="chapter">
+							      <div style="padding:10px;background-color:#F5F5F5;margin-top:10px;font-weight:bold;font-size:14px;color:#919191"><php>echo ($key+1)<10?"0".($key+1):($key+1);</php>&nbsp;&nbsp;{$chapter['title']}</div>
+								  <notempty name="chapter['_']">
+								        <volist name="chapter['_']" id="childchapter">
+								    	   <div style="margin-left:30px;padding:10px 10px 10px 10px;background-color:#ffffff;margin-bottom:1px;font-weight:bold;font-size:14px;color:#616161;border-bottom:1px dotted #cccccc;cursor:pointer" class="showcontent" id="{$childchapter.id}">&nbsp;&nbsp;{$childchapter['title']}</div>
+										   <div id="content_{$childchapter.id}" style="display:none">{$childchapter.content}</div>
+								        </volist>
+								  </notempty>
+							  </volist>
+						</notempty>
+		                
+						<!-------------------------------->
+                      </div>
+
+					  <div class="common_block_title" style="margin-left:10px;position:relative">课程评价
+					     <a name="pingjia" style=" position:absolute;top:-120px"></a>
+					  </div>
+                      <div style="min-height:200px;margin:0px 10px">
+                           {:hook('localComment', array('path'=>MODULE_NAME."/index/$data[id]", 'uid'=>get_uid()))}
+                      </div>
+					</div>
+					<!---------------------------------------------------------------------------->
+					 
+				</div>
+				<!---------------------------------------->
+            </div>
+            <div class="col-md-3">
+                <!---------------------------------------->
+				  <div class="common_block_border blog_position">
+                    <div class="common_block_title">授课老师</div>
+					  <div style="margin:0px 0px 0px 10px">
+					     <if condition="count($teacher) gt 0">
+                            <a href="{:U('Teacher/Index/Detail',array('id'=>$teacher[0]['uid']))}"><img src="{$teacher[0]['path']}" style="border-radius: 50%;width:60px"/>&nbsp;&nbsp;{$teacher[0]["nickname"]}</a>
+                         </if>
+					  </div>
+					  
+                      <div style="margin:0px 15px;height:10px;clear:both"></div>
+                  </div>
+				<!---------------------------------------->
+            </div>
+			<div class="col-md-3" style="blick:none">
+                <!---------------------------------------->
+				  <div class="common_block_border blog_position">
+                    <div class="common_block_title">最新学员</div>
+					  <div style="margin:0px 0px 0px 10px">
+					     <if condition="count($orderlist) gt 0">
+						     <volist name="orderlist" id="user">
+					             <a href="javascript:void(0)" style="padding:0px 0px 10px 0px;display:inline-block"><img src="{$user.path}" style="border-radius: 50%;width:40px"/>&nbsp;{$user["nickname"]|msubstr=0,3,'utf-8',false}&nbsp;&nbsp;</a>
+                             </volist>
+						 <else />
+						     <div style="padding:10px 10px 20px 0px;text-align:center;line-height:30px">暂无学员<br>欢迎你：第一位加入学习。</div>
+						 </if>
+					  
+					  </div>
+                      <div style="margin:0px 15px;height:10px;clear:both"></div>
+                  </div>
+				<!---------------------------------------->
+            </div>
+            <div class="col-md-3">
+                <!---------------------------------------->
+				  <div class="common_block_border blog_position">
+                    <div class="common_block_title">全站热门</div>
+					 <assign name="num" value="1" />
+                     <volist name="hotdata" id="vo">
+                       <div class="clearfix" style="position: relative">         
+                         <div class="col-md-12">
+                           <div>
+                                <span class="rank_num">{$num++}</span><h3 class="text-more" style="float:left"><a title="{$vo['title']}" href="{:U('Detail',array('id'=>$vo['id']))}">{$vo["title"]|subtext=10}</a></h3>
+                           </div>
+                         </div>
+                      </div>
+					  <div class="col-md-12">
+                         <div style="border-bottom: 1px dashed rgb(204, 204, 204);margin: 10px 0px"></div>
+					  </div>
+		             </volist>
+                      <div style="margin:0px 15px;height:10px;clear:both"></div>
+                  </div>
+				<!---------------------------------------->
+            </div>
+        </div>
+
+    </div>
+	
+	
+	
+	
+	
+<!-- 模态框（Modal） -->
+<div class="modal fade text-center" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="display: inline-block; width: auto;min-width:500px">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					 
+				</h4>
+			</div>
+			<div class="modal-body">
+				 
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">
+					关闭
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+	
+	
+	
+</block>

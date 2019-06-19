@@ -1,0 +1,39 @@
+<extend name="./Application/Common/View/base/common.html" />
+<!--extend name="Base/common"/-->
+<block name="body">
+<style type="text/css">
+.ullist{margin:0px 0px 0px 0px;padding:0px;list-style-type:none;border-top:0px solid #DFDFDF }
+.ullist li{margin:0px;padding:0px 0px 0px 30px;border-bottom:1px solid #DFDFDF;height:48px;font-size:16px;line-height:48px;}
+.ullist li.ico1{ background:url(__IMG__/ico1.png) left center no-repeat #ffffff}
+.ullist li.ico2{ background:url(__IMG__/ico2.png) left center no-repeat #ffffff}
+.ullist li.ico3{ background:url(__IMG__/ico3.png) left center no-repeat #ffffff}
+.ullist li.ico4{ background:url(__IMG__/ico4.png) left center no-repeat #ffffff}
+.ullist li.ico5{ background:url(__IMG__/ico4.png) left center no-repeat #ffffff}
+.ullist li a{ display:block; margin-left:23px; height:48px; line-height:48px; background:#ffffff }
+
+.coursetitle{height:48px;padding-left:20px;font-size:16px;line-height:48px; font-weight:bold}
+.detailtitle{margin:20px 0px 0px 0px;padding:0px;list-style-type:none;border-bottom:1px solid #DFDFDF; height:50px; line-height:50px; font-size:16px; text-align:center }
+.detailcontent{margin:20px 0px 0px 0px;padding:0px;list-style-type:none; }
+</style>
+
+    <div id="ui-header">
+			<div class="fixed">
+				<a class="ui-btn-left_pre" href="javascript:displayitx(0)"></a>
+				<a class="ui-title" id="popmenu">我的资料</a>
+				<a class="ui-btn-right_home" href="/index.php"></a>
+			</div>
+	</div>
+    <div id="overlay"></div>
+    <div class="Listpage">
+			<div class="top46"></div>
+			<ul class="ullist">
+               <li class="ico1"><a href="#">我的邮箱:{$info['userEmail']}</a></li>
+               <li class="ico2"><a href="#">我的手机:{$info['userMobilephone']}</a></li>
+               <li class="ico3"><a href="#">我的公司:{$company['companyName']}</a></li>
+               <li class="ico4"><a href="#">兴趣爱好:开发中</a></li>
+	           <li class="ico6"><a href="#">电话课PT成绩:{$pttel['score']}</a></li>
+	           <li class="ico6"><a href="#">写作课PT成绩:{$ptwrite['score']}</a></li>
+			 </ul>
+	</div>
+
+</block>

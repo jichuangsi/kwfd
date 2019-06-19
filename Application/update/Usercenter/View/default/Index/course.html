@@ -1,0 +1,67 @@
+<extend name="./Application/Common/View/base/common.html" />
+<!--extend name="Base/common"/-->
+<block name="body">
+<style type="text/css">
+.ullist{margin:0px 0px 0px 0px;padding:0px;list-style-type:none;border-top:1px solid #DFDFDF }
+.ullist li{margin:0px;padding:0px 0px 0px 30px;border-bottom:1px solid #DFDFDF;background: #FFFFFF;height:48px;font-size:16px;line-height:48px}
+.coursetitle{height:48px;padding-left:20px;font-size:16px;line-height:48px; font-weight:bold}
+.detailtitle{margin:20px 0px 0px 0px;padding:0px;list-style-type:none;border-bottom:1px solid #DFDFDF; height:50px; line-height:50px; font-size:16px; text-align:center }
+.detailcontent{margin:20px 0px 0px 0px;padding:0px;list-style-type:none; }
+</style>
+
+    <div id="ui-header">
+			<div class="fixed">
+				<a class="ui-btn-left_pre" href="javascript:displayitx(0)"></a>
+				<a class="ui-title" id="popmenu">我的课程</a>
+				<a class="ui-btn-right_home" href="/index.php"></a>
+			</div>
+	</div>
+    <div id="overlay"></div>
+    <div class="Listpage">
+			<div class="top46"></div>
+			<div class="coursetitle">电话课</div>
+			<ul class="ullist">
+			  <volist name="course1" id="list">
+			     <li>
+				   <a href="#">{$list.planTheme}/{$list.progress}</a>
+				 </li>
+			  </volist>
+			 </ul>
+			<div class="coursetitle">网络沙龙课</div>
+			<ul class="ullist">
+			  <volist name="course2" id="list">
+			     <li>
+				   <a href="#">{$list.planTheme}/{$list.progress}</a>
+				 </li>
+			  </volist>
+			 </ul>
+			 
+			 <div class="coursetitle">写作课入门测试</div>
+			 <ul class="ullist">
+			  <volist name="course3" id="list">
+			     <li>
+				   <a href="#">{$list.englishtitle}/{$list.progress}</a>
+				 </li>
+			  </volist>
+			 </ul>
+			 
+ 			 <div class="coursetitle">写作课课程</div>
+			 <ul class="ullist">
+			  <volist name="course4" id="list">
+			     <li>
+				   <a href="#">{$list.englishtitle}/{$list.progress}</a>
+				 </li>
+			  </volist>
+			 </ul>
+			 <div class="coursetitle">写作课单元测试</div>
+			 
+			 <ul class="ullist">
+			  <volist name="course5" id="list">
+			     <li>
+				   <a href="#">{$list.englishtitle}/{$list.progress}</a>
+				 </li>
+			  </volist>
+			 </ul>
+	</div>
+
+</block>

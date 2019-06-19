@@ -1,0 +1,181 @@
+<link rel="stylesheet" href="__STATIC__/kindeditor/default/default.css"/>
+<script charset="utf-8" src="__STATIC__/kindeditor/kindeditor-min.js"></script>
+<script charset="utf-8" src="__STATIC__/kindeditor/zh_CN.js"></script>
+
+<style type="text/css">
+    .case-publish-field {
+    }
+
+    .case-publish-field .btn-publish-up, .case-publish-field .btn-publish-down, .case-publish-field .btn-publish-remove {
+        cursor: pointer;
+    }
+
+    .case-publish-field .ke-container-default {
+        display: inline-block;
+    }
+
+    .case-publish-field .publish-row {
+        margin-bottom: 5px;
+    }
+</style>
+<script type="text/javascript">
+    var KindEditorHandler = null;
+    var kindEditorConfig = null;
+    var editors = [];
+    KindEditor.ready(function (K) {
+        KindEditorHandler = K;
+        kindEditorConfig = {
+            fileManagerJson : '{:U('fileManagerJson')}',
+            uploadJson : '{:addons_url("EditorForAdmin://Upload/ke_upimg")}',
+
+            allowFileManager: false,
+            themesPath: K.basePath,
+            resizeType: 1,
+            pasteType: 2,
+            urlType: 'absolute',
+            width:'90%',
+            height:'300px',
+//            items: [
+//                'source', '|', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+//                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+//                'insertunorderedlist', '|', 'emoticons', 'link'],
+        };
+        $('.publish-field textarea').each(function (index, ele) {
+            editors.push(K.create(ele, kindEditorConfig));
+        });
+    });
+
+    var resourceTypes = {
+        <volist name="field.opt.resource.resourceType" id="type">
+            {$type.id}: { name: '{$type.name}', url: '{$type.selectorUrl}' },
+        </volist>
+    };
+
+    function allSync() {
+        $.each(editors, function (index, editor) {
+            console.log(editor.html());
+            editor.sync();
+        });
+    }
+
+    var researchlistdialog, resourceDialog;
+    var resourceInput;
+    var resourceStrInput;
+    $(document).ready(function () {
+
+        //传统表单提交同步
+        $('.publish-field textarea').closest('form').submit(function () {
+            allSync();
+        });
+        //ajax提交之前同步
+        $('button[type="submit"],#submit,.ajax-post').on('click', function () {
+            allSync();
+        });
+
+        $('.case-publish-field .publish-btn').unbind('click').on('click', '.publish-btn-add-content', function () {
+            $(this).parent().prevAll('.publish-field')
+                    .append($(this).nextAll('.publish-template').children('.publish-template-content').html());
+            var editor = KindEditorHandler.create($('.publish-field textarea:last'), kindEditorConfig);
+            editors.push(editor);
+        }).on('click', '.publish-btn-add-resource', function () {
+            $(this).parent().prevAll('.publish-field')
+                    .append($(this).nextAll('.publish-template').children('.publish-template-resource').html());
+        });
+
+        $('.case-publish-field .publish-field').unbind('click').on('click', '.btn-publish-choose', function () {
+            var type = $(this).prevAll('select').val();
+            resourceInput = $(this).prev();
+            resourceStrInput = $(this).prev().prev();
+
+            resourceDialog = researchlistdialog = $.dialog({
+                title: resourceTypes[type].name,
+                content: 'url:' + resourceTypes[type].url,
+                width: 800,
+                height: 500,
+                fixed: true,
+                drag: true,
+                resize: false,
+                lock: true,
+                okVal: '保存',
+                cancelVal: '关闭',
+                cancel: true
+            });
+        }).on('click', '.btn-publish-up', function () {
+            $(this).parent().insertBefore($(this).parent().prev());
+        }).on('click', '.btn-publish-down', function () {
+            $(this).parent().insertAfter($(this).parent().next());
+        }).on('click', '.btn-publish-remove', function () {
+            $(this).parent().remove();
+        }).on('change', '.type-choose', function () {
+            $(this).next().val('');
+        });
+    });
+</script>
+<div class="case-publish-field">
+    <div class="publish-field">
+
+        <volist name="field.opt.resource.data" id="row">
+            <eq name="row.type" value="text">
+
+                <div class="publish-row">
+                    <input class="text input-lg" type="hidden" name="{$field.name}_title[]" value=""
+                           readonly>
+                    <input type="hidden" name="{$field.name}_type[]" value="text"/>
+                    <textarea name="{$field.name}_content[]">{$row.content}</textarea>
+                    <span class="btn-publish-remove"><img src="__IMG__/delete.gif"></span>
+                </div>
+            </eq>
+
+            <eq name="row.type" value="resource">
+                <div class="publish-row">
+                    <select class="type-choose" name="{$field.name}_type[]">
+                        <volist name="field.opt.resource.resourceType" id="type">
+                            <option value="{$type.id}" <eq name="type.id" value="$row.rstype"> selected </eq>>{$type.name}</option>
+                        </volist>
+                    </select>
+                    <input class="text input-lg" type="text" name="{$field.name}_title[]" value="{$row.title}"
+                           readonly>
+                    <input class="text input-small" type="hidden" name="{$field.name}_content[]" value="{$row.value}"
+                           readonly>
+                    <a class="btn btn-small btn-primary btn-publish-choose">选择内容</a>&nbsp;
+                    <span class="btn-publish-up"><img src="__IMG__/moveup.png"></span>&nbsp;
+                    <span class="btn-publish-down"><img src="__IMG__/movedown.png"></span>&nbsp;
+                    <span class="btn-publish-remove"><img src="__IMG__/delete.gif"></span>
+                </div>
+            </eq>
+
+        </volist>
+
+    </div>
+    <div class="publish-btn">
+        <a class="btn btn-primary publish-btn-add-content">添加正文</a>
+        <a class="btn btn-primary publish-btn-add-resource">添加资源</a>
+        <div style="display: none;" class="publish-template">
+            <div class="publish-template-content">
+                <div class="publish-row">
+                    <input type="hidden" name="{$field.name}_type[]" value="text"/>
+                    <input class="text input-lg" type="hidden" name="{$field.name}_title[]" value=""
+                           readonly>
+                    <textarea name="{$field.name}_content[]"></textarea>
+                    <span class="btn-publish-remove"><img src="__IMG__/delete.gif"></span>
+                </div>
+            </div>
+            <div class="publish-template-resource">
+                <div class="publish-row">
+                    <select class="type-choose" name="{$field.name}_type[]">
+                        <volist name="field.opt.resource.resourceType" id="type">
+                            <option value="{$type.id}">{$type.name}</option>
+                        </volist>
+                    </select>
+                    <input class="text input-lg" type="text" name="{$field.name}_title[]" value=""
+                           readonly>
+                    <input class="text input-small" type="hidden" name="{$field.name}_content[]" value="" readonly>
+                    <a class="btn btn-small btn-primary btn-publish-choose">选择内容</a>&nbsp;
+                    <span class="btn-publish-up"><img src="__IMG__/moveup.png"></span>&nbsp;
+                    <span class="btn-publish-down"><img src="__IMG__/movedown.png"></span>&nbsp;
+                    <span class="btn-publish-remove"><img src="__IMG__/delete.gif"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

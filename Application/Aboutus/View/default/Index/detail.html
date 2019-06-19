@@ -1,0 +1,60 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container" style="min-height: 400px">
+        <div class="row">
+		    <div class="col-md-2">
+                <!---------------------------------------->
+				   <div class="common_block_border blog_position">
+				     <div class="common_block_title" style="display:none">导航</div>
+					 <div class="category hidden-xs">
+					 <link type="text/css" rel="stylesheet" href="__ROOT__/Public/Common/css/category.css"/>
+					 <script type="text/javascript" src="__ROOT__/Public/Common/js/category.js"></script>
+					  <volist name="lists" id="vo">
+                       <div class="clearfix" style="position: relative">         
+                         <div class="col-md-12">
+                           <div>
+                              <a title="{$vo['title']}" href="{:U('Detail',array('id'=>$vo['id']))}">{$vo["title"]}</a>
+                           </div>
+                         </div>
+                      </div>
+					  <div class="col-md-12">
+                         <div style="border-bottom: 1px dashed rgb(204, 204, 204);margin: 10px 0px"></div>
+					  </div>
+		             </volist>
+					 </div>
+					 <div class="container visible-xs">
+					   <div class="row">
+					     <volist name="lists" id="vo">
+                           <div class="col-xs-4"><a title="{$vo['title']}" class="btn   <if condition="I('id') eq $vo['id'] ">btn-primary<else /> btn-default</if>" style="margin-top:10px" href="{:U('Detail',array('id'=>$vo['id']))}">{$vo["title"]}</a></div>
+		                 </volist>
+					   </div>
+					 </div>
+                    <div style="margin:0px 15px;height:10px;clear:both"></div>
+                  </div>
+				  
+				<!---------------------------------------->
+				 <!---------------------------------------->
+	
+				  
+				<!---------------------------------------->
+            </div>
+            <div class="col-md-10">
+                <!---------------------------------------->
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">{$data["title"]}</div>
+					<div class="detailcontent">
+					{$data["content"]}
+					</div>
+				</div>
+				<!---------------------------------------->
+            </div>
+
+
+			
+        </div>
+
+    </div>
+</block>

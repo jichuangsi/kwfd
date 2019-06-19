@@ -1,0 +1,77 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+<script src="__STATIC__/mediaplayer-5.9/jwplayer.js"></script>
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <!---------------------------------------->
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">{$data.title}</div>               
+                    <div class="detaildatetime">发布时间：{$data.createtime|date='Y-m-d H:i',###}</div>
+					<div style="padding: 0px 15px 10px 15px;display:none">                    
+					  <if condition="$data['price'] gt 0 ">
+					  <button class="btn btn-primary" onClick="window.location.href='{:U('cart?id='.$data['id'])}'">购买后才可以阅读</button>
+					  <else /> 
+					  </if>
+					</div>
+					<div  style="width:100%;margin:0px 10px">
+					  <div id="mediaplayer">
+					    <video id="videotag" controls="controls" autoplay="autoplay">
+                               <source src="{$data.video}" type="video/mp4"  autobuffer autoplay="autoplay" id="myVideo" webkit-playsinline="true" playsinline="true"/>
+                                Your browser does not support the video tag.
+                        </video>
+					  </div>
+					</div>
+						<script type="text/javascript">
+						
+		                $(function(){
+						  //alert($("#mediaplayer").width());
+						  $("#videotag").css({width:$("#mediaplayer").width()-20});
+						  /*
+						  jwplayer("mediaplayer").setup({
+						    width:640,
+							height:480,
+			                flashplayer: "__STATIC__/mediaplayer-5.9/player.swf",
+							file: "/1.mp4",
+			                /*image: "__STATIC__/mediaplayer-5.9/preview.jpg"
+		                  });
+						  */
+						})
+						
+	                    </script>
+					<div class="detailcontent">{$data.content}</div>
+					<div style="padding: 20px">
+                       {:hook('localComment', array('path'=>MODULE_NAME."/index/$data[id]", 'uid'=>get_uid()))}
+                    </div>
+				</div>
+				<!---------------------------------------->
+            </div>
+            <div class="col-md-3">
+                <!---------------------------------------->
+				  <div class="common_block_border blog_position">
+                    <div class="common_block_title">全站热门</div>
+					 <assign name="num" value="1" />
+                     <volist name="hotdata" id="vo">
+                       <div class="clearfix" style="position: relative">         
+                         <div class="col-md-12">
+                           <div>
+                                <span class="rank_num">{$num++}</span><h3 class="text-more" style="float:left"><a title="{$vo['title']}" href="{:U('vod/Index/Detail',array('id'=>$vo['id']))}">{$vo["title"]|msubstr=0,10}</a></h3>
+                           </div>
+                         </div>
+                      </div>
+					  <div class="col-md-12">
+                         <div style="border-bottom: 1px dashed rgb(204, 204, 204);margin: 10px 0px"></div>
+					  </div>
+		             </volist>
+                      <div style="margin:0px 15px;height:10px;clear:both"></div>
+                  </div>
+				<!---------------------------------------->
+            </div>
+			
+        </div>
+
+    </div>
+</block>

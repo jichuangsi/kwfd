@@ -1,0 +1,5 @@
+<select name="selector">
+    <volist name="options" id="option">
+        <option value="{$option.id}" <if condition="$option['selected']"> selected </if> >{$option.name}</option>
+    </volist>
+</select>

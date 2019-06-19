@@ -1,0 +1,211 @@
+<div class="controls">
+    <input type="file" id="upload_picture_{$field.name}">
+    <input type="hidden" name="{$field.name}" id="cover_id_{$field.name}" value="{$field['value']}"/>
+    <div class="upload-img-box" style="display:none">
+        <notempty name="field.value">
+            <div class="upload-pre-item"><img src="./{$field.value|get_cover='path'}"/></div>
+        </notempty>
+    </div>
+</div>
+<script type="text/javascript">
+    //上传图片
+    /* 初始化上传插件 */
+    $("#upload_picture_{$field.name}").uploadify({
+        "height"          : 30,
+        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+        "fileObjName"     : "download",
+        "buttonText"      : "上传图片",
+        "uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+        "width"           : 120,
+        'removeTimeout'	  : 1,
+        'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+        "onUploadSuccess" : uploadPicture{$field.name},
+    'onFallback' : function() {
+        alert('未检测到兼容版本的Flash.');
+    }
+    });
+    function uploadPicture{$field.name}(file, data){
+        var data = $.parseJSON(data);
+        var src = '';
+        if(data.status){
+            $("#cover_id_{$field.name}").val(data.id);
+            src = data.url || '__ROOT__' + data.path
+            $("#cover_id_{$field.name}").parent().find('.upload-img-box').html(
+                    '<div class="upload-pre-item"><img src="' + src + '"/></div>'
+            );
+
+            $('#HotspotImageSrc').val(src);
+            $("#hotsportiframe").show();
+            $("#hotsportiframe").attr("src","index.php?s=/admin/hotspot/showiframeimg/id/"+data.id+".html");
+        } else {
+            updateAlert(data.info);
+            setTimeout(function(){
+                $('#top-alert').find('button').click();
+                $(that).removeClass('disabled').prop('disabled',false);
+            },1500);
+        }
+    }
+
+    function addhotspot()
+    {
+        var html=$('#hotspotmodel').val();
+        var newid = $('#hotspoteditarea .hotspotitem').length;
+        html=html.replace(/{id}/g,newid);
+        //alert(html);
+        $("#hotspoteditarea").append(html);
+
+    }
+    function deletehotspot(obj)
+    {
+        $(obj).parent().parent().remove();
+        rebuilderhotspot();
+    }
+    function rebuilderhotspot()
+    {
+        $(".hotspotitem").each(function() {
+            $(this).find("input[name^='reverse']").attr('id', 'reverse['+$(this).index()+']');
+            $(this).find("input[name^='reverse']").val($(this).index());
+        });
+    }
+    var selecthotspotworddialog;
+    function selecthotspotword(obj)
+    {
+        //alert($('input[name="word[]"]').index($(obj)));
+        selecthotspotworddialog=$.dialog({
+            id: 'selecthotspotworddialog',
+            title: '选择单词',
+            content:'url:'+'./index.php?s=/admin/Hotspot/selecthotspotword/id/'+$('input[name="word[]"]').index($(obj))+'.html',
+            width: 300,
+            height: 400,
+            fixed: true,
+            drag: true,
+            resize: false,
+            lock: true
+        });
+    }
+    var hotspotcurrent=0;
+    function setcurrentitem(obj)
+    {
+        //alert($(obj).index())；
+        hotspotcurrent=$(obj).index();
+        $('div[class="hotspotitem"]').css({"border-color":"#4BBD00"});
+        $('div[class="hotspotitem"]').eq(hotspotcurrent).css({"border-color":"#ff0000"});
+    }
+</script>
+<assign name="hotspotstr" value="$keyList[sizeof($keyList)-1].value" />
+<php>$hotspot=json_decode($hotspotstr);//var_dump($hotspot)</php>
+<input type="hidden" name="HotspotImageWidth" id="HotspotImageWidth" value="{:$hotspot->width}"/>
+<input type="hidden" name="HotspotImageHeight" id="HotspotImageHeight" value="{:$hotspot->height}"/>
+<input type="hidden" name="HotspotImageSrc" id="HotspotImageSrc" value="{:$hotspot->url}"/>
+<textarea id="hotspotmodel" style="display:none">
+								  <div style="border:3px solid #4BBD00;margin:5px 0px 0px 0px" class="hotspotitem" onclick="setcurrentitem(this)">
+                                      <div>
+                                          <button style="float:right;margin-right:0px" type="button" class="btn" onClick="deletehotspot(this)">删除此TAG</button>
+                                          <div style="clear:both;width:0px;height:0px;font-size:0px;line-height:0px"></div>
+                                      </div>
+                                      <table border="0" cellspacing="0" cellpadding="10">
+                                          <tr>
+                                              <td>X:</td>
+                                              <td>Y:</td>
+                                              <td>R:</td>
+                                              <td>WORD:</td>
+                                              <td>&nbsp;</td>
+                                          </tr>
+                                          <tr>
+                                              <td><input name="x[]" type="text" class="text input-large" style="width:100px"></td>
+                                              <td><input name="y[]" type="text" class="text input-large" style="width:100px"></td>
+                                              <td><input name="r[]" type="text" class="text input-large" style="width:100px"></td>
+                                              <td><input name="word[]" type="text" class="text input-large" style="width:100px"  onclick="selecthotspotword(this)"><input name="wordid[]" type="text" style="display:none"><input name="wordzhname[]" type="text" class="text input-large" style="width:100px"></td>
+                                              <td>标签方向:<select name="position[]"><option value="上">上</option><option value="下">下</option><option value="左">左</option><option value="右">右</option></select><input type="checkbox" name="reverse[{id}]" id="reverse_{id}" value="{id}" style="display:none"></td>
+                                          </tr>
+                                      </table>
+                                  </div>
+						</textarea>
+
+<iframe id="hotsportiframe"  width="100%" height="400"
+
+<php>if($hotspot->image=='')
+    {
+    echo 'style="display:none"';
+    echo 'src=""';
+    }
+    else
+    {
+    echo 'style="display:block"';
+    echo 'src="index.php?s=/admin/hotspot/showiframeimg/id/'.$hotspot->image.'.html"';
+    }
+</php>
+></iframe>
+<div id="hotspoteditarea" style="margin:10px 0px 0px 0px;background:#DFFFCA;padding:0px 0px 10px 0px">
+    <php>
+        $x=explode(',',$hotspot->x);
+        if(count($x)>0)
+        {
+        $y=explode(',',$hotspot->y);
+        $r=explode(',',$hotspot->r);
+        $word=explode(',',$hotspot->word);
+        $wordid=explode(',',$hotspot->wordid);
+        $wordzhname=explode(',',$hotspot->wordzhname);
+        $reverse=explode(',',$hotspot->reverse);
+        for($i=0;$i<count($x);$i++)
+        {
+    </php>
+    <div style="border:3px solid #4BBD00;margin:5px 0px 0px 0px" class="hotspotitem" onclick="setcurrentitem(this)">
+        <div>
+            <button style="float:right;margin-right:0px" type="button" class="btn" onClick="deletehotspot(this)">删除此TAG</button>
+            <div style="clear:both;width:0px;height:0px;font-size:0px;line-height:0px"></div>
+        </div>
+        <table border="0" cellspacing="0" cellpadding="10">
+            <tr>
+                <td>X:</td>
+                <td>Y:</td>
+                <td>R:</td>
+                <td>WORD:</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td><input name="x[]" type="text" class="text input-large" style="width:100px" value="{:$x[$i]}"></td>
+                <td><input name="y[]" type="text" class="text input-large" style="width:100px" value="{:$y[$i]}"></td>
+                <td><input name="r[]" type="text" class="text input-large" style="width:100px" value="{:$r[$i]}"></td>
+                <td><input name="word[]" type="text" class="text input-large" style="width:100px" value="{:$word[$i]}" onclick="selecthotspotword(this)"><input name="wordid[]" type="text" value="{:$wordid[$i]}" style="display:none"><input value="{:$wordzhname[$i]}" name="wordzhname[]" type="text" class="text input-large" style="width:100px"></td>
+                <td>标签方向:<select name="position[]">
+                    <php>
+                        $_position=array("上", "下", "左", "右");
+                        $selected="";
+                        $position=explode(',',$hotspot->position);
+                        foreach($_position as $key => $value)
+                        {
+                        if($position[$i]==$value)
+                        {
+                        $selected="selected";
+                        }
+                        else
+                        {
+                        $selected="";
+                        }
+                    </php>
+                    <option value="{:$value}" {:$selected}>{:$value}</option>
+                    <php>
+                        }
+                    </php>
+                </select><input type="checkbox" name="reverse[{:$i}]" id="reverse_{:$i}" value="{:$i}" style="display:none"  <php>if($reverse[$i]=='1'){echo 'checked';}</php>></td>
+            </tr>
+        </table>
+    </div>
+    <php>
+        }
+        }
+    </php>
+</div>
+<button type="button" class="btn" onClick="addhotspot(this)">添加TAG</button>
+<script type="text/javascript">
+    var hotspotAutoSave = false;
+    $(document).ready(function(){
+        setInterval(function(){
+            if($('.ajax-post').prop('disabled') == true)
+                return;
+            hotspotAutoSave = true;
+            ajaxPost($('.ajax-post').get(0));
+        },60000);
+    });
+</script>

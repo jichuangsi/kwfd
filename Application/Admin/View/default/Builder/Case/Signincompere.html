@@ -1,0 +1,31 @@
+<input type="text" id="{$field.name}" name="{$field.name}" value="{$field.value|htmlspecialchars}" class="text input-large" onclick="selectsignincompere()"/>
+<script type="text/javascript">
+var signinccomperewindow;
+
+function signincomperecallback(title,id)
+{
+  //alert(title+" "+id)
+  $('#{$field.name}').val(title);
+  $('input[name="{$field.name}id"').val(id);
+  signinccomperewindow.close();
+}
+    function selectsignincompere()
+    {
+		var url="{:U('Activity/selectsignincompere')}";
+		signinccomperewindow=$.dialog({
+            id: 'signinccomperewindow',
+            title: '选择主持人',
+            content:'url:'+url,
+            width: 300,
+            height: 300,
+            fixed: true,
+            drag: true,
+            resize: false,
+            lock: false,
+            cancelVal: '关闭',
+            cancel: true
+
+        });
+    }
+
+</script>

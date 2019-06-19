@@ -1,0 +1,100 @@
+<div class="plot_panel">
+    <script>
+        function showAlertDialog(msg,title){
+            if(!title) title = '提示';
+            if(!msg) msg = '';
+            $( ".dialog-message:eq(1)" ).attr('title',title);
+            $( ".dialog-message:eq(1)" ).html('<p>'+msg+'</p>');
+            $( ".dialog-message:eq(1)" ).dialog({
+                modal: true,
+                buttons: {
+                    Ok: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+        }
+
+        var already = false;
+        function run(){
+            if(!already) {
+                $('.jq-plot-query').trigger('click');
+                already = true;
+            }
+        }
+        var jq_plot = {};
+        $(document).ready(function () {
+            $.jqplot.config.enablePlugins = true;
+            $.jqplot._noToImageButton = true;
+            $('.jui-datepicker').datepicker({
+                dateFormat:'yy-mm-dd'
+            });
+            $('.jui-button').button();
+            $('.jui-button-set').buttonset();
+
+            var defaultConfig = {
+                animate: true,
+                animateReplot: true,
+                cursor: {
+                    show: true,
+                    zoom: false,
+//                    looseZoom: true,
+//                    showTooltip: true,
+//                    followMouse: false
+                },
+                highlighter: {
+//                    show: true,
+                }
+            };
+
+            $('.jq-plot-query').unbind('click').click( function () {
+                var date_from = $(this).prevAll('.date-from').val();
+                var date_to = $(this).prevAll('.date-to').val();
+                var jq_plot_id = $(this).data('target');
+                var data_type = $(this).data('type');
+                var filter = $(this).nextAll('.jui-button-set:eq(0)').children('input[type=radio]:checked').val();
+                var params = {
+                    type:data_type,
+                    date_from:date_from,
+                    date_to:date_to,
+                    filter:filter,
+                    target:jq_plot_id
+                };
+                $.get('{$conf.plot.api}',params,function (data){
+                    //更新图表
+                    if(data.status == 0){
+                        showAlertDialog(data.msg);
+                    }else{
+                        if(jq_plot[data.data.target])
+                            jq_plot[data.data.target].destroy();
+                        var conf = $.extend({},defaultConfig);
+                        conf.title = $('#'+data.data.target).data('plot-title');
+//                        console.log(conf);
+                        jq_plot[data.data.target] = $.jqplot(data.data.target, eval(data.data.list), conf);
+                    }
+                });
+            });
+
+
+//            run();
+        });
+    </script>
+    <div>
+        <strong>选择日期：</strong>
+        <input type="text" class="jui-datepicker text input-small date-from"> -
+        <input type="text" class="jui-datepicker text input-small date-to">&nbsp;
+        <a class="jui-button jq-plot-query" data-target="jq_plot_{$conf.id}" data-type="{$conf.plot.type}">查询</a>
+        <div class="jui-button-set pull-right">
+            <volist name="conf.panel.button_set" id="button_set">
+                <input type="radio" id="radio_{$conf.id}_{$key}" name="radio_{$conf.id}"
+                       value="{$key}" >
+                <label for="radio_{$conf.id}_{$key}">{$button_set}</label>
+            </volist>
+        </div>
+    </div>
+    <div id="jq_plot_{$conf.id}" style="width: 90%;" data-plot-title="{$conf.plot.title}">
+    </div>
+    <div class="dialog-message" title="">
+        <p></p>
+    </div>
+</div>

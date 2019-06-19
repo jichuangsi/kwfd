@@ -1,0 +1,173 @@
+<switch name="data.type">      
+    <case value="single_choice">
+	    <div>{$data.stem}</div>
+	    <php>$jsonitems=json_decode($data['metas'],false);//dump($jsonitems);</php>
+	    <php> //dump($jsonitems->choices);
+		     //var_dump($data);
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<table width="100%"  border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                       <td width=30>{$az|msubstr=$key,1,'utf-8',false|strtoupper}</td>
+                       <td>{$val|base64_decode|stripslashes}</td>
+                    </tr>
+                </table>
+				<php>
+			}
+		</php>
+		<php> //dump($jsonitems->choices);
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<label><input type="radio" data-type="choice" name="2" value="0">{$az|msubstr=$key,1,'utf-8',false|strtoupper}</label>
+				<php>
+			}
+		</php>
+		<php>$jsonanswer=json_decode($data['answer'],true);//dump($jsonanswer);</php>
+		<div>正确答案是：
+		<php> 
+			foreach($jsonanswer as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<label>{$val}<!--$az|msubstr=$val,1,'utf-8',false|strtoupper--></label>
+				<php>
+			}
+		</php>
+		</div>
+		<br>解析:
+		<div>{$data['analysis']}</div>
+	</case>    
+	<case value="choice">
+	    <div>{$data.stem}</div>
+	    <php>$jsonitems=json_decode($data['metas'],false);//dump($jsonitems);</php>
+	    <php> //dump($jsonitems->choices);
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<table width="100%"  border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                       <td width=30>{$az|msubstr=$key,1,'utf-8',false|strtoupper}</td>
+                       <td>{$val|base64_decode|stripslashes}</td>
+                    </tr>
+                </table>
+				<php>
+			}
+		</php>
+		<php> //dump($jsonitems->choices);
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<label><input type="radio" data-type="choice" name="2" value="0">{$az|msubstr=$key,1,'utf-8',false|strtoupper}</label>
+				<php>
+			}
+		</php>
+		<php>$jsonanswer=json_decode($data['answer'],true);//dump($jsonanswer);</php>
+		<div>正确答案是：
+		<php> 
+			foreach($jsonanswer as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<label>{$val}<!--$az|msubstr=$val,1,'utf-8',false|strtoupper--></label>
+				<php>
+			}
+		</php>
+		</div>
+		<br>解析:
+		<div>{$data['analysis']}</div>
+	</case>
+	<case value="fill">
+	    <php>
+		    $title=$data['stem'];
+		    preg_match_all('/\\[\\[.+?\\]\\]/i' ,$data['stem'] ,$res);
+			//dump($res);
+			$i=0;
+			foreach($res[0] as $key=>$val)
+            {
+                $title=str_replace($val,"<span style='text-decoration:underline'>  (".++$i.")  </span>",$title);
+
+				//$val=preg_replace('/(\\[\\[|\\]\\])/','',$val);
+				//echo $val;
+            }
+			</php>
+			<div>{$title}</div>
+			<php>
+			//echo $title;
+			$i=0;
+			foreach($res[0] as $key=>$val)
+            {
+                </php>
+				   <div><input class="form-control " type="text" data-type="fill" name="16" placeholder="填空({++$i})答案，请填在这里"></div>
+				<php>
+            }
+			$jsonanswer=json_decode($data['answer'],true);
+			foreach($jsonanswer as $key=>$val)
+			{
+				//dump($key."=".stripslashes(base64_decode($val[0])));
+				</php>
+				   <div>填空({$key+1})： 正确答案 {$val[0]|base64_decode|stripslashes} </div>
+				<php>
+			}
+		</php>
+		<br>解析:
+		<div>{$data['analysis']}</div>
+	</case>
+	<case value="determine">
+	    <div>{$data.stem}</div>
+	    <php>$data['metas']='{"choices":["正确","错误"]}';$jsonitems=json_decode($data['metas'],false);//dump($jsonitems);</php>
+	    <php> //dump($jsonitems->choices);
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<php>
+			}
+		</php>
+		<php> //dump($jsonitems->choices);
+			foreach($jsonitems->choices as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<label><input type="radio" data-type="choice" name="2" value="0">{$val}</label>
+				<php>
+			}
+		</php>
+		<php>$jsonanswer=json_decode($data['answer'],true);//dump($jsonanswer);</php>
+		<div>正确答案是：
+		<php> 
+			foreach($jsonanswer as $key=>$val)
+			{
+				//dump($key."=".$val);
+				</php>
+				<label>{$jsonitems->choices[$val]}</label>
+				<php>
+			}
+		</php>
+		</div>
+		<br>解析:
+		<div>{$data['analysis']}</div>
+	</case>
+	<case value="essay">
+	    <div>{$data.stem}</div>
+		<div><textarea name="" cols="" rows=""></textarea></div>
+		<php>$jsonanswer=json_decode($data['answer'],true);//dump($jsonanswer);</php>
+		<div>正确答案是：
+			{$jsonanswer[0]|base64_decode|stripslashes}
+		</div>
+		<br>解析:
+		<div>{$data['analysis']}</div>
+	</case>
+	<case value="material">
+	    <div>{$data.stem}</div>
+		<volist name="subdata" id="data">   
+             <include file='./Application/Examination/View/default/Index/viewtopicchild.html'/>
+		</volist>
+	</case>
+	<default />找不到试题类型。
+</switch>

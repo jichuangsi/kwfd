@@ -1,0 +1,24 @@
+<style type="text/css">
+    .{$componentId}{
+        border:  1px solid #cccccc;
+        background-color: #eeeeee;
+    }
+    .{$componentId} .title{
+        border-right: 1px solid #cccccc;;
+                    }
+    .{$componentId} span{
+        display: inline-block;
+        padding: 0px 10px;
+		line-height:40px;
+                    }
+</style>
+<div class="{$componentId}">
+    <empty name="title">
+	<else/>
+	  <span class="title">{$title}</span>
+	</empty>
+    
+    <volist name="data" id="item">
+        <span>{$item}</span>
+    </volist>
+</div>

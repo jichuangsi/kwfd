@@ -1,0 +1,22 @@
+<script>
+    $(document).ready(function () {
+        $('.jui-datepicker').datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+        $('.jui-button').button();
+    });
+</script>
+<div class="plot_panel">
+    <div>
+        <form action="" method="post">
+            {$datepicker}
+            <a class="jui-button jq-plot-query" onclick="$(this).closest('form').submit();">查询</a>
+            <div class="pull-right">
+                {$selector}
+            </div>
+        </form>
+    </div>
+    <div>
+        {$main_view}
+    </div>
+</div>

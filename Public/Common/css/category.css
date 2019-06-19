@@ -1,0 +1,144 @@
+.category {
+	margin: 10px 0;
+	border-bottom-width: 0;
+	background-color: #fff;
+}
+.category .hd {
+	font-weight: bold;
+	border-bottom: 1px solid #d4d4d4;
+	color:#fff;
+	background-color: #353535;
+}
+.category .cate-item dt {
+	border-bottom: 1px solid #E7E7E7;
+}
+.category dl,
+.category dd,
+.category input {
+	margin: 0;
+}
+.category .check,
+.category .fold,
+.category .order,
+.category .name {
+	float: left;
+	height: 35px;
+	line-height: 35px;
+}
+.category .name a{
+    font-weight: normal;
+}
+.category .opt {
+	float: right;
+	width: 120px;
+	height: 35px;
+	line-height: 35px;
+	text-align: center;
+}
+.opt-btn {
+	float: right;
+	margin: 5px 10px 0 0;
+}
+.category .check {
+	width: 40px;
+	text-align: center;
+}
+.category .fold {
+	width: 40px;
+	text-align: center;
+}
+.category .fold i {
+	display: inline-block;
+	vertical-align: middle;
+	width: 17px;
+	height: 17px;
+	background-repeat: no-repeat;
+}
+.category .fold .icon-fold,
+.category .fold .icon-unfold {
+	cursor: pointer;
+	background: url(../images/bg_icon.png) no-repeat;
+}
+.category .fold .icon-fold {
+	background-position: -100px -25px;
+}
+.category .fold .icon-unfold {
+	background-position: -125px -25px;
+}
+.category .order,
+.category .order input {
+	text-align: center;
+}
+.category .order {
+	width: 90px;
+}
+.category .order input {
+	margin-bottom: 2px;
+	width: 40px;
+}
+.category .name input {
+	margin-bottom: 2px;
+}
+.category .add-sub-cate {
+	margin-left: 10px;
+}
+.category .add-sub-cate:hover {
+	text-decoration: none;
+	border-bottom: 0 none;
+}
+.category .btn-mod {
+	margin-left: 15px;
+}
+.category .root {
+	font-weight: bold;
+}
+.category .tab-sign {
+	display: inline-block;
+	margin-left: 0px;
+	height: 21px;
+	vertical-align: middle;
+	background-image: url(../images/tab_sign.png);
+	background-repeat: no-repeat;
+}
+.category .name .msg {
+	vertical-align: top;
+	font-weight: normal;
+}
+.category .name .error {
+	color: #B94A48;
+}
+.category .name .success {
+	color: #468847;
+}
+/* 椤剁骇鍒嗙被 */
+.category > dl > dt .tab-sign {
+	display: none;
+}
+
+/* 浜岀骇鍒嗙被 */
+.category > dl > dd > dl > dt .tab-sign {
+	width: 20px;
+	background-position: 0 0;
+}
+.category > dl > dd > dl:last-child > dt .tab-sign {
+	background-position: -55px 0;
+}
+
+/* 涓夌骇鍒嗙被 */
+.category > dl > dd > dl > dd > dl > dt  .tab-sign {
+	width: 80px;
+	background-position: 0 -30px;
+}
+.category > dl > dd > dl > dd > dl:last-child > dt .tab-sign {
+	background-position: 0 -60px;
+}
+
+.category > dl > dd > dl:last-child > dd > dl > dt .tab-sign {
+	background-position: 0 -90px;
+}
+.category > dl > dd > dl:last-child > dd > dl:last-child > dt .tab-sign {
+	background-position: 0 -120px;
+}
+.category > dl > dd > dl:last-child > dd > dl:last-child > dt .add-sub-cate{
+    display: none;
+}

@@ -1,0 +1,196 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+<style>
+ul{list-style-type:none;margin:0px 10px;padding:0px}
+.rmb-box{
+    display:block;
+	float: left;
+	margin: 0px 0px 10px 0px;
+	margin-right:0%;
+	width:200px;
+	height:200px;
+	padding: 5px 0;
+	transition: left .2s ease,border .5s,z-index .5s;
+	padding-bottom: 15px;
+	top: 1px;
+	background-color: #fff;   
+	border: 1px solid #cccccc;
+	padding-top: 0;
+}
+.rmb-box:hover{
+	box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+	z-index: 20;
+	top: -1px;
+	
+}
+
+.rmb-product-detail {
+	width: 100%;
+	text-align: center;
+	height: 200px;
+	border-bottom: solid #cccccc 1px;
+	background: #fff;
+	overflow: hidden;
+}
+.rmb-product-detail>a{
+	width: 100%;
+	height: 200px;
+	display: grid;
+	display: flex; 
+	vertical-align: middle;
+	text-align: center;
+	
+}
+.rmb-product-detail>a>img{
+	max-width: 93%;
+	max-height: 93%;
+	vertical-align: middle;
+	margin: auto;
+}
+.rmb-product-detail>a img:hover{ 
+  	cursor: pointer;  
+    transition: all 0.6s; 
+	 -webkit-transform:scale(1.1,1.1);
+    -moz-transform:scale(1.1,1.1);
+    -transform:scale(1.1,1.1);
+}
+
+.rmb-product-desc{
+	margin-top: 1.5px;
+	text-align: left;
+	padding-left: 10px;
+	font-size:14px;
+	height: 61px; 
+}
+.rmb-product-explain a{
+	color: #454545;
+	font-size: 14px; 
+	line-height: 18px;
+}
+
+.description{
+position:absolute;left:200px;padding:0px 20px;right:0px
+}
+.description-text{height:153px}
+
+@media screen and (max-width:768px){
+.rmb-box{
+    display:block;
+	float: left;
+	margin: 0px 0px 10px 0px;
+	margin-right:0%;
+	width:160px;
+	height:160px;
+	padding: 5px 0;
+	transition: left .2s ease,border .5s,z-index .5s;
+	padding-bottom: 15px;
+	top: 1px;
+	background-color: #fff;   
+	border: 1px solid #cccccc;
+	padding-top: 0;
+}
+.rmb-box:hover{
+	box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+	z-index: 20;
+	top: -1px;
+	
+}
+
+.rmb-product-detail {
+	width: 100%;
+	text-align: center;
+	height: 160px;
+	border-bottom: solid #cccccc 1px;
+	background: #fff;
+	overflow: hidden;
+}
+.rmb-product-detail>a{
+	width: 100%;
+	height: 160px;
+	display: grid;
+	display: flex; 
+	vertical-align: middle;
+	text-align: center;
+	
+}
+
+.description{
+position:absolute;left:170px;padding:0px 10px;right:0px
+}
+.description-text{height:125px}
+}
+</style>
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container" style="min-height: 400px">
+        <div class="row">
+		    <div class="col-md-12 hidden">
+                <!---------------------------------------->
+				  <div class="common_block_border blog_position">
+                    <div class="common_block_title" style="display:none">所有分类</div>
+					 <div class="category">
+					 <link type="text/css" rel="stylesheet" href="__ROOT__/Public/Common/css/hcategory.css"/>
+					 <script type="text/javascript" src="__ROOT__/Public/Common/js/category.js"></script>
+	 
+					  <div style="display:block">
+					  <php>
+                       $tree_list = A("Common/Category");
+                       $tree_list->ShowNoTitleCategory($tree,"/Teacher/index/index");
+                      </php>
+					  </div>
+					 </div>
+                    <div style="margin:0px 15px;height:10px;clear:both"></div>
+                  </div>
+				  
+				
+            </div>
+            <div class="col-md-12">
+                <!---------------------------------------->
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">所有名师</div>
+					 
+					<volist name="contents" id="vo">
+					 <div style="clear:both;padding:0px 10px;border-bottom:1px dashed #cccccc;margin:10px 0px 0px 0px; position: relative">
+					  <div class="rmb-box">
+                    
+					      <div class="rmb-product-detail">
+									<a href="{:U('Detail',array('id'=>$vo['uid']))}">
+										<img src="{$vo.path}" data-echo="{$vo.path}">	
+									</a>													 
+						  </div>
+ 
+					   </div>
+					   <div class="description">
+					      <div style="font-size:18px">{$vo["nickname"]}</div>
+						  <div class="description-text" style="margin-top:15px;font-size:14px;line-height:25px;border:0px solid #ff0000;overflow:hidden;color:#666666">
+						     <a href="{:U('Detail',array('id'=>$vo['uid']))}" style="color:#666666">
+                             {$vo["info"]|strip_tags|msubstr=0,342,"utf-8",true}
+							 </a>
+						  </div>
+						  <div style="text-align:right;display:none">
+						     <a href="{:U('Teacher/Index/Detail',array('id'=>$vo["uid"]))}" class="btn btn-default btn-sm">&nbsp;&nbsp;等多介绍 &gt;&nbsp;&nbsp;</a>
+						  </div>
+						  
+					   </div>
+					   <div style="clear:both;height:0px"></div>
+                     </div>					   
+					</volist>
+					 
+                    <div style="clear:both;height:0px"></div>
+					<if condition="count($contents) eq 0">
+                        <div style="font-size:20px;padding:2em 0;color: #ccc;text-align: center;height:500px">该分类下现在还没有内容哦。O(∩_∩)O~</div>
+                    </if>
+					<div class="text-right" style="margin-right:20px;">
+                       {:getPagination($totalPageCount,$count)}
+                    </div>
+				</div>
+				<!---------------------------------------->
+            </div>
+
+
+			
+        </div>
+
+    </div>
+</block>

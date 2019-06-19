@@ -1,0 +1,12 @@
+<style type="text/css">
+    .config_case_critique{}
+    .config_case_critique p{margin-bottom: 5px;}
+</style>
+<div class="config_case_critique">
+    <php>
+        $values = json_decode($field['value']);
+    </php>
+    <volist name="field.opt.types" id="type">
+        <p><label for="critique{$key}">回答正确：</label><input type="text" id="critique_right" class="text input-large" name="{$field.name}[]" value="{$values[$key]}" /></p>
+    </volist>
+</div>

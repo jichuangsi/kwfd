@@ -1,0 +1,10 @@
+<div>
+    {$datepicker}{$button}
+    <div class="jui-button-set pull-right">
+        <volist name="conf.panel.button_set" id="button_set">
+            <input type="radio" id="radio_{$conf.id}_{$key}" name="radio_{$conf.id}"
+                   value="{$key}" >
+            <label for="radio_{$conf.id}_{$key}">{$button_set}</label>
+        </volist>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+<form id="cart" action="{:U('createorder')}"  method="post">
+<input type="hidden" name="tag"  id="orderid" value="{$tag}"> {$tag} 
+</form>
+<script type="text/javascript">
+
+$(function(){
+  $("#cart").submit();
+});
+</script>
+
+</block>
+
+
+

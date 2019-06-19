@@ -1,0 +1,8 @@
+<select name="{$field.name}">
+    <volist name="field.opt" id="option">
+        <php>
+            $selected = $field['value']==$key ? 'selected' : '';
+        </php>
+        <option value="{$key}" {$selected}>{$option|htmlspecialchars}</option>
+    </volist>
+</select>

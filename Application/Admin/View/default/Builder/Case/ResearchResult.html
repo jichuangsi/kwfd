@@ -1,0 +1,43 @@
+<table width="100%"  border="0" cellspacing="0" cellpadding="0" bgcolor="#CCCCCC" style="border:1px solid #cccccc">
+    <tr bgcolor="#eaeaea">
+        <td height="30" width="40%"><strong>&nbsp;&nbsp;问题</strong></td>
+        <td width="30%"><strong>&nbsp;&nbsp;选项</strong></td>
+        <td width="30%"><strong>&nbsp;&nbsp;选择次数</strong></td>
+    </tr>
+    <php>
+        //dump($field);
+        foreach($field['value'] as $key=>$val)
+        {
+    </php>
+    <tr bgcolor="#FFFFFF">
+        <td height="40" width="40%"  style="border-right:1px solid #cccccc;border-bottom:1px solid #cccccc">&nbsp;&nbsp;{$val['name']}</td>
+        <td width="60%" colspan=2  style="border-bottom:1px solid #cccccc">
+            <table width="100%"  border="0" cellspacing="1" cellpadding="0" bgcolor="#CCCCCC">
+                <php>
+                    foreach($val['answer'] as $_key=>$_val)
+                    {
+                </php>
+                <tr bgcolor="#FFFFFF" >
+                    <td height="30" width="50%" style="border-right:1px solid #cccccc">&nbsp;&nbsp;{$_val['name']}</td>
+                    <td height="30" width="50%">&nbsp;&nbsp;{$_val['nums']}</td>
+                </tr>
+                <php>
+                    if($_key<sizeof($val['answer'])-1)
+                    {
+                </php>
+                <tr bgcolor="#FFFFFF" >
+                    <td height="1" bgcolor="#CCCCCC"></td>
+                </tr>
+                <php>
+                    }
+                </php>
+                <php>
+                    }
+                </php>
+            </table>
+        </td>
+    </tr>
+    <php>
+        }
+    </php>
+</table>

@@ -1,0 +1,120 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12" >
+                <!---------------------------------------->
+				
+				<div class="common_block_border"  style="min-height: 800px">
+                    <div class="common_block_title">在线留言</div>
+					
+                    <div class="tab_body">
+					<form action="{:U('save')}" method="post" onsubmit="javascript:return checkform();">
+						<div class="whole">
+							<label><font>*</font>联系人：</label>
+							<input type="text" name="contact" placeholder="请输入联系人" value="" id="contact"/>
+						</div>
+						<div class="whole">
+							<label><font>*</font>联系电话：</label>
+							<input type="text" name="mobile" placeholder="请输入联系电话" value="" id="mobile"/>
+						</div>
+						<div class="whole">
+							<label>联系人微信：</label>
+							<input type="text" name="weixin" placeholder="请输入微信号" value="" id="weixin"/>
+						</div>
+						<div class="whole">
+							<label>QQ：</label>
+							<input type="text" name="qq" placeholder="请输入QQ" value="" id="qq"/>
+							<!--select id="type">
+								<option>请输入订制用途</option>
+																<option value="1">收藏鉴赏</option>
+																<option value="2">高端礼品</option>
+																<option value="3">家居装饰</option>
+																<option value="4">办公室装饰</option>
+																<option value="5">宾馆酒店装饰</option>
+																<option value="6">祝寿庆生</option>
+																<option value="7">开业大吉</option>
+															</select-->
+						</div>
+						
+						<div class="whole">
+							<label><font>*</font>留言内容：</label>
+							<textarea placeholder="请输入留言内容" id="content" name="content"></textarea>
+						</div>
+						
+						<div class="whole">
+							<label><font>*</font>验证码：</label>
+							<input type="text" name="verifycode" placeholder="" value="" id="verifycode"/>
+							<img class="verifyimg reloadverify" alt="点击切换" src="{:U('verify')}" height="36" style="cursor:pointer">
+						</div>
+                        <div style="clear:both;height:20px">
+							 
+							
+							
+						</div>
+						<div class="whole">
+							<label><font></font></label>
+							
+							<button type="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;提&nbsp;&nbsp;交&nbsp;&nbsp;&nbsp;&nbsp;</button>
+						</div>
+					</form>
+				</div>
+
+				</div>
+				<!---------------------------------------->
+				<script>
+				function checkform()
+				{
+				   var value=$.trim($("#contact").val());
+				   if(value=="")
+				   {
+				      toast.error("请输入联系人。", '温馨提示');
+				      return false;
+				   }
+				   value=$.trim($("#mobile").val());
+				   if(value=="")
+				   {
+				      toast.error("请输入电话。", '温馨提示');
+				      return false;
+				   }
+				   value=$.trim($("#content").val());
+				   if(value=="")
+				   {
+				      toast.error("请输入留言内容。", '温馨提示');
+				      return false;
+				   }
+				   value=$.trim($("#verifycode").val());
+				   if(value=="")
+				   {
+				      toast.error("请输入验证码。", '温馨提示');
+				      return false;
+				   }
+				   return true;
+				}
+				
+				$(function(){
+				  
+					 
+				    $(".reloadverify").click(function(){
+					 var verifyimg = $(".verifyimg").attr("src");
+
+                     if( verifyimg.indexOf('?')>0){
+                        $(".verifyimg").attr("src", verifyimg+'&random='+Math.random());
+                     }else{
+                        $(".verifyimg").attr("src", verifyimg.replace(/\?.*$/,'')+'?'+Math.random());
+                     }
+                    });
+					$(".reloadverify").click();
+
+				})
+				</script>
+            </div>
+
+
+			
+        </div>
+
+    </div>
+</block>

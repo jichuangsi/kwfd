@@ -1,0 +1,28 @@
+<extend name="./Application/Common/View/base/common.html" />
+<!--extend name="Base/common"/-->
+<block name="body">
+<style type="text/css">
+.ullist{margin:0px 0px 0px 0px;padding:0px;list-style-type:none;border-top:0px solid #DFDFDF }
+.ullist li{margin:0px;padding:0px;border-bottom:1px solid #DFDFDF;background: #FFFFFF;height:48px;padding-left:20px;font-size:16px;line-height:48px}
+</style>
+
+    <div id="ui-header">
+			<div class="fixed">
+				<a class="ui-title" id="popmenu">企业消息</a>
+				<a class="ui-btn-left_pre" href="javascript:displayitx(0)"></a>
+				<a class="ui-btn-right_home" href="/index.php"></a>
+			</div>
+	</div>
+    <div id="overlay"></div>
+    <div class="Listpage">
+			<div class="top46"></div>
+			<ul class="ullist">
+			  <volist name="data" id="list">
+			     <li>
+				   <a href="{:U('news/Index/Detail',array('id'=>$list['id']))}">{$list.title|msubstr=0,16}</a>
+				 </li>
+			  </volist>
+			 </ul>
+	</div>
+
+</block>

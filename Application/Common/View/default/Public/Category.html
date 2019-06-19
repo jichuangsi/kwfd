@@ -1,0 +1,20 @@
+<volist name="tree" id="list">
+	<dl class="cate-item" style="display:block;clear:both">
+		<dt class="cf">
+				<div class="fold"><i></i></div>
+				<div class="name">
+					<span class="tab-sign"></span>
+					<a href="{:U("",array("category"=>$list["id"]))}">{$list.title}</a>
+					<span class="help-inline msg"></span>
+				</div>
+		</dt>
+        <notempty name="list['_']">
+			<dd>
+                <php>	
+                $tree_list = A("Common/Category");
+                $tree_list->ShowCategory($list['_']);
+                </php>
+			</dd>
+		</notempty>
+	</dl>
+</volist>

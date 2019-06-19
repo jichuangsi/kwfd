@@ -1,0 +1,44 @@
+<extend name="./Application/Common/View/base/common.html" />
+<!--extend name="Base/common"/-->
+<block name="body">
+<style type="text/css">
+.ullist{margin:0px 0px 0px 0px;padding:0px;list-style-type:none;border-top:1px solid #DFDFDF }
+.ullist li{margin:0px;padding:0px 0px 0px 30px;border-bottom:1px solid #DFDFDF;background: #FFFFFF;height:48px;font-size:16px;line-height:48px}
+.coursetitle{height:48px;padding-left:20px;font-size:16px;line-height:48px; font-weight:bold}
+.detailtitle{margin:20px 0px 0px 0px;padding:0px;list-style-type:none;border-bottom:1px solid #DFDFDF; height:50px; line-height:50px; font-size:16px; text-align:center }
+.detailcontent{margin:20px 0px 0px 0px;padding:0px;list-style-type:none; }
+		#username,#password{padding: 12px 0px 12px 55px; width: 100%; border:0px solid #DFDFDF ;border-bottom:1px solid #DFDFDF }
+		#username{ background:url(__IMG__/user_60.png) left center no-repeat #ffffff}
+		#password{ background:url(__IMG__/password_60.png) left center no-repeat #ffffff}
+		.submit{ padding: 15px 5px; width: 100%; cursor: pointer; border: 0px solid #ccc; border-radius: 0px; background: #00B4EA; color: #fff; font-size: 16px; margin-top:20px }
+		.reset{ padding: 15px 5px; width: 100%; cursor: pointer; border: 0px solid #ccc; border-radius: 0px; background: #FFB413; color: #fff; font-size: 16px; margin-top:20px }
+</style>
+
+    <div id="ui-header">
+			<div class="fixed">
+				<a class="ui-btn-left_pre" href="javascript:displayitx(0)"></a>
+				<a class="ui-title" id="popmenu">登 录</a>
+				<a class="ui-btn-right_home" href="/index.php"></a>
+			</div>
+	</div>
+    <div id="overlay"></div>
+    <div class="Listpage">
+			<div class="top46" style=" margin-top:0px; border-bottom:0px solid #DFDFDF "></div>
+			<div style="margin:10px; font-size:14px; line-height:23px ">
+			请使用您在岱恩教育平台的账号和密码完成登录。如您未在岱恩教育平台注册，请先注册。
+			</div>
+			<form action="{:U('login')}" method="post" name="form" id="myform">
+				<input name="wecha_id" type="hidden" value="{:$_GET['wecha_id']}" />
+				<input name="token" type="hidden" value="{:$_GET['token']}" />
+				<input name="redirect" type="hidden" value="{:$_GET['redirect']}" />
+				<input type="text" id="username" name="username" value="" placeholder="请输入用户名">
+				<input type="password" id="password" name="password" value="" placeholder="请输入密码">
+				<div style="margin:10px; font-size:14px; line-height:23px ">
+			    <a href="{:U('forgetpsw')}&token={:$_GET['token']}&wecha_id={:$_GET['wecha_id']}">忘记密码</a>
+			    </div>
+				<input class="submit" type="submit" name="dosubmit" value="登 录" >
+				<input class="reset" type="button" name="dosubmit" value="注 册" onClick="window.location.href='{:U('register')}&token={:$_GET['token']}&wecha_id={:$_GET['wecha_id']}'"></gt>
+			</form>
+		</div>
+
+</block>

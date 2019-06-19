@@ -1,0 +1,73 @@
+<style type="text/css">
+    .case_xitiquanxian{}
+    .case_xitiquanxian span{ margin-right: 10px;}
+    .case_xitiquanxian span select{padding: 0px 10px 0 0;}
+</style>
+<php>
+    $selectValue = array();
+    $selectValue = explode(';',$field['value']);
+</php>
+<script type="text/javascript">
+    var linkedSelectOptions_{$field.name} = {};
+    var linkedSelectOptions_{$field.name}_initValue = {};
+    $(document).ready(function(){
+        <notempty name="field.opt.options">
+            <volist name="field.opt.options" id="options">
+            linkedSelectOptions_{$field.name}.{$options.name} = {$options.options|json_encode};
+            linkedSelectOptions_{$field.name}_initValue.{$options.name} = {$selectValue[$key]};
+            </volist>
+        </notempty>
+        $('.case_linked_select select').on('change',function(event){
+            changedSelect($(this));
+        });
+
+        $('.case_linked_select select').each(function(index,element){
+            changedSelect($(this));
+        });
+    });
+    function changedSelect(selectObj){
+        if($(selectObj).parent().next('span').length == 0)return;
+        var fieldName = $(selectObj).attr('data-field-name');
+        var targetSelect = $(selectObj).parent().next('span').find('select').get(0);
+        var targetName = targetSelect.name;
+//        console.log('linkedSelectOptions_'+fieldName+'.'+targetName);
+        var options = eval('linkedSelectOptions_'+fieldName+'.'+targetName);
+        var pid = $(selectObj).find('option:selected').attr('value');
+//        console.log(fieldName);
+//        console.log(targetSelect);
+//        console.log(targetName);
+//        console.log(options);
+//        console.log(pid);
+        createOptions(targetSelect,options,pid);
+    }
+    function createOptions(jobj,options,pid){
+        var selectedOption = eval('linkedSelectOptions_'+$(jobj).attr('data-field-name')+'_initValue.'+$(jobj).attr('name'));
+        var optionHtml = '';
+        optionHtml += '<option value="0">全部</option>';
+        $.each(options,function(index,element){
+            if(element.pid == pid)
+            {
+                optionHtml += '<option value="'+element.id+'"';
+                if(selectedOption == element.id)
+                    optionHtml +=  ' selected ';
+                optionHtml += '>'+element.name+'</option>';
+            }
+        });
+        $(jobj).html(optionHtml);
+    }
+</script>
+<div class="case_linked_select">
+    <notempty name="field.opt.options">
+        <volist name="field.opt.options" id="selects" key="k">
+            <span>
+                <label for="linkedSelect_{$field.name}{$key}"><eq name="key" value="0">分类<else/>专区</eq></label>
+                <select id="linkedSelect_{$field.name}{$key}" data-field-name="{$field.name}" name="{$selects.name}">
+                    <option value="0">全部</option>
+                    <volist name="selects.options" id="option" key="index">
+                        <option value="{$option.id}" <eq name="option.id" value="$selectValue[$k-1]"> selected </eq> >{$option.name}</option>
+                    </volist>
+                </select>
+            </span>
+        </volist>
+    </notempty>
+</div>

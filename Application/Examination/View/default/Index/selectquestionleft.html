@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>题目预览</title>
+</head>
+     <!--[if lt IE 9]>
+    <script type="text/javascript" src="__STATIC__/jquery-1.10.2.min.js"></script>
+    <![endif]--><!--[if gte IE 9]><!-->
+    <script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
+<link href="__STATIC__/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+<style type="text/css">
+						    body{background-color:#ffffff}
+							.ul{margin:0px;padding:0px;list-style-type:none}
+							.ul li{border-bottom:1px solid #cccccc;padding:0px 0px;line-height:30px}
+                            .item{float:left;width:auto;margin:0px 5px}
+							.title{width:100px}
+							.pointer{cursor:pointer}
+							.clear{font-size:0px;line-height:0px;clear:both}
+                        </style>
+<script type="text/javascript">
+function init()
+{
+//上移
+                          $("img.upbtn").each(function(){
+                                $(this).click(function(){
+                                   var $tr = $(this).parents("li");
+                                   if ($tr.index() != 0) 
+								   {
+                                     $tr.prev().before($tr);
+                                   }
+								   else
+								   {
+								      alert('已经是第一个了。');
+								   }
+                                });
+                          });
+						  //下移
+                          $("img.downbtn").each(function(){
+                                $(this).click(function(){
+                                   var $tr = $(this).parents("li"); 
+								   var trLength = $("img.downbtn").length; 
+                                   if ($tr.index() != trLength - 1) 
+								   { 
+                                      $tr.next().after($tr);
+                                   }
+								   else
+								   {
+								      alert('已经是最后一个了。');
+								   }
+                                });
+                          });
+						  //下移
+                          $("img.deletebtn").each(function(){
+                                $(this).click(function(){
+                                   var $tr = $(this).parents("li"); 
+								   if(confirm('确认删除吗？'))
+								   {
+								      $tr.remove();
+								   }
+								   
+                                });
+                          });
+                        
+}
+ function insert(newid,newtitle){
+    var exist=false; 
+    $("input[name='id[]']").each(function(){
+	   //alert($(this).val());
+	   if($(this).val()==newid)
+	   {
+	      alert("已经存在，添加失败。");
+		  exist=true;
+		  return false;
+	   }
+	});
+	if(exist)return;
+    //alert(arguments[0]+" "+arguments[1]);
+	var html=$('textarea[name="limodel"]').val();
+	html=html.replace('{id}',arguments[0]);
+	html=html.replace('{title}',arguments[1]);
+	$('.ul').append(html);
+	window.parent.frames[0].window.scroll(0, 99999);
+	$('#notice').hide();
+ }
+ function moveup(obj)
+ {
+                                   var $tr = $(obj).parents("li");
+                                   if ($tr.index() != 0) 
+								   {
+                                     $tr.prev().before($tr);
+                                   }
+								   else
+								   {
+								      alert('已经是第一个了。');
+								   }
+ }
+ function movedown(obj)
+ {
+                                   var $tr = $(obj).parents("li"); 
+								   var trLength = $("img.downbtn").length; 
+                                   if ($tr.index() != trLength - 1) 
+								   { 
+                                      $tr.next().after($tr);
+                                   }
+								   else
+								   {
+								      alert('已经是最后一个了。');
+								   }
+ }
+ function deleteitem(obj)
+ {
+                                   var $tr = $(obj).parents("li"); 
+								   if(confirm('确认删除吗？'))
+								   {
+								      $tr.remove();
+								   }
+								   if($('ul li').length==0)
+								   {
+								      $('#notice').show();
+								   }
+ }
+$(function(){
+
+});
+						</script>
+<body>
+<php>//dump($list);</php>
+<div style="text-align:center;font-weight:bold;ling-height:20px;margin:5px 0px; letter-spacing:2px ">已添加试题</div>
+<ul class='ul'>
+    <volist name="list" id="vo">
+       <li>               
+					  <div class='item pointer'>                     
+					  <img src="__IMG__/delete.gif" class='deletebtn' style="margin-top:7px" onClick="deleteitem(this)">
+				      </div>
+					  <div class="item pointer"><img src="__IMG__/moveup.png" style="margin-top:7px" class="upbtn" onClick="moveup(this)"></div><div class="item pointer"><img src="__IMG__/movedown.png" style="margin-top:7px"  class="downbtn" onClick="movedown(this)"></div>
+					  <div class='item'>                     
+					  {:msubstr(strip_tags($vo['stem']),0,60,'utf-8',true);}<input name="id[]" type="hidden" value="{$vo['id']}">
+				      </div>
+					  <div class='clear'></div>
+	   </li>				  
+    </volist>
+</ul>
+					<if condition="count($list) eq 0">
+                        <div style="font-size:3em;padding:2em 0;color: #ccc;text-align: center" id="notice">还没有内容哦。O(∩_∩)O~</div>
+                    </if>
+<textarea name="limodel" cols="" rows="" style="display:none ">
+       <li>               
+					  <div class='item pointer'>                     
+					  <img src="__IMG__/delete.gif" class='deletebtn' style="margin-top:7px" onClick="deleteitem(this)">
+				      </div>
+					  <div class="item pointer"><img src="__IMG__/moveup.png" style="margin-top:7px" class="upbtn" onClick="moveup(this)"></div><div class="item pointer"><img src="__IMG__/movedown.png" style="margin-top:7px"  class="downbtn" onClick="movedown(this)"></div>
+					  <div class='item'>                    
+					  {title}<input name="id[]" type="hidden" value="{id}">
+				      </div>
+					  <div class='clear'></div>
+	   </li>
+</textarea>					
+</body>
+</html>
+

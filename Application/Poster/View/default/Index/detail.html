@@ -1,0 +1,28 @@
+<extend name="./Application/Common/View/base/common.html" />
+<!--extend name="Base/common"/-->
+<block name="body">
+<style type="text/css">
+.ullist{margin:0px 0px 0px 0px;padding:0px;list-style-type:none;border-top:1px solid #DFDFDF }
+.ullist li{margin:0px;padding:0px 0px 0px 30px;border-bottom:1px solid #DFDFDF;background: #FFFFFF;height:48px;font-size:16px;line-height:48px}
+.coursetitle{height:48px;padding-left:20px;font-size:16px;line-height:48px; font-weight:bold}
+.detailtitle{margin:10px 10px 0px 10px;padding:0px;font-size:16px;}
+.detaildatetime{border-bottom:1px solid #DFDFDF; color:#A8A8A8;font-size:16px; padding:10px 10px;}
+.detailcontent{margin:20px 0px 0px 0px;padding:0px 10px;list-style-type:none; color:#666666 }
+</style>
+
+    <div id="ui-header">
+			<div class="fixed">
+				<a class="ui-btn-left_pre" href="javascript:displayitx(0)"></a>
+				<a class="ui-title" id="popmenu">企业消息</a>
+				<a class="ui-btn-right_home" href="/index.php"></a>
+			</div>
+	</div>
+    <div id="overlay"></div>
+    <div class="Listpage">
+			<div class="top46"></div>
+			<div class="detailtitle">{$data.title}</div>
+            <div class="detaildatetime">{$data.createtime|date='Y-m-d H:i',###}</div>
+			<div class="detailcontent">{$data.content}</div>
+	</div>
+
+</block>

@@ -1,0 +1,133 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+
+<block name="body">
+<style>
+
+
+.headerRow{background-color:#F6F6F6;height:40px;padding:10px;}
+.headerRow .item-name{float:left;width:40%;}
+.headerRow .item-price{float:left;margin-right:0px;width:15%;}
+.headerRow .item-decrement{float:left;margin-left:0px;width:5%;}
+.headerRow .item-increment{float:left;margin-right:0px;margin-left:0px;width:5%;}
+.headerRow .item-quantity{float:left;margin-left:0px;width:15%;}
+.headerRow .item-total{float:left;margin-right:0px;width:15%;}
+.headerRow .item-remove{float:left;width:15%;}
+.itemRow{clear:both;height:20px;padding:10px;}
+.itemRow .item-name{float:left;width:40%;}
+.itemRow .item-price{float:left;margin-right:0px;width:15%;}
+.itemRow .item-decrement{float:left;margin-left:0px;margin-right:0px;width:auto;}
+.itemRow .simpleCart_decrement{border-radius: 3px;font-size: 12px;line-height:12px;padding: 0px 5px; background-color: #FFFFFF;border:1px solid #CCCCCC;color: #333333;}
+.itemRow .item-increment{float:left;margin-right:0px;margin-left:0px;width:auto;}
+.itemRow .simpleCart_increment{border-radius: 3px;font-size: 12px;line-height:12px;padding: 0px 5px; background-color: #FFFFFF;border:1px solid #CCCCCC;color: #333333;}
+.itemRow .item-quantitybox{float:left;width:15%;padding:0px 0px 0px 0px ;}
+.itemRow .item-quantity{float:left;width:auto;padding:0px 5px 0px 5px ;}
+.itemRow .item-total{float:left;width:15%;color: #D84A38;font-weight:600;}
+.itemRow .item-remove{float:left;width:15%;}
+.count{padding-left:10px;margin-top:5px;}
+.count .simpleCart_quantity{margin-left:40px;}
+.ship{padding-left:10px;margin-top:5px;}
+.ship .simpleCart_shipping{margin-left:20px;}
+.grand{padding-left:10px;margin-top:5px;}
+.grand .simpleCart_grandTotal{margin-left:8px;color: #D84A38;font-weight:600;font-family: arial;font-size:14px;}
+
+</style> 
+<!-- 主体 -->
+<div class=" container " style="margin-top:0px;min-height: 400px">
+
+
+<div class="panel panel-cart">
+    <div class="panel-heading">
+     <h3 class="panel-title">购物车</h3>
+    </div>
+  
+<div class="panel-body">
+
+<div class="row">
+<form action='{:U("order")}' method="post" name="myform" id="myform">	  
+			 
+<div class="col-md-12">
+	     
+
+<div class="simpleCart_items"> 
+    <div>
+	 <div class="headerRow">
+	  <div class="item-name">商品</div>
+      <div class="item-price">单价</div>
+	  <div class="item-decrement"></div>
+	  <div class="item-quantity">数量</div>
+	  <div class="item-increment"></div>
+	  <div class="item-total">总价</div>
+	  <div class="item-remove">操作</div>
+	 </div>
+	 <if condition="count($cart['total_items']) neq 0">
+	 <assign name="total_items" value="0" />
+	 <volist name="cart" id="vo">
+	 <if condition="is_array($vo)">
+	 <php>$total_items+=$vo['qty']</php>
+	 <div class="itemRow row-0 odd" id="cartItem_SCI-2">
+	   <div class="item-name">{$vo["name"]}</div>
+	   <div class="item-price">¥{$vo["price"]}</div>
+	   <div class="item-quantitybox">
+	     <div class="item-decrement"><a <if condition="$vo['qty'] gt 1">href="{:U("/Cart/Index/update/id/".$vo["id"]."/qty/".($vo['qty']+0-1))}"<else/>href="javascript:toastr.error('数量不能小于1', '温馨提示');;"</if> class="simpleCart_decrement">-</a></div>
+	     <div class="item-quantity">{$vo["qty"]}</div>
+	     <div class="item-increment"><a href="{:U("/Cart/Index/update/id/".$vo["id"]."/qty/".($vo['qty']+0+1))}" class="simpleCart_increment">+</a></div>
+	   </div>
+	   <div class="item-total">¥{$vo["subtotal"]}</div>
+	   <div class="item-remove"><a href='{:U("/Cart/Index/delete/id/".$vo["id"])}' class="simpleCart_remove">删除</a></div>
+	 </div>
+	 </if>
+	 </volist>
+	 </if>
+	 <if condition="$cart['total_items'] eq 0">
+         <div style="font-size:2em;padding:2em 0;color: #ccc;text-align: center;"><img src="__IMG__/cart.png">您的购物车还是空的。<button type="button" class="btn btn-primary" onclick="window.location.href='{:U(\"/Home/Index/index\")}'">  返回首页  </button></div>
+     </if>
+    </div>
+</div>
+<div style="clear:left"></div>
+<if condition="$cart['total_items'] neq 0">
+<hr>
+<div class="row">
+ <div class="col-md-8" style="padding-right:0px">
+   <div class="count">数量: <span class="simpleCart_quantity">{$total_items}</span></div>
+   <!--div class="ship"> <span class="simpleCart_shipping"></span></div-->
+   <p class="grand">合计总额: <span class="simpleCart_grandTotal">¥{$cart['cart_total']}</span></p>
+ </div>
+ <div class="col-md-4" style="text-align:right">
+   <button type="button" class="btn btn-primary" onclick="window.location.href='{:U(\"clear\")}'">  清空购物车  </button>
+
+   <button type="submit" class="btn btn-primary">  去 结 算  </button>
+ </div>
+</div>
+</if>
+	 
+</div>
+ 
+</form>	   
+</div>
+
+
+</div>	
+
+
+
+		</div>
+</div>
+
+<!-- /主体 -->
+
+<!-- 底部 -->
+<!-- /底部 -->
+<script type="text/javascript">
+
+    $(function () {
+       
+    });
+</script>
+
+
+
+</block>
+
+
+

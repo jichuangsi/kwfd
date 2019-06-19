@@ -1,0 +1,188 @@
+<div class="controls">
+    <script type="text/javascript" src="__STATIC__/jquery.imgpreview.js"></script>
+    <!--防止imagepreview匹配为空时报错-->
+    <a href="../imgpreview.gif" class="pictureImgPreview"></a>
+
+    <span style="display: inline-block;"><input type="file" id="upload_document_{$field.name}"></span>
+
+
+    <eq name="field.opt.showGet" value="true">
+        <a class="btn btn-primary preview-upload-file-link" style="margin:auto 5px;">预览</a>
+        <a class="btn btn-primary get-upload-file-link">获取文档链接</a>
+        <span class="upload-file-link" data-link=""></span>
+    </eq>
+
+
+    </br>
+    </br>
+
+    <eq name="field.opt.showTrans" value="true">
+        <span style="display: inline-block;"><input type="file" id="upload_document_{$field.name}_trans"></span>
+        <eq name="field.opt.showGet" value="true">
+            <a class="btn btn-primary preview-upload-trans-picutres-link" style="margin:auto 5px;">预览图片</a>
+            <a class="btn btn-primary get-upload-trans-pictures-link">获取图片链接</a>
+        </eq>
+        <span class="upload-picture-link" data-link="" data-transing=""></span>
+    </eq>
+
+
+    <input type="hidden" class="field-name" name="{$field.name}" id="cover_id_{$field.name}" value="{$field['value']}"/>
+    <input type="hidden" class="img-handler-url" name="{$field.name}_handler_url" value=""/>
+
+
+    <div class="upload-doc-trans-pictures-box" style="display: none;">
+        <notempty name="field.value">
+            <volist name="field.opt.pictures" id="pic">
+                <a target="_blank" class="pictureImgPreview" href="{$field.opt.uploadDir}{$pic.href}">{$pic.name}</a>
+            </volist>
+        </notempty>
+    </div>
+
+
+</div>
+<script type="text/javascript">
+    var imgPreviewConfig = {
+        imgCSS: { width: 300 }
+    };
+    $(document).ready(function () {
+        $('.pictureImgPreview').imgPreview(imgPreviewConfig);
+        //获取链接功能
+        $('.get-upload-file-link').unbind('click').click(function () {
+		    var url="<php>echo 'http://'.$_SERVER['SERVER_NAME']</php>";
+			var fileurl=$(this).next('.upload-file-link').attr('data-link')+"";
+			if(fileurl.length>0)
+			{
+			   fileurl=fileurl.substring(1);
+			}
+            $(this).next('.upload-file-link').html(url+fileurl);
+        });
+        $('.get-upload-picture-link').unbind('click').click(function () {
+            $(this).next('.upload-picture-link').html($(this).next('.upload-picture-link').attr('data-link'));
+        });
+
+        //预览按钮功能
+        $('.preview-upload-file-link').unbind('click').click(function () {
+            var docAddress = $(this).nextAll('.upload-file-link').attr('data-link');
+
+            if(docAddress == ''){
+                errorAlertTip('没有可预览的文件');
+                return;
+            }
+            window.open(docAddress);
+        });
+
+        //预览转换成的图片文件
+        $('.preview-upload-trans-picutres-link').unbind('click').click(function () {
+            if(checkUploadTransPictures($(this).nextAll('.upload-picture-link')))
+                $(this).nextAll('.upload-doc-trans-pictures-box').slideDown();
+        });
+        //获取转换成的图片文件
+        $('.get-upload-trans-pictures-link').unbind('click').click(function () {
+            if(checkUploadTransPictures($(this).nextAll('.upload-picture-link')))
+                $(this).nextAll('.upload-doc-trans-pictures-box').slideDown();
+        });
+    });
+
+    //远程获取转换好的图片
+    function checkUploadTransPictures(uploadPicturesLink){
+        if(uploadPicturesLink.attr('data-transing') != '1')
+            return true;
+        var imgHandler = uploadPicturesLink.attr('data-link');
+        if(imgHandler == ''){
+            errorAlertTip('没有可预览的图片');
+            return false;
+        }
+        var filedName = uploadPicturesLink.nextAll('.field-name').name;
+        console.log(imgHandler);
+        $.ajax({
+            type:'get',
+            url: imgHandler,
+//            async: false,
+            dataType : 'jsonp',
+            jsonp:"jsoncallback",
+            success:function(data){
+                console.log(data);
+                var jpgs = data.list.split(',');
+                var html = '';
+                $.each(jpgs, function (i, url) {
+                    html += '<a target="_blank" class="pictureImgPreview" href="'+url+'" >'+url+'</a></br>';
+//                        html += '<input type="hidden" name="'+filedName+'Pictures[]" value="'+ele+'" />';
+                });
+                uploadPicturesLink.nextAll('.upload-doc-trans-pictures-box').html(html).slideDown();
+                uploadPicturesLink.attr('data-transing','0');
+                $('.pictureImgPreview').imgPreview(imgPreviewConfig);
+                return true;
+            },
+            error:function (data) {
+                errorAlertTip('正在转换');
+                return false;
+            }
+        });
+    }
+
+
+    /* 初始化上传插件 */
+    $("#upload_document_{$field.name}").uploadify({
+        "height"          : 30,
+        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+        "fileObjName"     : "download",
+        "buttonText"      : "上传文档",
+        "uploader"        : "{:U('File/upload',array('session_id'=>session_id()))}",
+        "width"           : 120,
+        'removeTimeout'	  : 1,
+        'fileTypeExts'	  : '*.doc; *.docx; *.ppt; *.pptx; *.xls; *.xlsx; *.pdf; *.jpg; *.gif; *.png; *.jpeg',
+        "onUploadSuccess" : uploadDoc{$field.name},
+    'onFallback' : function() {
+        alert('未检测到兼容版本的Flash.');
+    }
+    });
+
+    /* 初始化上传插件 */
+    $("#upload_document_{$field.name}_trans").uploadify({
+        "height"          : 30,
+        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+        "fileObjName"     : "download",
+        "buttonText"      : "上传并转换成图片",
+        "uploader"        : "{:U('File/upload',array('session_id'=>session_id()))}",
+        'formData'      : {'transImage':'1'},
+        "width"           : 120,
+        'removeTimeout'	  : 1,
+        'fileTypeExts'	  : '*.doc; *.docx; *.ppt; *.pptx; *.xls; *.xlsx; *.pdf; *.jpg; *.gif; *.png; *.jpeg',
+        "onUploadSuccess" : uploadDoc{$field.name}_trans,
+    'onFallback' : function() {
+        alert('未检测到兼容版本的Flash.');
+    }
+    });
+
+    function uploadDoc{$field.name}(file, data){
+        var data = $.parseJSON(data);
+        var src = '';
+        $("#cover_id_{$field.name}").prevAll('.upload-file-link').attr('data-link','').html('');
+        if(data.status){
+            $("#cover_id_{$field.name}").val(data.download.id);
+            src = "{$field.opt.uploadDir}" + data.download.savepath+data.download.savename;
+            $("#cover_id_{$field.name}").prevAll('.upload-file-link').attr('data-link',src);
+        } else {
+            errorAlertTip(data.info);
+        }
+    }
+
+    function uploadDoc{$field.name}_trans(file, data){
+        var data = $.parseJSON(data);
+        var src = '';
+        $("#cover_id_{$field.name}").prevAll('.upload-picture-link').attr('data-link','').html('');
+        if(data.status && data.hasOwnProperty('transImage') && data.transImage.code == 'true'){
+            $("#cover_id_{$field.name}").val(data.download.id);
+
+            var remoteDoc = data.transImage.file;
+            var remoteImagesHandler = data.transImage.url;
+            $("#cover_id_{$field.name}").prevAll('.upload-picture-link').attr('data-link',remoteImagesHandler).attr('data-transing','1');
+            $("#cover_id_{$field.name}").nextAll('.img-handler-url').val(remoteImagesHandler);
+
+        } else {
+            errorAlertTip('上传失败');
+        }
+    }
+
+  
+</script>

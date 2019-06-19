@@ -1,0 +1,55 @@
+<div id="nav_bar" class="nav_bar " style="margin-bottom: 25px;">
+    <nav class="container" id="nav_bar_container" role="navigation">
+        <div class="collapse navbar-collapse " id="nav_bar_main">
+
+            <ul class="nav navbar-nav  " style="font-size: 16px">
+                <think:nav name="nav">
+                    <eq name="nav.pid" value="0">{$nav.title}
+                        <php>
+                            $children=D('Channel')->where(array('pid'=>$nav['id']))->order('sort asc')->select();
+                            if($children){
+                        </php>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle nav_item" data-toggle="dropdown" href="#" style="color:{$nav.color}">
+
+                                {$nav.title} <span class="caret"></span><neq name="nav.band_text" value="" > <span class="badge" style="background: {$nav.band_color}">{$nav.band_text}</span></neq>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <volist name="children" id="subnav">
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" style="color:{$subnav.color}"
+                                                               href="{$subnav.url|get_nav_url}"
+                                                               target="<eq name='subnav.target' value='1'>_blank<else/>_self</eq>">{$subnav.title}<neq name="subnav.band_text" value="" >  <span class="badge" style="background: {$subnav.band_color}">{$subnav.band_text}</span></neq></a>
+                                    </li>
+                                </volist>
+                            </ul>
+                        </li>
+                        <php>}else{</php>
+                        <li>{$nav.url}
+                            <a 
+                               target="<eq name='nav.target' value='1'>_blank<else/>_self</eq>" style="color:{$nav.color}">{$nav.title}<neq name="nav.band_text" value="" >  <span class="badge" style="background: {$nav.band_color}">{$nav.band_text}</span></neq></a>
+                        </li>
+                        <php>}</php>
+                    </eq>
+                </think:nav>
+            </ul>
+
+        </div>
+
+        <!--导航栏菜单项-->
+
+        <div class="row visible-xs">
+            <div class="navbar-header col-xs-3 pull-right text-left">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav_bar_main">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+        </div>
+
+
+    </nav>
+</div>
+
+<a id="goTopBtn"></a>

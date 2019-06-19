@@ -1,0 +1,108 @@
+<extend name="Public/base"/>
+<!--extend name="./Application/Common/View/base/common.html"/-->
+<block name="body">
+<style>
+       .nav-tabs > li > a {
+         padding:5px 20px;
+        }
+        .nav-tabs {
+           padding:0px 0px 0px 20px;
+        }
+		.nav-tabs > li > a {
+           line-height:18px;
+        }
+</style>
+				 <ul class="nav nav-tabs" id="myTab"> 
+                    <li <eq name="tab" value="all">           class="active"</eq>>         <a href="{:U('Usercenter/Order/index',array('tab'=>'all'))}"           tab="#all">所有订单</a></li> 
+                    <li <eq name="tab" value="PaymentsMade">  class="active"</eq>><a href="{:U('Usercenter/Order/index',array('tab'=>'PaymentsMade'))}"  tab="#PaymentsMade">已付款</a></li> 
+                    <li <eq name="tab" value="PaymentsDue">   class="active"</eq>> <a href="{:U('Usercenter/Order/index',array('tab'=>'PaymentsDue'))}"   tab="#PaymentsDue">未付款</a></li> 
+                 </ul> 
+        
+                 <div class="tab-content"> 
+                    <div class="tab-pane" id="unread" style="display:block;">
+					<!---------------------------------------------------------------->
+					
+                    <if condition="count($list) eq 0"><p class="text-muted" style="text-align: center; font-size: 3em;">
+        <br><br>
+        暂无内容～
+        <br><br><br>
+    </p></if>
+	<if condition="count($list) neq 0">
+	<div style="background:#ffffff;padding:5px 10px;font-size:12px;margin-bottom:0px;font-weight:bold;color:#666666">
+	  <div class="col-md-3" style=";padding-left:0px">商品名称</div>
+	  <div class="col-md-9" style="">
+	    <div class="col-md-3 hidden-xs" style="text-align:center">单价、数量</div>
+	    <div class="col-md-3 hidden-xs" style="text-align:center">商品总价</div>
+	    <div class="col-md-3 hidden-xs" style="text-align:center">订单总额(元)</div>
+	    <div class="col-md-3" style="text-align:center">交易操作</div>
+	  </div>
+	  <div class="clearfix"></div>	   
+	</div>
+    </if>
+    <volist name="list" id="order">
+	<div onMouseOver="this.style.backgroundColor='#fafafa'" onMouseOut="this.style.backgroundColor='#FFFFFF'">
+	  <div style="background:#f1f1f1;padding:5px 10px;font-size:12px;margin:0px 0px 10px 0px">订单号：<span >{$order.orderid}</span>&nbsp;&nbsp;&nbsp;下单时间：<span>{$order.create_time|date='Y-m-d H:i:s',###}&nbsp;</div>
+      <volist name="order.orderlist" id="orderlist">
+	   <div style="padding:0px 10px 0px 10px;font-size:12px;margin-bottom:0px">
+	     <div class="col-md-3" style="padding-left:0px;">
+		   <table>
+		     <tr>
+			   <td width="100%"><a href="{$orderlist.url}" target="_blank" style="word-break:break-all">
+			   {$orderlist.title}<br>
+			   <img src="{$orderlist['image']|get_cover='path'}" width=100 height=100 align="absmiddle"/></a></td>
+			   <td width="10"></td>
+			 </tr>
+		   </table>
+		 </div>
+	     <div class="col-md-9">
+	       <div class="col-md-3 hidden-xs" style="text-align:center;line-height:100px">{$orderlist.price}({$orderlist.num}个)</div>
+	       <div class="col-md-3 hidden-xs" style="text-align:center;line-height:100px">{$orderlist["price"]*$orderlist["num"]}</div>
+	       <div class="col-md-3 hidden-xs" style="text-align:center;line-height:100px;border-left:1px solid #f1f1f1">
+		   <php>if($key==0) echo $order['total'];</php>
+		   </div>
+	       <div class="col-md-3" style="text-align:center;line-height:50px;border-left:1px solid #f1f1f1;height:100%">
+		  
+		     <if condition="$order['ispay'] eq 1">
+			    <if condition="$key eq 0">
+				  <if condition="$order['status'] eq 6">
+				     <div style="line-height:100px">
+				        <a href="javascript:void(0)" class="btn btn-default btn-sm" style="margin:0px;display:inline-block">已 取 消</a>
+					 </div>
+				  <else/>
+			         <a href="{:U('cancel',array('orderid'=>$order['orderid']))}" class="btn btn-default btn-sm" style="margin:0px;display:inline-block">取消订单</a>
+			 	     <a href="{:U('/Payoff/Index/index',array('orderid'=>$order['orderid']))}" class="btn btn-primary btn-sm" style="margin:0px;display:inline-block">前去支付</a>
+			      </if>
+				</if>
+			 <elseif condition="$order['ispay'] eq 2"/>
+			         <div style="line-height:100px">
+				        已付款
+					 </div>
+			    
+			 </if>
+		   </div>
+	     </div>
+		 <div class="clearfix"></div>	   
+
+	   </div> 
+	   <php>
+	   //dump($order["orderlist"]);
+	   if(sizeof($order["orderlist"])>1 && $key<sizeof($order["orderlist"])-1)
+	   {
+	   </php>
+       <div style="background:#f1f1f1;height:1px;font-size:1px;margin:10px 0px" class="col-md-8"></div>	  
+       <php>
+	   }
+       </php>	   
+	  </volist>	
+	  <div style="margin-bottom:0px;height:10px;line-height:10px"></div>
+	</div>  
+    </volist>
+    <div class="text-center">
+	    {:getPagination($totalPageCount,$count)}
+        
+    </div>
+					<!---------------------------------------------------------------->
+					</div> 
+                 </div> 
+
+</block>

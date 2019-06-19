@@ -1,0 +1,14 @@
+<div>
+    <div class="jui-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+        <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+            <volist name="tabs" id="tab">
+                <li class="ui-state-default ui-corner-top <if condition="$tab['current']"> ui-tabs-active ui-state-active </if> ">
+                    <a class="ui-tabs-anchor" href="{$tab.href}">{$tab.title}</a>
+                </li>
+            </volist>
+        </ul>
+        <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+            {$content}
+        </div>
+    </div>
+</div>

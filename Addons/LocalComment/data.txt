@@ -1,0 +1,34 @@
+-- phpMyAdmin SQL Dump
+-- version 3.3.7
+-- http://www.phpmyadmin.net
+--
+-- 主机: localhost
+-- 生成日期: 2015 年 02 月 18 日 09:49
+-- 服务器版本: 5.0.90
+-- PHP 版本: 5.3.5
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- 数据库: `thinkox`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `thinkox_local_comment`
+--
+
+CREATE TABLE IF NOT EXISTS `onethink_local_comment` (
+  `id` int(11) NOT NULL auto_increment,
+  `uid` int(11) NOT NULL,
+  `app` text NOT NULL,
+  `mod` text NOT NULL,
+  `row_id` int(11) NOT NULL,
+  `parse` int(11) NOT NULL,
+  `content` varchar(1000) NOT NULL,
+  `create_time` int(11) NOT NULL,
+  `pid` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;

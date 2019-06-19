@@ -1,0 +1,36 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+<div class="container" style="margin-top:0px;min-height: 400px">
+<div class="panel panel-cart">
+    <div class="panel-heading">
+     <h3 class="panel-title">订单已经生成,请选择支付方式。</h3>
+    </div>
+  
+<div class="panel-body">
+
+ <div class="row" >
+  <div class="col-md-12">
+  
+<form id="form" action="{:U('/Payoff/Index/index')}"  method="post">
+订单号：{$orderid}<input type="hidden"  name="orderid" class="form-control" id="orderid" value="{$orderid}"><br><br>
+金额：50 元<input type="hidden" name="money" class="form-control" id="goodprice" value="50"><br><br>
+<input type="radio" name="paytype" value="alipay" checked=""/> 支付宝<br><br>
+<button type="submit" class="btn btn-primary">  确定  </button><br><br>
+</form>
+<script type="text/javascript">
+
+$(function(){
+  //$("#form").submit();
+});
+</script>
+
+  </div>
+  </div></div>
+ </div>
+</div>
+
+</block>
+
+
+

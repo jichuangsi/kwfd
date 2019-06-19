@@ -1,0 +1,74 @@
+<volist name="tree" id="list">
+	<dl class="cate-item" style="display:block;clear:both;border:0px solid #ff0000">
+		<dt class="cf">
+		   {$list['title']}
+		</dt>
+		<div class="hdd">
+		        <php>
+				$categoryids=$_GET['categoryid']?$_GET['categoryid']:"";
+				if($categoryids!="")
+				{
+				    $categoryids = explode("_", $categoryids);
+				}
+				else
+				{
+				    $categoryids =[];
+				}
+				//var_dump($list);
+				//var_dump($categoryids);
+				//链接里面移除 此一级分类
+				$selectsub=0;
+				$sublists=[];
+				if($list['_'])
+				{
+				    $sublists = array_column($list['_'], 'id');
+					//var_dump($sublists);
+				    foreach($categoryids as $key=>$val)
+					{
+					   if(in_array($val, $sublists))//已选中子分类
+					   {
+					      $selectsub=1;
+					      break;
+					   }
+					}
+				}
+				if($selectsub==0) //未选择子分类  当前默认是全部
+                {
+				  $temp=$categoryids;
+				}
+                else if($selectsub==1)//已选择子分类  当前全部应未选中，子分类选中，新链接应清空子分类
+                {
+				  $temp = array_diff($categoryids, $sublists);
+				  
+				}				
+                //echo $selectsub;
+				//var_dump($temp);
+				</php>
+		        <a href="{:U($url,array('categoryid'=>implode("_",$temp)))}" <if condition="$selectsub eq 0">class="active"</if>>全部</a>
+                <notempty name="list['_']">
+
+				  <volist name="list['_']" id="sublist">
+				  <php>
+                  //var_dump($list['_']);
+				  //$temp = array_diff($categoryids, $sublists);
+				  $temp = array_diff($categoryids,$sublist);
+				  if(in_array($sublist["id"],$categoryids)) //原来已选中
+				  {
+				  }
+				  else                                      //原来未选中
+				  {
+				    $temp=array_merge($temp,array($sublist["id"]));
+				  }
+
+				  //var_dump($temp);
+				  
+				  $temp=implode("_",$temp);
+                  </php>
+				      <a href="{:U($url,array('categoryid'=>$temp))}" <php> if(in_array($sublist["id"], $categoryids)){ echo 'class="active"';}</php>>{$sublist.title}</a>
+				   </volist>
+		
+		        </notempty>
+		</div>
+		<div style="clear:both;height:0px"></div>
+	</dl>
+</volist>

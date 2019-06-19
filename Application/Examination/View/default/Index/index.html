@@ -1,0 +1,168 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+<style>
+ul{list-style-type:none;margin:0px 10px;padding:0px}
+.rmb-box{
+    display:block;
+	float: left;
+	margin: 0px 0px 10px 0px;
+	margin-right:1.332%;
+	width:24%;
+	position: relative;
+	padding: 5px 0;
+	transition: left .2s ease,border .5s,z-index .5s;
+	padding-bottom: 15px;
+	top: 1px;
+	background-color: #fff;   
+	border: 1px solid #cccccc;
+	padding-top: 0;
+	min-height: 300px;
+}
+.rmb-box:nth-child(4n){margin-right: 0;}
+.rmb-box:hover{
+	box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+	z-index: 20;
+	top: -1px;
+	
+}
+
+.rmb-product-detail {
+	width: 100%;
+	text-align: center;
+	height: 260px;
+	border-bottom: solid #cccccc 1px;
+	background: #fff;
+	overflow: hidden;
+}
+.rmb-product-detail>a{
+	width: 100%;
+	height: 260px;
+	display: grid;
+	display: flex; 
+	vertical-align: middle;
+	text-align: center;
+	
+}
+.rmb-product-detail>a>img{
+	max-width: 93%;
+	max-height: 93%;
+	vertical-align: middle;
+	margin: auto;
+}
+.rmb-product-detail>a img:hover{ 
+  	cursor: pointer;  
+    transition: all 0.6s; 
+	 -webkit-transform:scale(1.1,1.1);
+    -moz-transform:scale(1.1,1.1);
+    -transform:scale(1.1,1.1);
+}
+
+.rmb-product-desc{
+	margin-top: 1.5px;
+	text-align: left;
+	padding-left: 10px;
+	font-size:14px;
+	height: 61px; 
+}
+.rmb-product-explain a{
+	color: #454545;
+	font-size: 14px; 
+	line-height: 18px;
+}
+</style>
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container" style="min-height: 400px">
+        
+        <div class="row">
+		    <div class="col-md-9">
+                <!---------------------------------------->
+				<div class="row">
+		    <div class="col-md-12">
+                <!---------------------------------------->
+				   <div class="common_block_border blog_position">
+                    <div class="common_block_title" style="display:none">所有分类</div>
+					 <div class="category">
+					 <link type="text/css" rel="stylesheet" href="__ROOT__/Public/Common/css/hcategory.css"/>
+					 <script type="text/javascript" src="__ROOT__/Public/Common/js/category.js"></script>
+	 
+					  <div style="display:block">
+					  <php>
+                       $tree_list = A("Common/Category");
+                       $tree_list->ShowNoTitleCategory($tree,"/Examination/Index/index");
+                      </php>
+					  </div>
+					 </div>
+                     
+                  </div>
+				  
+				
+            </div>
+            
+
+
+			
+        </div>
+				<div class="common_block_border">
+                    <div class="common_block_title">所有内容</div>
+					<volist name="contents" id="vo">
+                      <div style="padding:0 20px" transitionparent>                     
+					    <section  style="padding:0px 0px 10px 0px;">
+						    <div>
+                                <h4><a title='{$vo["name"]}' href="{:U('Detail',array('id'=>$vo["id"]))}">{$vo["name"]}</a></h4>
+                            </div>
+                            <div style="position: relative;min-height:110px;height:auto!important;height:110px;">
+							  <a title='{$vo["name"]}' href="{:U('Detail',array('id'=>$vo["id"]))}" target="_blank"><img src="{$vo['image']|get_cover='path'}" width="150" height="100" style="position: absolute" transition></a>
+                              <div style="margin-left:160px">
+                                   
+                                   <div style="height:100px;overflow:hidden;">
+                                        <span style="display:none">更新时间：{$vo.updatedTime|date='Y-m-d H:i',###}</span>
+                                        <p style="font-size:14px;color:#666666;line-height:25px">
+										<a href="{:U('Detail',array('id'=>$vo['id']))}" style="color:#666666">
+										  {$vo["description"]|strip_tags|msubstr=0,165,"utf-8",true}
+										</a>
+										</p>
+                                   </div>
+                              </div>
+                            </div>
+                            <hr style="margin:5px 0px;">
+                       </section>
+				      </div>
+					</volist>
+					<if condition="count($contents) eq 0">
+                        <div style="font-size:20px;padding:2em 0;color: #ccc;text-align: center;height:500px">该分类下现在还没有内容哦。O(∩_∩)O~</div>
+                    </if>
+					<div class="text-right" style="margin-right:20px">
+                       {:getPagination($totalPageCount,8)}
+                    </div>
+				</div>
+				<!---------------------------------------->
+            </div>
+			<div class="col-md-3">
+				 <!---------------------------------------->
+				   <div class="common_block_border blog_position">
+                    <div class="common_block_title">全站热门</div>
+					 <assign name="num" value="1" />
+                     <volist name="hotdata" id="vo">
+                       <div class="clearfix" style="position: relative">         
+                         <div class="col-md-12">
+                           <div>
+                                <span class="rank_num">{$num++}</span><h3 class="text-more" style="float:left"><a title="{$vo['name']}" href="{:U('Detail',array('id'=>$vo['id']))}">{$vo["name"]|msubstr=0,10}</a></h3>
+                           </div>
+                         </div>
+                      </div>
+					  <div class="col-md-12">
+                         <div style="border-bottom: 1px dashed rgb(204, 204, 204);margin: 10px 0px"></div>
+					  </div>
+		             </volist>
+					 <if condition="count($hotdata) eq 0">
+                        <div style="font-size:2em;padding:2em 0;color: #ccc;text-align: center;">暂无内容</div>
+                     </if>
+                      <div style="margin:0px 15px;height:10px;clear:both"></div>
+                  </div>
+				  
+				<!---------------------------------------->
+            </div>
+		</div>
+    </div>
+</block>

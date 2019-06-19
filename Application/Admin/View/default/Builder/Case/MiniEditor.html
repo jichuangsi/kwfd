@@ -1,0 +1,37 @@
+<label class="textarea">
+    <textarea name="{$field.name}">{$field.value|htmlspecialchars}</textarea>
+    <link rel="stylesheet" href="__STATIC__/kindeditor/default/default.css" />
+    <script charset="utf-8" src="__STATIC__/kindeditor/kindeditor-min.js"></script>
+    <script charset="utf-8" src="__STATIC__/kindeditor/zh_CN.js"></script>
+    <script type="text/javascript">
+        var editor{$field.name};
+        KindEditor.ready(function(K) {
+            editor{$field.name} = K.create('textarea[name="{$field.name}"]', {
+                allowFileManager : false,
+                themesPath: K.basePath,
+                width: '100%',
+                height: '{$field.opt.height}',
+                resizeType: 1,
+                pasteType : 2,
+                items : [
+                    'source', '|','fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                    'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                    'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+                fileManagerJson : '{:U('fileManagerJson')}',
+                //uploadJson : '{:U('uploadJson')}' }
+                uploadJson : '{:addons_url("EditorForAdmin://Upload/ke_upimg")}'
+            });
+        });
+
+        $(function(){
+            //传统表单提交同步
+            $('textarea[name="{$field.name}"]').closest('form').submit(function(){
+                editor{$field.name}.sync();
+            });
+            //ajax提交之前同步
+            $('button[type="submit"],#submit,.ajax-post').click(function(){
+                editor{$field.name}.sync();
+            });
+        })
+    </script>
+</label>

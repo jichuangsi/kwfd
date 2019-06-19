@@ -1,0 +1,23 @@
+<div class="data-table">
+    <table>
+        <if condition="!$hide_column">
+            <thead>
+            <tr>
+                <volist name="columns" id="col">
+                    <th>{$col.value}</th>
+                </volist>
+            </tr>
+            </thead>
+        </if>
+        <volist name="data" id="row">
+            <tr>
+                <volist name="columns" id="col">
+                    <td>{$row[$col['name']]}</td>
+                </volist>
+            </tr>
+        </volist>
+    </table>
+    <div class="page">
+        {$page}
+    </div>
+</div>

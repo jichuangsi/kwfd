@@ -1,0 +1,114 @@
+<extend name="./Application/Common/View/base/common.html" />
+<!--extend name="Base/common"/-->
+<block name="body">
+<style type="text/css">
+.ullist{margin:0px 0px 0px 0px;padding:0px;list-style-type:none;border-top:0px solid #DFDFDF }
+.ullist li{margin:0px;padding:0px 0px 0px 30px;border-bottom:1px solid #DFDFDF;height:48px;font-size:16px;line-height:48px;}
+.ullist li.ico1{ background:url(__IMG__/kico1.png) left center no-repeat #ffffff}
+.ullist li.ico2{ background:url(__IMG__/kico2.png) left center no-repeat #ffffff}
+.ullist li.ico3{ background:url(__IMG__/kico3.png) left center no-repeat #ffffff}
+.ullist li.ico4{ background:url(__IMG__/kico4.png) left center no-repeat #ffffff}
+.ullist li.ico5{ background:url(__IMG__/kico4.png) left center no-repeat #ffffff}
+.ullist li.ico1 a,.ullist li.ico2 a,.ullist li.ico3 a,.ullist li.ico4 a,.ullist li.ico5 a{ font-weight:bold;display:block; margin:0px 10px 0px 23px; height:48px; line-height:48px; background:url(__IMG__/close.png) right center no-repeat #ffffff}
+
+#course1_content,#course2_content,#course3_content,#course4_content,#course5_content{ display:none}
+.ullist li a{ display:block; margin-left:23px; height:48px; line-height:48px; background:#ffffff }
+
+
+.coursetitle{height:48px;padding-left:20px;font-size:16px;line-height:48px; font-weight:bold}
+.detailtitle{margin:20px 0px 0px 0px;padding:0px;list-style-type:none;border-bottom:1px solid #DFDFDF; height:50px; line-height:50px; font-size:16px; text-align:center }
+.detailcontent{margin:20px 0px 0px 0px;padding:0px;list-style-type:none; }
+</style>
+<script language="javascript">
+$(function(){
+  $('ul[menu]').click(function(){
+     var contentid=$(this).attr("id")+"_content";
+	 if($('#'+contentid).css("display")=='none')
+	 {
+	   $('#'+contentid).show();
+	   $(this).find('a').css("backgroundImage","url(__IMG__/open.png)"); 
+	 }
+	 else
+	 {
+	   $('#'+contentid).hide();
+	   $(this).find('a').css("backgroundImage","url(__IMG__/close.png)"); 
+
+
+	 }
+  })
+  $('ul[menu]:eq(0)').click();
+})
+</script>
+    <div id="ui-header">
+			<div class="fixed">
+				<a class="ui-btn-left_pre" href="javascript:displayitx(0)"></a>
+				<a class="ui-title" id="popmenu">我的课程</a>
+				<a class="ui-btn-right_home" href="/index.php"></a>
+			</div>
+	</div>
+    <div id="overlay"></div>
+    <div class="Listpage">
+			<div class="top46"></div>
+			<ul class="ullist" id="course1" menu>
+			     <li class="ico1">
+				   <a href="#">电话课</a>
+				 </li>
+			</ul>
+			<ul class="ullist"  id="course1_content">
+			  <volist name="course1" id="list">
+			     <li>
+				   <a href="#">{$list.planTheme}/{$list.progress}</a>
+				 </li>
+			  </volist>
+			</ul>
+			<ul class="ullist"  id="course2" menu>
+			     <li class="ico2">
+				   <a href="#">网络沙龙课</a>
+				 </li>
+			</ul>
+			<ul class="ullist"  id="course2_content">
+			  <volist name="course2" id="list">
+			     <li>
+				   <a href="#">{$list.planTheme}/{$list.progress}</a>
+				 </li>
+			  </volist>
+			</ul>
+			<ul class="ullist"  id="course3" menu>
+			     <li class="ico3">
+				   <a href="#">写作课入门测试</a>
+				 </li>
+			</ul>
+			 <ul class="ullist"  id="course3_content">
+			  <volist name="course3" id="list">
+			     <li>
+				   <a href="#">{$list.englishtitle}/{$list.progress}</a>
+				 </li>
+			  </volist>
+			 </ul>
+			 <ul class="ullist"  id="course4" menu>
+			     <li class="ico4">
+				   <a href="#">写作课课程</a>
+				 </li>
+			 </ul>
+			 <ul class="ullist"  id="course4_content">
+			  <volist name="course4" id="list">
+			     <li>
+				   <a href="#">{$list.englishtitle}/{$list.progress}</a>
+				 </li>
+			  </volist>
+			 </ul>
+			 <ul class="ullist"  id="course5" menu>
+			     <li class="ico5">
+				   <a href="#">写作课单元测试</a>
+				 </li>
+			 </ul>
+			 <ul class="ullist"  id="course5_content">
+			  <volist name="course5" id="list">
+			     <li>
+				   <a href="#">{$list.englishtitle}/{$list.progress}</a>
+				 </li>
+			  </volist>
+			 </ul>
+	</div>
+
+</block>

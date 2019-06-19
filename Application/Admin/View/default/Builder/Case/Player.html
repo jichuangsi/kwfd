@@ -1,0 +1,211 @@
+<div class="controls">
+    <span style="display: inline-block;"><input type="file" id="upload_file_{$field.name}"></span>
+    <input type="hidden" name="{$field.name}" value="{$field.value}"/>
+    <div class="upload-img-box">
+        <notempty name="field.value">
+            <div class="upload-pre-file"><span class="upload_icon_all"></span>{$field.value|get_table_field=###,'id','name','File'}</div>
+        </notempty>
+    </div>
+</div>
+<div id="playereditarea" style="border:1px solid #EEEEEE;width:640px;padding:5px;background:#ffffff">
+    <php>
+        if($field["value"])
+        {
+        $fileinfo=get_table_field($field["value"],"id",null,"File");
+        //dump($fileinfo);
+        $videourl="/Uploads/Download/".$fileinfo["savepath"].$fileinfo["savename"];
+        }
+    </php>
+    <video id="playervideo" style="background:#000000" width="640" height="480" autoplay="autoplay" controls="controls" src="{$videourl}">
+        您的浏览器不支持video标签
+    </video>
+								<textarea id="zimumodel" style="display:none">
+								  <div style="border:3px solid #4BBD00;margin:5px 0px 0px 0px">
+                                      <div>
+                                          <input type="text" name="zimu[]" id="amount{id}" relative="#slider-range{id}" readonly style="border:0; color:#f6931f; font-weight:bold;float:left;background-color:transparent;margin:5px 0px 0px 5px;display:">
+                                          <button style="float:right;margin-right:0px" type="button" class="btn" onClick="deletezumu(this)">删除此字幕</button>
+                                          <div style="clear:both;width:0px;height:0px;font-size:0px;line-height:0px"></div>
+                                      </div>
+
+                                      <div id="slider-range{id}" class="slider-range" relative="#amount{id}"></div>
+                                      <input type="text" name="zimuen[]" class="text input-large" style="width:624px" placeholder="请输入英文字幕">
+                                      <input type="text" name="zimuzh[]" class="text input-large" style="width:624px" placeholder="请输入中文字幕">
+                                  </div>
+								</textarea>
+                                <textarea id="fenduanmodel" style="display:none">
+								  <div style="border:3px solid #4BBD00;margin:5px 0px 0px 0px">
+                                      <div>
+                                          <input type="text" name="fenduan[]" id="amount{id}" relative="#slider-range{id}" readonly style="border:0; color:#f6931f; font-weight:bold;float:left;background-color:transparent;margin:5px 0px 0px 5px;display:">
+                                          <button style="float:right;margin-right:0px" type="button" class="btn" onClick="deletefenduan(this)">删除此分段</button>
+                                          <div style="clear:both;width:0px;height:0px;font-size:0px;line-height:0px"></div>
+                                      </div>
+                                      <div id="slider-range{id}" class="slider-range"  relative="#amount{id}"></div>
+                                      <input type="text" name="fenduantitle[]" class="text input-large" style="width:624px" placeholder="请输入分段标题">
+                                  </div>
+								</textarea>
+
+    <div id="zimueditarea" style="background:#DFFFCA;padding:0px 0px 10px 0px">
+        <button type="button" class="btn" onClick="addzimu()">添加字幕</button>
+        <php>
+            $json=json_decode($keyList[sizeof($keyList)-1]['value']);
+            //dump($json);
+            $id=time();
+            foreach($json->zimu as $key=>$val)
+            {
+            $id.=rand(0,100);
+        </php>
+        <div style="border:3px solid #4BBD00;margin:5px 0px 0px 0px">
+            <div>
+                <input type="text" name="zimu[]" value="{$val}" id="amount{$id}" relative="#slider-range{$id}" readonly style="border:0; color:#f6931f; font-weight:bold;float:left;background-color:transparent;margin:5px 0px 0px 5px;display:">
+                <button style="float:right;margin-right:0px" type="button" class="btn" onClick="deletezumu(this)">删除此字幕</button>
+                <div style="clear:both;width:0px;height:0px;font-size:0px;line-height:0px"></div>
+            </div>
+
+            <div id="slider-range{$id}" class="slider-range" relative="#amount{$id}"></div>
+            <input type="text" name="zimuen[]" value="{$json->zimuen[$key]|base64_decode|stripslashes}" class="text input-large" style="width:624px" placeholder="请输入英文字幕">
+            <input type="text" name="zimuzh[]" value="{$json->zimuzh[$key]|base64_decode|stripslashes}" class="text input-large" style="width:624px" placeholder="请输入中文字幕">
+        </div>
+        <php>
+            }
+        </php>
+    </div>
+    <div id="fenduaneditarea" style="margin:10px 0px 0px 0px;background:#DFFFCA;padding:0px 0px 10px 0px">
+        <button type="button" class="btn" onClick="addfenduan(this)">添加分段</button>
+        <php>
+            foreach($json->fenduan as $key=>$val)
+            {
+            $id.=rand(0,100);
+        </php>
+        <div style="border:3px solid #4BBD00;margin:5px 0px 0px 0px">
+            <div>
+                <input type="text" name="fenduan[]" value="{$val}" id="amount{$id}" relative="#slider-range{$id}" readonly style="border:0; color:#f6931f; font-weight:bold;float:left;background-color:transparent;margin:5px 0px 0px 5px;display:">
+                <button style="float:right;margin-right:0px" type="button" class="btn" onClick="deletefenduan(this)">删除此分段</button>
+                <div style="clear:both;width:0px;height:0px;font-size:0px;line-height:0px"></div>
+            </div>
+            <div id="slider-range{$id}" class="slider-range"  relative="#amount{$id}"></div>
+            <input type="text" name="fenduantitle[]" value="{$json->fenduantitle[$key]|base64_decode|stripslashes}" class="text input-large" style="width:624px" placeholder="请输入分段标题">
+        </div>
+        <php>
+            }
+        </php>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //上传图片
+    /* 初始化上传插件 */
+    $("#upload_file_{$field.name}").uploadify({
+        "height"          : 30,
+        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+        "fileObjName"     : "download",
+        "buttonText"      : "上传视频、音频",
+        "uploader"        : "{:U('BuilderFile/upload',array('session_id'=>session_id()))}",
+        "width"           : 120,
+        'removeTimeout'	  : 1,
+        "onUploadSuccess" : uploadFile{$field.name},
+    'onFallback' : function() {
+        alert('未检测到兼容版本的Flash.');
+    }
+    });
+    function uploadFile{$field.name}(file, data){
+        var data = $.parseJSON(data);
+        if(data.status){
+            var name = "{$field.name}";
+
+            $("input[name="+name+"]").val(data.id);
+            $("input[name="+name+"]").parent().find('.upload-img-box').html(
+                    "<div class=\"upload-pre-file\"><span class=\"upload_icon_all\"></span>" + data.info + "</div>"
+            );
+            var savepath="/Uploads/Download/"+data.savepath+""+data.savename
+            //alert(savepath);
+            insertplayer(savepath);
+
+        } else {
+            updateAlert(data.info);
+            setTimeout(function(){
+                $('#top-alert').find('button').click();
+                $(that).removeClass('disabled').prop('disabled',false);
+            },1500);
+        }
+    }
+    var playervideo = document.getElementById("playervideo");
+    var playervideoLength=0;
+    function insertplayer(path)
+    {
+        playervideo.src = path;
+        playervideo.load();  // if HTML source element is used
+        playervideo.play();
+
+    }
+    $(function(){
+        playervideo.addEventListener("loadedmetadata", function () {
+            playervideoLength = playervideo.duration.toFixed(1);
+            //alert(playervideoLength);
+
+            $(".slider-range").each(function(){
+                var values=$($(this).attr("relative")).val().split("-");
+                //alert($(this).attr("relative")+" "+$($(this).attr("relative")).val())
+                $(this).slider({
+                    range: true,
+                    step: 0.1,
+                    min: 0,
+                    max: playervideoLength,
+                    values: [parseFloat(values[0]),parseFloat(values[1])],
+                    slide: function( event, ui )
+                    {
+                        $($(this).attr("relative")).val(ui.values[ 0 ] + "-" + ui.values[ 1 ] );
+                    }
+                });
+            });
+
+
+        }, false);
+
+
+    });
+    function addSliderListener(id)
+    {
+        $('#slider-range'+id).slider({
+            range: true,
+            step: 0.1,
+            min: 0,
+            max: playervideoLength,
+            values: [playervideoLength/3,playervideoLength*2/3],
+            slide: function( event, ui ) {
+                $($(this).attr("relative")).val(ui.values[ 0 ] + "-" + ui.values[ 1 ] );
+            }
+        });
+
+        $( "#amount"+id ).val( $('#slider-range'+id).slider( "values", 0 ) + "-" + $('#slider-range'+id).slider( "values", 1 ));
+    }
+    function addzimu()
+    {
+        var html=$('#zimumodel').val();
+        var startTime = new Date().getTime()
+        html=html.replace(/{id}/g,startTime);
+        //alert(html);
+        $("#zimueditarea").append(html);
+        addSliderListener(""+startTime);
+
+
+    }
+    function deletezumu(obj)
+    {
+        $(obj).parent().parent().remove();
+    }
+    function addfenduan()
+    {
+        var html=$('#fenduanmodel').val();
+        var startTime = new Date().getTime()
+        html=html.replace(/{id}/g,startTime);
+        //alert(html);
+        $("#fenduaneditarea").append(html);
+        addSliderListener(""+startTime);
+
+
+    }
+    function deletefenduan(obj)
+    {
+        $(obj).parent().parent().remove();
+    }
+</script>

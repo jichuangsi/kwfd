@@ -1,0 +1,55 @@
+<div class="controls">
+    <span style="display: inline-block;"> <input type="file" id="upload_audio_{$field.name}"></span>
+    <eq name="field.opt.showGet" value="true">
+        <a class="btn btn-primary get-upload-file-link" style="margin:auto 5px;">获取音频链接</a>
+    </eq>
+    <span class="upload-file-link" data-link=""></span>
+    <input type="hidden" name="{$field.name}" id="cover_id_{$field.name}" value="{$field['value']}"/>
+    <div class="upload-audio-box">
+        <notempty name="field.value">
+            <audio src="{$field.opt.uploadDir}{$field.value|get_file_path}" controls="controls"></audio>
+        </notempty>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.get-upload-file-link').unbind('click').click(function () {
+            $(this).next('.upload-file-link').html($(this).next('.upload-file-link').attr('data-link'));
+        });
+    });
+    //上传图片
+    /* 初始化上传插件 */
+    $("#upload_audio_{$field.name}").uploadify({
+        "height"          : 30,
+        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+        "fileObjName"     : "download",
+        "buttonText"      : "上传音频",
+        "uploader"        : "{:U('File/upload',array('session_id'=>session_id()))}",
+        "width"           : 120,
+        'removeTimeout'	  : 1,
+        'fileSizeLimit'   :"1024000000",
+        'fileTypeExts'	  : '*.mp3;*.mid;*.avi;*.wma;',
+        "onUploadSuccess" : uploadAudio{$field.name},
+        'onFallback' : function() {
+            alert('未检测到兼容版本的Flash.');
+        }
+    });
+    function uploadAudio{$field.name}(file, data){
+        var data = $.parseJSON(data);
+        var src = '';
+        var inputObj = $("#cover_id_{$field.name}");
+        inputObj.prev('.upload-file-link').attr('data-link','').html('');
+        if(data.status){
+            inputObj.val(data.download.id);
+            src = "{$field.opt.uploadDir}" + data.download.savepath+data.download.savename;
+            inputObj.next('.upload-audio-box').html('<audio src="' + src + '" controls="controls"></audio>');
+            inputObj.prev('.upload-file-link').attr('data-link',src);
+        } else {
+            updateAlert(data.info);
+            setTimeout(function(){
+                $('#top-alert').find('button').click();
+                $(that).removeClass('disabled').prop('disabled',false);
+            },1500);
+        }
+    }
+</script>

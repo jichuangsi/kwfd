@@ -1,0 +1,19 @@
+<extend name="Base/common"/>
+
+<block name="header">
+    <header class="jumbotron subhead" id="overview">
+		<div class="container">
+			<h2>{$info.title}</h2>
+		</div>
+	</header>
+</block>
+
+<block name="body">
+    <div class="span9 main-content">
+        <!-- Contents
+        ================================================== -->
+        <section id="contents">{$info.content}</section>
+        <hr/>
+        {:hook('documentDetailAfter',$info)}
+    </div>
+</block>

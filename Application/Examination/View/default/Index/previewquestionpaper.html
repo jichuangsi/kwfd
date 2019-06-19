@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>题目预览</title>
+</head>
+<link href="__STATIC__/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+<link type="text/css" rel="stylesheet" href="__STATIC__/qtip/jquery.qtip.css"/>
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/Core/js/ext/toastr/toastr.min.css"/>
+<link href="__PUBLIC__/Core/css/oneplus.css" rel="stylesheet"/>
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/Core/js/ext/magnific/magnific-popup.css"/>
+
+    <style type="text/css">
+	body
+	{
+	    padding:0; margin:0;
+		font-size:14px;
+	}
+	.title{font-size:14px;font-weight:bold;line-height:25px;margin:10px 0px 0px 0px}
+	.description{background-color:#eaeaea; border:1px dashed #cccccc;padding:5px;margin:10px 0px 0px 0px}
+	.optionul{margin:0px 0px 0px 20px;list-style-type:none;padding:0px}
+					.optionul li{margin:5px 0px}
+					.question_info u,.optionul u{text-decoration:none }
+					.bot_add{margin:0px 0px 5px 60px}
+					.add_questio{margin:5px 0px}
+
+	.submit{margin:10px 0px 20px 20px}
+	ul{margin:0px;padding:0px;list-style-type:none}
+    </style>
+<body>
+<assign name="az" value="abcdefghijklmnopqrstuvwxyz" />
+
+
+<div class="container">
+  <div class="row">
+	 <div class="col-md-12" style="text-align:right">
+		 <a href="/" class="btn btn-primary">首页</a> <a href="javascript:history.back()" class="btn btn-primary">后退</a>
+	 </div>
+  </div>
+</div>		
+
+
+
+<div class="container sub_menu">
+
+  <div class="common_block_border">
+    <div class="common_block_title">{$questionPaperdata['name']}</div>
+    <div style="margin: 15px">
+	{$questionPaperdata['description']}
+	</div>
+  </div>
+</div>
+<div class="container" style="min-height: 400px">
+        <div class="row">
+            <div class="col-md-9">
+                <!---------------------------------------->
+
+<ul class="examul">
+<php>
+$questionTypeArr=array(
+	    	                       'single_choice' => '单选题',
+	    	                       'choice' => '多选题',
+	    	                       'fill' => '填空题',
+	    	                       'determine' => '判断题',
+	    	                       'essay' => '问答题',
+	    	                       'material' => '材料题',
+                           );
+//dump($questionPaperdata);
+$json=json_decode($questionPaperdata['metas']);
+foreach($json->question_type_seq as $key=>$val)
+{
+if($json->itemquestions->$val=="")continue;
+</php>
+<li>
+   <div class="common_block_border">
+    <div class="common_block_title">{$questionTypeArr[$val]}</div>
+  <php>
+  $map['id']  = array('in',$json->itemquestions->$val);
+  $list=D('Examination/Question')->where($map)->select();
+  foreach($list as $_key=>$data)
+  {
+    if($data['type']=='material')
+	{
+	  $mapsub['parentId']  = array('eq',$data['id']);
+	  $subdata=D('Examination/Question')->where($mapsub)->select();
+	  //dump($subdata);
+	}
+  </php>
+  <div style="margin: 20px">
+		     <include file="./Application/Examination/View/default/Index/viewquestionpaper.html" />
+  </div>
+  <php>
+  }
+  </php>
+  </div>
+</li>
+
+<php>
+}
+</php>
+</ul>
+<php>//dump($questionPaperdata);</php>
+<php>//dump($subdata);</php>
+				<!---------------------------------------->
+            </div>
+            <div class="col-md-3">
+                <!---------------------------------------->
+				   <div class="common_block_border blog_position">
+                    <div class="common_block_title">时间不限</div>
+					 
+                      <div style="margin: 15px">
+					    <php>
+					       for($i=0;$i<10;$i++)
+						   {
+					    </php>
+						<a href="javascript:;" data-anchor="#question19" class="btn btn-default btn-index pull-left  active" style="margin:0px 10px 10px 0px">{$i+1}</a>
+						<php>
+						   }
+					    </php>
+						<button class="btn btn-primary btn-block">我要交卷</button>
+						<div class="clearfix mtm mbm"></div>
+					  </div>
+                  </div>
+				  
+				<!---------------------------------------->
+            </div>
+
+			
+        </div>
+
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,749 @@
+<extend name="Public/base"/>
+
+<block name="body">
+    <div class="main-title">
+        <h2>{$title}</h2>
+    </div>
+    <script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/lhgdialog/_demo/lhgdialog.min.js"></script>
+    <form action="{$savePostUrl}" method="post" class="form-horizontal">
+        <volist name="keyList" id="field">
+            <label class="item-label" id="{$field.name}_label">{$field.title|htmlspecialchars}
+                <if condition="$field['subtitle']">
+                    <span class="check-tips">（{$field.subtitle|htmlspecialchars}）</span>
+                </if>
+            </label>
+            <if condition="$field['name'] == 'action'">
+                <p style="color: #f00;">开发人员注意：你使用了一个名称为action的字段，由于这个字段名称会与form[action]冲突，导致无法提交表单，请换用另外一个名字。</p>
+            </if>
+            <div class="controls" id="{$field.name}_control">
+                <switch name="field.type">
+                    <case value="text">
+                        <input type="text" name="{$field.name}" value="{$field.value|htmlspecialchars}" class="text input-large"/>
+                    </case>
+                    <case value="hidden">
+                        <input type="hidden" name="{$field.name}" value="{$field.value}" class="text input-large"/>
+						<script type="text/javascript">
+                        $(function()
+						{
+                          $('#{$field.name}_label').hide();
+						  $('#{$field.name}_control').hide();
+                        })
+                        </script>
+                    </case>
+                    <case value="readonly">
+                        <input type="text" name="{$field.name}" value="{$field.value}" class="text input-large" placeholder="无需填写" readonly/>
+                    </case>
+                    <case value="integer">
+                        <input type="text" name="{$field.name}" value="{$field.value}" class="text input-large"/>
+                    </case>
+                    <case value="uid">
+                        <input type="text" name="{$field.name}" value="{$field.value}" class="text input-large"/>
+                    </case>
+                    <case value="select">
+                        <select name="{$field.name}">
+                            <volist name="field.opt" id="option">
+                                <php>
+                                    $selected = $field['value']==$key ? 'selected' : '';
+                                </php>
+                                <option value="{$key}" {$selected}>{$option|htmlspecialchars}</option>
+                            </volist>
+                        </select>
+                    </case>
+                    <case value="radio">
+                        <volist name="field.opt" id="option">
+                            <php>
+                                $checked = $field['value']==$key ? 'checked' : '';
+                                $inputId = "id_$field[name]_$key";
+                            </php>
+                            <input id="{$inputId}" name="{$field.name}" value="{$key}" type="radio" {$checked}/>
+                            <label for="{$inputId}">{$option|htmlspecialchars}</label>
+                        </volist>
+                    </case>
+                    <case value="image">
+                        <div class="controls">
+                            <input type="file" id="upload_picture_{$field.name}">
+                            <input type="hidden" name="{$field.name}" id="cover_id_{$field.name}" value="{$field['value']}"/>
+                            <div class="upload-img-box">
+                                <notempty name="field.value">
+                                    <div class="upload-pre-item"><img src="{$field.value|get_cover='path'}"/></div>
+                                </notempty>
+                            </div>
+                        </div>
+                        <script type="text/javascript">
+                            //上传图片
+                            /* 初始化上传插件 */
+                            $("#upload_picture_{$field.name}").uploadify({
+                                "height"          : 30,
+                                "swf"             : "__STATIC__/uploadify/uploadify.swf",
+                                "fileObjName"     : "download",
+                                "buttonText"      : "上传图片",
+                                "uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+                                "width"           : 120,
+                                'removeTimeout'	  : 1,
+                                'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+                                "onUploadSuccess" : uploadPicture{$field.name},
+                            'onFallback' : function() {
+                                alert('未检测到兼容版本的Flash.');
+                            }
+                            });
+                            function uploadPicture{$field.name}(file, data){
+							    //alert(data.toString());
+                                var data = $.parseJSON(data);
+                                var src = '';
+                                if(data.status){
+                                    $("#cover_id_{$field.name}").val(data.id);
+                                    src = data.url || '__ROOT__' + data.path
+                                    $("#cover_id_{$field.name}").parent().find('.upload-img-box').html(
+                                            '<div class="upload-pre-item"><img src="' + src + '"/></div>'
+                                    );
+                                } else {
+                                    updateAlert(data.info);
+                                    setTimeout(function(){
+                                        $('#top-alert').find('button').click();
+                                        $(that).removeClass('disabled').prop('disabled',false);
+                                    },1500);
+                                }
+                            }
+                        </script>
+
+                    </case>
+                    <case value="checkbox">
+                        <php>
+                            $importCheckBox = true;
+                        </php>
+                        <php>
+                            $field['value_array'] = explode(',', $field['value']);
+                        </php>
+                        <volist name="field.opt" id="option">
+                            <php>
+                                $checked = in_array($key,$field['value_array']) ? 'checked' : '';
+                                $inputId = "id_$field[name]_$key";
+                            </php>
+                            <input type="checkbox" value="{$key}" id="{$inputId}" class="oneplus-checkbox" data-field-name="{$field.name}" {$checked}/>
+                            <label for="{$inputId}">{$option|htmlspecialchars}</label>
+                            <input type="hidden" name="{$field.name}" class="oneplus-checkbox-hidden" data-field-name="{$field.name}" value="{$field.value}"/>
+                        </volist>
+                    </case>
+                    <case value="editor">
+                        <label class="textarea">
+                            <textarea name="{$field.name}">{$field.value|htmlspecialchars}</textarea>
+                            {:hook('adminArticleEdit', array('name'=>$field['name'],'value'=>$field['value']))}
+                        </label>
+                    </case>
+					<case value="minieditor">
+                        <label class="textarea">
+                            <textarea name="{$field.name}">{$field.value|htmlspecialchars}</textarea>
+                            <link rel="stylesheet" href="__STATIC__/kindeditor/default/default.css" />
+			<script charset="utf-8" src="__STATIC__/kindeditor/kindeditor-min.js"></script>
+			<script charset="utf-8" src="__STATIC__/kindeditor/zh_CN.js"></script>
+			<script type="text/javascript">
+				var editor{$field.name};
+				KindEditor.ready(function(K) {
+					editor{$field.name} = K.create('textarea[name="{$field.name}"]', {
+						allowFileManager : false,
+						themesPath: K.basePath,
+						width: '100%',
+						height: '{$field.opt.height}',
+						resizeType: 1,
+						pasteType : 2,
+						urlType : 'absolute',
+						items : [
+						'source', '|','fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+						'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+						'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+						fileManagerJson : '{:U('fileManagerJson')}',
+						//uploadJson : '{:U('uploadJson')}' }
+						uploadJson : '{:addons_url("EditorForAdmin://Upload/ke_upimg")}'
+					});
+				});
+
+				$(function(){
+					//传统表单提交同步
+					$('textarea[name="{$field.name}"]').closest('form').submit(function(){
+						editor{$field.name}.sync();
+					});
+					//ajax提交之前同步
+					$('button[type="submit"],#submit,.ajax-post').click(function(){
+						editor{$field.name}.sync();
+					});
+				})
+			</script>
+                        </label>
+                    </case>
+                    <case value="textarea">
+                        <textarea name="{$field.name}" class="text input-large" style="height: 8em;">{$field.value|htmlspecialchars}</textarea>
+                    </case>
+                    <case value="time">
+                        <php>
+                            $importDatetimePicker = true;
+                            //默认为当前时间
+                            if(!$field['value']){
+                                $field['value'] = time();
+                            }
+                        </php>
+                        <input type="hidden" name="{$field.name}" value="{$field.value}"/>
+                        <input type="text" data-field-name="{$field.name}" class="text input-large time" value="{$field.value|time_format}" placeholder="请选择时间" />
+                    </case>
+					<case value="file">
+                        <div class="controls">
+									<input type="file" id="upload_file_{$field.name}">
+									<input type="hidden" name="{$field.name}" value="{$field.value}"/>
+									<div class="upload-img-box">
+										<notempty name="field.value">
+											<div class="upload-pre-file"><span class="upload_icon_all"></span>{$field.value|get_table_field=###,'id','name','File'}</div>
+										</notempty>
+									</div>
+								</div>
+								<script type="text/javascript">
+								//上传图片
+							    /* 初始化上传插件 */
+								$("#upload_file_{$field.name}").uploadify({
+							        "height"          : 30,
+							        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+							        "fileObjName"     : "download",
+							        "buttonText"      : "上传文件",
+							        "uploader"        : "{:U('BuilderFile/upload',array('session_id'=>session_id()))}",
+							        "width"           : 120,
+							        'removeTimeout'	  : 1,
+							        "onUploadSuccess" : uploadFile{$field.name},
+							        'onFallback' : function() {
+							            alert('未检测到兼容版本的Flash.');
+							        }
+							    });
+								function uploadFile{$field.name}(file, data){				
+									var data = $.parseJSON(data);
+							        if(data.status){
+							        	var name = "{$field.name}";
+							        	$("input[name="+name+"]").val(data.id);
+							        	$("input[name="+name+"]").parent().find('.upload-img-box').html(
+							        		"<div class=\"upload-pre-file\"><span class=\"upload_icon_all\"></span>" + data.info + "</div>"
+							        	);
+							        } else {
+							        	updateAlert(data.info);
+							        	setTimeout(function(){
+							                $('#top-alert').find('button').click();
+							                $(that).removeClass('disabled').prop('disabled',false);
+							            },1500);
+							        }
+							    }
+								</script>
+                    </case>
+					<case value="SingleChoice">
+				     	<assign name="questionanswer" value="$keyList[sizeof($keyList)-1].value" />
+					    <php>$jsonanswer=json_decode($questionanswer,true);//dump($keyList[sizeof($keyList)-1])</php>
+					    <assign name="SingleChoice" value="$field.value" />
+						<assign name="az" value="abcdefghijklmnopqrstuvwxyz" />
+						<php>$json=json_decode($SingleChoice);//dump($json);</php>
+						<textarea id="itemmodel" name="itemmodel" cols="" rows="" style="display:none ">
+                                     <table width="100%"  border="0" cellspacing="10" cellpadding="0" style="margin:5px 0px" id="choice_item_{NUM}">
+                            <tr>
+                               <td width="60"><label class="item-label">选项{NUM}</label></td>
+                               <td>
+							        <textarea id="choice{NUM}" name="item[]">[/textarea]							
+							        <input type="hidden" name="parse" value="0">
+							   </td>
+							   <td width="100" align="center">
+							     <label><input name=answer type=radio value="{NUM}">正确答案</label>
+							   </td>
+							   <td width="80" align="center">
+							      <button class="btn" onclick="delitem('choice_item_{NUM}');return false">删除</button>
+							   </td>
+                            </tr>
+                          </table>
+						  
+                        </textarea>
+						<textarea id="editormodel" name="editormodel" cols="" rows="" style="display:none ">
+						var editor{NUM};
+					editor{NUM} = KindEditor.create('textarea[id="choice{NUM}"]', {
+						allowFileManager : false,
+						themesPath: KindEditor.basePath,
+						width: '100%',
+						height: '100px',
+						resizeType: 1,
+						pasteType : 2,
+						urlType : 'absolute',
+						items : [
+						'source', '|','fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+						'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+						'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+						fileManagerJson : '{:U('fileManagerJson')}',
+						//uploadJson : '{:U('uploadJson')}' }
+						uploadJson : '{:addons_url("EditorForAdmin://Upload/ke_upimg")}'
+					});
+
+	
+					//传统表单提交同步
+					$('textarea[id="choice{NUM}"]').closest('form').submit(function(){
+						editor{NUM}.sync();
+					});
+					//ajax提交之前同步
+					$('button[type="submit"],#submit,.ajax-post').click(function(){
+						editor{NUM}.sync();
+					});
+						</textarea>
+						<script type="text/javascript">
+						var az='abcdefghijklmnopqrstuvwxyz';
+						$(function(){
+						  if($("#items table").length==0)
+						  {
+						    for(var i=0;i<4;i++)
+							{
+							  additem();
+							}
+						  }
+						})
+						function additem()
+						{
+						   if($("#items table").length>=10)
+                           {
+						     alert('选项最多十个!');
+							 return;
+						   }						   
+						   var NUM=az.substr($("#items table").length,1).toUpperCase()
+						   var html=$("#itemmodel").val().replace(/{NUM}/ig,NUM);
+						   html=html.replace('[/textarea]','</textarea>');
+                           //alert(html);
+						   $("#items").append(html);
+						   html=$("#editormodel").val().replace(/{NUM}/ig,NUM);
+						   eval(html);
+						}
+						function delitem(id)
+						{
+						  if($("#items table").length>2)
+						  {
+						    $("#"+id).remove();
+							for(var i=0;i<$("#items table").length;i++)
+							{
+							   //alert(i+" "+az.substr(i,1).toUpperCase());
+							   $("#items table").eq(i).find('label[class="item-label"]').eq(0).html('选项'+az.substr(i,1).toUpperCase());
+							   $("#items table").eq(i).find('input[name="answer"]').eq(0).val(az.substr(i,1).toUpperCase());
+							}
+						  }
+						  else
+						  {
+						    alert("选项至少二个!");
+						  }
+						}
+						</script>
+						<div id="items">
+						<php> //dump($json);dump($json->choices);
+						foreach($json->choices as $key=>$val)
+						{
+						//dump($key."=".$val);
+						</php>
+						  <table width="100%"  border="0" cellspacing="10" cellpadding="0" style="margin:5px 0px" id="choice_item_{$az|msubstr=$key,1,'utf-8',false|strtoupper}">
+                            <tr>
+                               <td width="60"><label class="item-label">选项{$az|msubstr=$key,1,"utf-8",false|strtoupper}</label></td>
+                               <td>
+							        <textarea id="choice{$az|msubstr=$key,1,'utf-8',false|strtoupper}" name="item[]">{$val|base64_decode|stripslashes}</textarea>
+                            <!--hook('adminArticleEdit', array('name'=>strtoupper(msubstr($az,$key,1,'utf-8',false)),'value'=>$val))-->
+							
+							<input type="hidden" name="parse" value="0">
+
+			<link rel="stylesheet" href="__STATIC__/kindeditor/default/default.css" />
+			<script charset="utf-8" src="__STATIC__/kindeditor/kindeditor-min.js"></script>
+			<script charset="utf-8" src="__STATIC__/kindeditor/zh_CN.js"></script>
+			<script type="text/javascript">
+				var editor{$az|msubstr=$key,1,"utf-8",false|strtoupper};
+				KindEditor.ready(function(K) {
+					editor{$az|msubstr=$key,1,"utf-8",false|strtoupper} = K.create('textarea[id="choice{$az|msubstr=$key,1,"utf-8",false|strtoupper}"]', {
+						allowFileManager : false,
+						themesPath: K.basePath,
+						width: '100%',
+						height: '100px',
+						resizeType: 1,
+						pasteType : 2,
+						urlType : 'absolute',
+						items : [
+						'source', '|','fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+						'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+						'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+						fileManagerJson : '{:U('fileManagerJson')}',
+						//uploadJson : '{:U('uploadJson')}' }
+						uploadJson : '{:addons_url("EditorForAdmin://Upload/ke_upimg")}'
+					});
+				});
+
+				$(function(){
+					//传统表单提交同步
+					$('textarea[id="choice{$az|msubstr=$key,1,"utf-8",false|strtoupper}"]').closest('form').submit(function(){
+						editor{$az|msubstr=$key,1,"utf-8",false|strtoupper}.sync();
+					});
+					//ajax提交之前同步
+					$('button[type="submit"],#submit,.ajax-post').click(function(){
+						editor{$az|msubstr=$key,1,"utf-8",false|strtoupper}.sync();
+					});
+				})
+			</script>
+							   </td>
+							   <td width="100" align="center">
+							     <label><input name="answer" type="radio" <php>if(in_array(strtoupper(msubstr($az,$key,1,'utf-8',false)),$jsonanswer)){echo 'checked';}</php> value="{$az|msubstr=$key,1,'utf-8',false|strtoupper}">正确答案</label>
+							   </td>
+							   <td width="80" align="center">
+							      <button class="btn" onclick="delitem('choice_item_{$az|msubstr=$key,1,'utf-8',false|strtoupper}');return false">删除</button>
+							   </td>
+                            </tr>
+                          </table>
+                           
+						<php>
+						}
+						</php>
+						</div>
+						<button class="btn" style="margin:10px 0px 0px 60px" onclick='additem();return false'>新增选项</button>
+                    </case>
+					<case value="Choice">
+				     	<assign name="questionanswer" value="$keyList[sizeof($keyList)-1].value" />
+					    <php>$jsonanswer=json_decode($questionanswer,true);//dump($keyList[sizeof($keyList)-1])</php>
+					    <assign name="SingleChoice" value="$field.value" />
+						<assign name="az" value="abcdefghijklmnopqrstuvwxyz" />
+						<php>$json=json_decode($SingleChoice);//dump($json);</php>
+						<textarea id="itemmodel" name="itemmodel" cols="" rows="" style="display:none ">
+                                     <table width="100%"  border="0" cellspacing="10" cellpadding="0" style="margin:5px 0px" id="choice_item_{NUM}">
+                            <tr>
+                               <td width="60"><label class="item-label">选项{NUM}</label></td>
+                               <td>
+							        <textarea id="choice{NUM}" name="item[]">[/textarea]							
+							        <input type="hidden" name="parse" value="0">
+							   </td>
+							   <td width="100" align="center">
+							     <label><input class="answer" name="answer[]" type=checkbox value="{NUM}">正确答案</label>
+							   </td>
+							   <td width="80" align="center">
+							      <button class="btn" onclick="delitem('choice_item_{NUM}');return false">删除</button>
+							   </td>
+                            </tr>
+                          </table>
+						  
+                        </textarea>
+						<textarea id="editormodel" name="editormodel" cols="" rows="" style="display:none ">
+						var editor{NUM};
+					editor{NUM} = KindEditor.create('textarea[id="choice{NUM}"]', {
+						allowFileManager : false,
+						themesPath: KindEditor.basePath,
+						width: '100%',
+						height: '100px',
+						resizeType: 1,
+						pasteType : 2,
+						urlType : 'absolute',
+						items : [
+						'source', '|','fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+						'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+						'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+						fileManagerJson : '{:U('fileManagerJson')}',
+						//uploadJson : '{:U('uploadJson')}' }
+						uploadJson : '{:addons_url("EditorForAdmin://Upload/ke_upimg")}'
+					});
+
+	
+					//传统表单提交同步
+					$('textarea[id="choice{NUM}"]').closest('form').submit(function(){
+						editor{NUM}.sync();
+					});
+					//ajax提交之前同步
+					$('button[type="submit"],#submit,.ajax-post').click(function(){
+						editor{NUM}.sync();
+					});
+						</textarea>
+						<script type="text/javascript">
+						var az='abcdefghijklmnopqrstuvwxyz';
+						$(function(){
+						  if($("#items table").length==0)
+						  {
+						    for(var i=0;i<4;i++)
+							{
+							  additem();
+							}
+						  }
+						})
+						function additem()
+						{
+						   if($("#items table").length>=10)
+                           {
+						     alert('选项最多十个!');
+							 return;
+						   }						   
+						   var NUM=az.substr($("#items table").length,1).toUpperCase()
+						   var html=$("#itemmodel").val().replace(/{NUM}/ig,NUM);
+						   html=html.replace('[/textarea]','</textarea>');
+                           //alert(html);
+						   $("#items").append(html);
+						   html=$("#editormodel").val().replace(/{NUM}/ig,NUM);
+						   eval(html);
+						}
+						function delitem(id)
+						{
+						  if($("#items table").length>2)
+						  {
+						    $("#"+id).remove();
+							for(var i=0;i<$("#items table").length;i++)
+							{
+							   //alert(i+" "+az.substr(i,1).toUpperCase());
+							   $("#items table").eq(i).find('label[class="item-label"]').eq(0).html('选项'+az.substr(i,1).toUpperCase());
+							   $("#items table").eq(i).find('input[class="answer"]').eq(0).val(az.substr(i,1).toUpperCase());
+							}
+						  }
+						  else
+						  {
+						    alert("选项至少二个!");
+						  }
+						}
+						</script>
+						<div id="items">
+						<php> //dump($json);dump($json->choices);
+						foreach($json->choices as $key=>$val)
+						{
+						//dump($key."=".$val);
+						</php>
+						  <table width="100%"  border="0" cellspacing="10" cellpadding="0" style="margin:5px 0px" id="choice_item_{$az|msubstr=$key,1,'utf-8',false|strtoupper}">
+                            <tr>
+                               <td width="60"><label class="item-label">选项{$az|msubstr=$key,1,"utf-8",false|strtoupper}</label></td>
+                               <td>
+							        <textarea id="choice{$az|msubstr=$key,1,'utf-8',false|strtoupper}" name="item[]">{$val|base64_decode|stripslashes}</textarea>
+                            <!--hook('adminArticleEdit', array('name'=>strtoupper(msubstr($az,$key,1,'utf-8',false)),'value'=>$val))-->
+							
+							<input type="hidden" name="parse" value="0">
+
+			<link rel="stylesheet" href="__STATIC__/kindeditor/default/default.css" />
+			<script charset="utf-8" src="__STATIC__/kindeditor/kindeditor-min.js"></script>
+			<script charset="utf-8" src="__STATIC__/kindeditor/zh_CN.js"></script>
+			<script type="text/javascript">
+				var editor{$az|msubstr=$key,1,"utf-8",false|strtoupper};
+				KindEditor.ready(function(K) {
+					editor{$az|msubstr=$key,1,"utf-8",false|strtoupper} = K.create('textarea[id="choice{$az|msubstr=$key,1,"utf-8",false|strtoupper}"]', {
+						allowFileManager : false,
+						themesPath: K.basePath,
+						width: '100%',
+						height: '100px',
+						resizeType: 1,
+						pasteType : 2,
+						urlType : 'absolute',
+						items : [
+						'source', '|','fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+						'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+						'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+						fileManagerJson : '{:U('fileManagerJson')}',
+						//uploadJson : '{:U('uploadJson')}' }
+						uploadJson : '{:addons_url("EditorForAdmin://Upload/ke_upimg")}'
+					});
+				});
+
+				$(function(){
+					//传统表单提交同步
+					$('textarea[id="choice{$az|msubstr=$key,1,"utf-8",false|strtoupper}"]').closest('form').submit(function(){
+						editor{$az|msubstr=$key,1,"utf-8",false|strtoupper}.sync();
+					});
+					//ajax提交之前同步
+					$('button[type="submit"],#submit,.ajax-post').click(function(){
+						editor{$az|msubstr=$key,1,"utf-8",false|strtoupper}.sync();
+					});
+				})
+			</script>
+							   </td>
+							   <td width="100" align="center">
+							     <label><input class="answer" name="answer[]" type="checkbox" <php>if(in_array(strtoupper(msubstr($az,$key,1,'utf-8',false)),$jsonanswer)){echo 'checked';}</php> value="{$az|msubstr=$key,1,'utf-8',false|strtoupper}">正确答案</label>
+							   </td>
+							   <td width="80" align="center">
+							      <button class="btn" onclick="delitem('choice_item_{$az|msubstr=$key,1,'utf-8',false|strtoupper}');return false">删除</button>
+							   </td>
+                            </tr>
+                          </table>
+                           
+						<php>
+						}
+						</php>
+						</div>
+						<button class="btn" style="margin:10px 0px 0px 60px" onclick='additem();return false'>新增选项</button>
+                    </case>
+					<case value="ExamTopic">
+					<php>//dump($field);</php>
+                        <style type="text/css">
+						    .examul{margin:0px;padding:0px;list-style-type:none}
+							.examul li{border-bottom:1px solid #cccccc;padding:5px 0px;line-height:30px}
+                            .examitem{float:left;width:auto;margin:0px 5px}
+							.exmatitle{width:100px}
+							.pointer{cursor:pointer}
+							.clear{font-size:0px;line-height:0px;clear:both}
+                        </style>
+						<script type="text/javascript">
+
+						$(function(){
+						  //上移
+                          $("img.upbtn").each(function(){
+                                $(this).click(function(){
+                                   var $tr = $(this).parents("li");
+                                   if ($tr.index() != 0) 
+								   {
+                                     $tr.prev().before($tr);
+                                   }
+								   else
+								   {
+								      alert('已经是第一个了。');
+								   }
+                                });
+                          });
+						  //下移
+                          $("img.downbtn").each(function(){
+                                $(this).click(function(){
+                                   var $tr = $(this).parents("li"); 
+								   var trLength = $("img.downbtn").length; 
+                                   if ($tr.index() != trLength - 1) 
+								   { 
+                                      $tr.next().after($tr);
+                                   }
+								   else
+								   {
+								      alert('已经是最后一个了。');
+								   }
+                                });
+                          });
+                        });
+						var selectquestionwindow;
+						function selectquestion(url)
+						{
+						  $.dialog({
+                            id: 'selectquestion',
+                            title: '选题',
+                            content:'url:'+url,
+                            width: 800,
+                            height: 500,
+                            fixed: true,
+                            drag: true,
+                            resize: false,
+							lock: true,
+							ok: function(){
+                               $("#"+(selectquestionwindow.$("input[name='type']").val())+"_num").html(selectquestionwindow.frames[0].window.$("input[name='id[]']").length);
+                               $("#"+(selectquestionwindow.$("input[name='type']").val())+"_questionnum").val(selectquestionwindow.frames[0].window.$("input[name='id[]']").length);
+                               var questionarr=null;
+							   $.each(selectquestionwindow.frames[0].window.$("input[name='id[]']"), function(i,val){      
+                                    if(questionarr==null)
+									{
+									  questionarr=val.value;
+									}
+									else
+									{
+									  questionarr+=","+val.value;
+									}
+                               });
+							   //alert(questionarr);
+							   $("#"+(selectquestionwindow.$("input[name='type']").val())+"_questions").val(questionarr);
+							   
+							   return true;
+                            },
+							okVal: '保存',
+							close: function(){
+                                //alert(selectquestionwindow.$("input[name='type']").val());
+								//alert(selectquestionwindow.frames[0].window.$("input[name='id[]']").length);
+								return true;
+                            },
+							cancelVal: '关闭',
+							cancel: true
+                           });
+						}
+						</script>
+						<ul class="examul">
+						  <php>
+						   
+						   //foreach($keyList[sizeof($keyList)-1]['value'] as $key=>$val)
+	                       $json=json_decode($field['value']);
+						   //dump($keyList[0]['value']);
+						   $questionTypeArr=array(
+	    	                       'single_choice' => '单选题',
+	    	                       'choice' => '多选题',
+	    	                       'fill' => '填空题',
+	    	                       'determine' => '判断题',
+	    	                       'essay' => '问答题',
+	    	                       'material' => '材料题',
+                           );
+						   foreach($json->question_type_seq as $key=>$val)
+						   {
+						   </php>
+						     <li><div class="examitem pointer"><img src="__IMG__/moveup.png" style="margin-top:7px" class="upbtn"></div><div class="examitem pointer"><img src="__IMG__/movedown.png" style="margin-top:7px"  class="downbtn"></div><div class="examitem"><input name="question_type_seq[]" type="hidden" value="{$val}"></div><div class="examitem exmatitle" style="font-weight:bold">{$questionTypeArr[$val]}</div><div class="examitem">题目分值:<input name="score[]" type="text" class="text" style="width:50px" value="{$json->score->$val}"></div><div class="examitem">已选题数：<span id="{$val}_num" style="background-color:#ffffff;width:20px;display:inline-block;">{$json->questionnum[$key]}</span>  <input id="{$val}_questionnum" name="questionnum[]" type="hidden" value="{$json->questionnum[$key]}">题</div><div class="examitem"><input id="{$val}_questions" name="item_questions[]" type="hidden" value="{$json->itemquestions->$val}"><button type="button" class="btn" onClick='selectquestion("{:U("selectquestion",array("type"=>$val,"id"=>$keyList[0]["value"]))}")'>选题</button></div><div class="clear"></div></li>
+						   <php>
+						   }
+                           $json=json_decode($field['value']);
+						   //foreach($json.question_type_seq as $key=>$val);
+						   //dump($json);
+						  </php>
+						</ul>
+                    </case>
+                    <default/>
+                    <span style="color: #f00;">错误：未知字段类型 {$field.type}</span>
+                    <input type="hidden" name="{$field.name}" value="{$field.value|htmlspecialchars}"/>
+                </switch>
+            </div>
+        </volist>
+
+        <br/>
+        <div class="form-item">
+            <volist name="buttonList" id="button">
+                <button {$button.attr}>{$button.title}</button>
+            </volist>
+        </div>
+    </form>
+</block>
+
+<block name="script">
+    <if condition="$importDatetimePicker">
+        <link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+        <php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+        <link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+        <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+        <script>
+            $('.time').datetimepicker({
+                format: 'yyyy-mm-dd hh:ii',
+                language:"zh-CN",
+                minView:'hour',
+                autoclose:true
+            });
+
+            $('.time').change(function(){
+                var fieldName = $(this).attr('data-field-name');
+                var dateString = $(this).val();
+                var date = new Date(dateString);
+                var timestamp = date.getTime();
+                $('[name='+fieldName+']').val(Math.floor(timestamp/1000));
+            });
+        </script>
+    </if>
+
+    <if condition="$importCheckBox">
+        <script>
+            $(function(){
+                function implode(x, list) {
+                    var result = "";
+                    for(var i=0;i<list.length;i++){
+                        if(result == "") {
+                            result += list[i];
+                        } else {
+                            result += ',' + list[i];
+                        }
+                    }
+                    return result;
+                }
+
+                $('.oneplus-checkbox').change(function(e){
+                    var fieldName = $(this).attr('data-field-name');
+                    var checked = $('.oneplus-checkbox[data-field-name='+fieldName+']:checked');
+                    var result = [];
+                    for(var i=0;i<checked.length;i++) {
+                        var checkbox = $(checked.get(i));
+                        result.push(checkbox.attr('value'));
+                    }
+                    result = implode(',', result);
+                    $('.oneplus-checkbox-hidden[data-field-name='+fieldName+']').val(result);
+                });
+            })
+        </script>
+    </if>
+
+    <script type="text/javascript">
+        Think.setValue("type", {$info.type|default=0});
+        Think.setValue("group", {$info.group|default=0});
+        //导航高亮
+        highlight_subnav('{:U('Config/index')}');
+    </script>
+
+</block>

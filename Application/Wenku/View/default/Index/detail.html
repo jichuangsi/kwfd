@@ -1,0 +1,100 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+<style>
+#viewerPlaceHolder{height:800px}
+
+@media screen and (max-width: 767px) {
+  #viewerPlaceHolder{height:50px}
+}
+</style>
+    <script type="text/javascript" src="__STATIC__/FlexPaper/flexpaper_flash.js"></script>
+	<script type="text/javascript" src="__STATIC__/PDFObject-master/pdfobject.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <!---------------------------------------->
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">{$data.title}</div>               
+                    <div class="detaildatetime">发布时间：{$data.createtime|date='Y-m-d H:i',###}</div>
+					<div style="padding: 0px 15px 10px 15px">                    
+					  <if condition="$data['price'] gt 0 ">
+					  <button class="btn btn-primary" onClick="window.location.href='{:U('cart?id='.$data['id'])}'">购买后才可以阅读</button>
+					  <else /> 
+					  </if>
+					</div>
+					<div id="viewerPlaceHolder" style="width:100%;display:block;padding:0px 15px 15px 15px"></div>
+	        <script type="text/javascript"> 
+			/*
+				var fp = new FlexPaperViewer(	
+						 '__STATIC__/FlexPaper/FlexPaperViewer',
+						 'viewerPlaceHolder', { config : {
+						 SwfFile : escape('__STATIC__/FlexPaper/paper.swf'),
+						 Scale : 1.0, 
+						 ZoomTransition : 'easeOut',
+						 ZoomTime : 0.5,
+						 ZoomInterval : 0.2,
+						 FitPageOnLoad : false,
+						 FitWidthOnLoad : false,
+						 PrintEnabled : true,
+						 FullScreenAsMaxWindow : false,
+						 ProgressiveLoading : false,
+						 MinZoomSize : 0.2,
+						 MaxZoomSize : 5,
+						 SearchMatchAll : false,
+						 InitViewMode : 'Portrait',
+						 
+						 ViewModeToolsVisible : true,
+						 ZoomToolsVisible : true,
+						 NavToolsVisible : true,
+						 CursorToolsVisible : true,
+						 SearchToolsVisible : true,
+  						
+  						 localeChain: 'en_US'
+						 }});
+			*/
+			$(function(){
+			   if(PDFObject.supportsPDFs){
+			       PDFObject.embed("{$data.file}", "#viewerPlaceHolder");
+			   }
+			   else
+			   {
+			       $("#viewerPlaceHolder").html("对不起，您的浏览器不支持文件在线浏览，<a href='{$data.file}'>点击下载文件。</a>");
+			   }
+			});
+	        </script>
+			        <div class="detailcontent" style="min-height:0px">{$data.content}</div>
+      				<div style="padding: 20px">
+                       {:hook('localComment', array('path'=>MODULE_NAME."/index/$data[id]", 'uid'=>get_uid()))}
+                    </div>
+				</div>
+				<!---------------------------------------->
+            </div>
+            <div class="col-md-3">
+                <!---------------------------------------->
+				  <div class="common_block_border blog_position">
+                    <div class="common_block_title">访问排行</div>
+					 <assign name="num" value="1" />
+                     <volist name="hotdata" id="vo">
+                       <div class="clearfix" style="position: relative">         
+                         <div class="col-md-12">
+                           <div>
+                                <span class="rank_num">{$num++}</span><h3 class="text-more" style="float:left"><a title="{$vo['title']}" href="{:U('Wenku/Index/Detail',array('id'=>$vo['id']))}">{$vo["title"]|msubstr=0,10}</a></h3>
+                           </div>
+                         </div>
+                      </div>
+					  <div class="col-md-12">
+                         <div style="border-bottom: 1px dashed rgb(204, 204, 204);margin: 10px 0px"></div>
+					  </div>
+		             </volist>
+                      <div style="margin:0px 15px;height:10px;clear:both"></div>
+                  </div>
+				<!---------------------------------------->
+            </div>
+			
+        </div>
+
+    </div>
+</block>

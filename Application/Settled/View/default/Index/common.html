@@ -1,0 +1,23 @@
+<extend name="./Application/Common/View/base/common.html" />
+
+<block name="body">
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    <div class="container" style="min-height: 400px">
+        <div class="row">
+		   
+            <div class="col-md-12">
+                <!---------------------------------------->
+				
+				<div class="common_block_border">
+                    <div class="common_block_title">{$data["title"]}</div>
+					<div  style="min-height:500px;padding:0px 10px">{$data["content"]}</div>
+				</div>
+				<!---------------------------------------->
+            </div>
+
+
+			
+        </div>
+
+    </div>
+</block>

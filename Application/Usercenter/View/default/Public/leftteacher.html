@@ -1,0 +1,100 @@
+<script type="text/javascript">
+function initMenu() {
+  $('#menusecond ul').hide();
+  $('#menusecond ul').children('.current').parent().show();
+  //$('#menusecond ul:first').show();
+  $('#menusecond li a').click(
+    function() {
+      var checkElement = $(this).next();
+      if((checkElement.is('ul')) && (checkElement.is(':visible'))) {
+        return false;
+        }
+      if((checkElement.is('ul')) && (!checkElement.is(':visible'))) {
+        $('#menusecond ul:visible').slideUp('normal');
+		$('#menusecond .label').html('+');
+        checkElement.slideDown('normal');
+		$(this).find(".label").html('-');
+        return false;
+        }
+      }
+    );
+}
+ 
+$(document).ready(function() {
+  initMenu();
+  $('#menusecond li a').each(function(){
+     if($(this).attr("href").indexOf("<php>echo strtolower(CONTROLLER_NAME);</php>")!=-1)
+	 {
+	   $(this).addClass("active");
+	 }
+  });
+
+});
+</script>	
+<style>
+
+ul#menusecond, ul#menusecond ul {
+  list-style-type:none;
+  margin: 0;
+  padding: 0;
+}
+
+ul#menusecond a {
+  display: block;
+  text-decoration: none;	
+}
+ul#menusecond li{
+  margin-top: 1px;
+}
+ul#menusecond li ul li{
+  margin-top: 0px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+ul#menusecond li a {
+  background: #f1f1f1;
+  color: #555555;	
+  padding: 0.5em;
+}
+ul#menusecond li a .label {
+	margin: 0 5px 0 0;
+	float: right;
+	padding:0px 5px;
+	width:20px;
+	height:20px;
+	background-color:#dadada; 
+    -moz-border-radius: 10px; /* Mozilla浏览器的私有属性 */ 
+    -webkit-border-radius: 10px; /* Webkit浏览器的私有属性 */ 
+    border-radius: 10px; /* 四个半径值分别是左上角、右上角、右下角和左下角 */ 
+	border:0px solid #03AE87;
+	font-size:12px; 
+	line-height:18px;
+}
+ul#menusecond li a:hover,ul#menusecond li a.active {
+  background: #03AE87;
+  color:#ffffff;
+}
+ 
+ul#menusecond li ul li a {
+  background: #ffffff;
+  color: #555555;
+  padding-left: 20px;
+}
+
+ul#menusecond li ul li a:hover,ul#menusecond li ul .current a {
+  background: #fafafa;
+  border-left: 5px #03AE87 solid;
+  padding-left: 15px;
+  color:#555555;
+}
+</style>
+
+<div>
+	<ul id="menusecond">
+ 
+		<li><a href="{:U('/Admin/live/lists')}" target="_blank">课程管理</a></li>
+		
+	</ul>
+	
+ 
+</div>

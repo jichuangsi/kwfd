@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title></title>
+</head>
+<script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
+<link href="__STATIC__/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+<link type="text/css" rel="stylesheet" href="__STATIC__/qtip/jquery.qtip.css"/>
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/Core/js/ext/toastr/toastr.min.css"/>
+<link href="__PUBLIC__/Core/css/oneplus.css" rel="stylesheet"/>
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/Core/js/ext/magnific/magnific-popup.css"/>
+
+    <style type="text/css">
+	body
+	{
+	    padding:0; margin:0;
+		font-size:14px;
+	}
+	.title{font-size:14px;font-weight:bold;line-height:25px;margin:10px 0px 0px 0px}
+	.description{background-color:#eaeaea; border:1px dashed #cccccc;padding:5px;margin:10px 0px 0px 0px}
+	.optionul{margin:0px 0px 0px 20px;list-style-type:none;padding:0px}
+					.optionul li{margin:5px 0px}
+					.question_info u,.optionul u{text-decoration:none }
+					.bot_add{margin:0px 0px 5px 60px}
+					.add_questio{margin:5px 0px}
+
+	.submit{margin:10px 0px 20px 20px}
+	ul{margin:0px;padding:0px;list-style-type:none}
+	.leftdiv{width:40px;;float:left;text-align: center;}
+	.rightdiv{float:left;margin-left:10px}
+	.marginleft40{margin-left:50px}
+    .hrdotted{height:1px;border:none;border-top:1px dashed #dddddd;}
+    .testpaper-question-seq {
+      font-size: 20px;
+      color: #3a87ad;
+    }
+
+    .testpaper-question-score {
+      font-size:12px;
+      color:#aaa;
+      border:1px solid #ccc;
+      padding:0px 1px;
+      border-radius:5px;
+      background:#f6f6f6;
+      display: inline-block;
+    }
+
+    </style>
+	<php>
+	if($autosubmit=="true")
+	{
+	</php>
+	<script type="text/javascript">
+	var currentnum=0;
+	$(function(){
+	   $("form").eq(0).submit();
+	});
+    </script>
+	<php>
+	}
+	</php>
+<body>
+<form action="{:U('correctpaper',array('testId'=>I('testId'),'id'=>I('id')))}" method="post" class="form-horizontal">
+    <input type="hidden" data-type="fill" value="{$result['userId']}" name="userId">
+    <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
+    
+	<assign name="az" value="abcdefghijklmnopqrstuvwxyz" />
+<div class="container">
+  <div class="row">
+	 <div class="col-md-12" style="text-align:right">
+		 <a href="/" class="btn btn-primary">首页</a> <a href="javascript:history.back()" class="btn btn-primary">后退</a>
+	 </div>
+  </div>
+</div>
+<div class="container sub_menu">
+
+  <div class="common_block_border">
+    <div class="common_block_title">{$questionPaperdata['name']}</div>
+    <div style="margin: 15px">
+	{$questionPaperdata['description']}
+	</div>
+  </div>
+</div>
+<div class="container" style="min-height: 400px">
+        <div class="row">
+            <div class="col-md-9">
+                <!---------------------------------------->
+
+<ul class="examul">
+<php>
+$questionTypeArr=array(
+	    	                       'single_choice' => '单选题',
+	    	                       'choice' => '多选题',
+	    	                       'fill' => '填空题',
+	    	                       'determine' => '判断题',
+	    	                       'essay' => '问答题',
+	    	                       'material' => '材料题',
+                           );
+$json=json_decode($questionPaperdata['metas']);
+//dump($json);
+$questionids="";
+foreach($json->itemquestions as $key=>$val)
+{
+  //echo $key."=".$val;
+  $questionids=$questionids==""?$val:$questionids.",".$val;
+}
+//echo $questionids;
+//dump($answer);
+$questionnum=0;
+foreach($json->question_type_seq as $key=>$val)
+{
+if($json->itemquestions->$val=="")continue;
+</php>
+<li>
+   <div class="common_block_border">
+    <div class="common_block_title">{$questionTypeArr[$val]}</div>
+  <php>
+  $map['id']  = array('in',$json->itemquestions->$val);
+  $list=D('Examination/Question')->where($map)->select();
+  $subnum=0;
+  foreach($list as $_key=>$data)
+  {
+    $questionnum+=1;
+	$data['score']=$json->score->$data['type'];
+	if($data['type']=='material')
+	{
+	  $mapsub['parentId']  = array('eq',$data['id']);
+	  $subdata=D('Examination/Question')->where($mapsub)->select();
+	  //dump($subdata);
+	}
+  </php>
+  <div style="margin: 20px">
+		     <include file="./Application/Examination/View/default/Index/correctquestionpaper.html" />
+  </div>
+  <php>
+  if(sizeof($list)>1 && $subnum%2==0)
+  {
+    echo '<hr style="margin: 0px 20px">';
+  }
+  </php>
+  <php>
+  $subnum+=1;
+  }
+  </php>
+  </div>
+</li>
+
+<php>
+}
+</php>
+</ul>
+<php>//dump($questionPaperdata);</php>
+<php>//dump($subdata);</php>
+				<!---------------------------------------->
+            </div>
+            <div class="col-md-3">
+                <!---------------------------------------->
+				<div  id="examcontrol">
+				   <div class="common_block_border blog_position">
+                    <div class="common_block_title">所有题目</div>
+					 
+                      <div style="margin: 15px">
+					    <php>
+					       for($i=0;$i<$questionnum-1;$i++)
+						   {
+					    </php>
+						<a href="#{$i+1}" class="btn btn-default btn-index pull-left  active" style="margin:0px 10px 10px 0px">{$i+1}</a>
+						<php>
+						   }
+					    </php>
+						<textarea name="teacherSay" class="form-control"  cols="" rows="6" placeholder="请输入评语">{$result['teacherSay']}</textarea>
+						<button type="submit" class="btn btn-primary btn-block" style="margin-top:10px">批阅完成，提交</button>
+						<div class="clearfix mtm mbm"></div>
+					  </div>
+                  </div>
+				</div> 
+				<!---------------------------------------->
+            </div>
+
+			
+        </div>
+
+    </div>
+</form>	
+</body>
+</html>

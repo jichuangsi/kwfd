@@ -1,0 +1,51 @@
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+CREATE TABLE IF NOT EXISTS `onethink_orderlist` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `goodid` int(10) unsigned NOT NULL DEFAULT '0',
+  `num` int(10) unsigned NOT NULL DEFAULT '0',
+  `orderid` varchar(225) DEFAULT NULL COMMENT '订单号',
+  `uid` int(10) unsigned NOT NULL DEFAULT '0',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '未提交订单1-表示已提交订单或已支付2-已完成3-退货4-换货',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `price` decimal(50,2) NOT NULL DEFAULT '0.00',
+  `parameters` varchar(225) NOT NULL DEFAULT '' COMMENT '参数',
+  `sort` varchar(225) NOT NULL DEFAULT '' COMMENT '序号',
+  `iscomment` varchar(225) NOT NULL DEFAULT '',
+  `total` decimal(50,2) NOT NULL DEFAULT '0.00',
+  `tag` varchar(225) NOT NULL DEFAULT '' COMMENT '支付标识号',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='购物清单';
+CREATE TABLE IF NOT EXISTS `onethink_order` (
+  `id` int(225) unsigned NOT NULL AUTO_INCREMENT COMMENT '订单id',
+  `orderid` varchar(225) NOT NULL DEFAULT '',
+  `tag` varchar(225) NOT NULL DEFAULT '',
+  `pricetotal` decimal(50,2) NOT NULL DEFAULT '0.00',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '0-系统生成完成1-用户已提交订单2-3系统处理进入物流配送',
+  `assistant` varchar(225) DEFAULT '无' COMMENT '操作人',
+  `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `uid` int(10) unsigned NOT NULL DEFAULT '0',
+  `shipprice` decimal(50,2) NOT NULL DEFAULT '0.00',
+  `display` int(10) unsigned NOT NULL DEFAULT '0',
+  `isover` varchar(225) NOT NULL DEFAULT '',
+  `ispay` tinyint(2) NOT NULL DEFAULT '0' COMMENT '1在线支付未完成2在线支付完成3-货到付款',
+  `total` decimal(50,2) NOT NULL DEFAULT '0.00',
+  `tool` varchar(225) NOT NULL DEFAULT '' COMMENT '是否默认地址',
+  `addressid` int(10) unsigned NOT NULL DEFAULT '0',
+  `toolid` varchar(225) NOT NULL DEFAULT '',
+  `isdefault` int(10) unsigned NOT NULL DEFAULT '0',
+  `info` varchar(225) NOT NULL DEFAULT '',
+  `shipway` varchar(225) NOT NULL DEFAULT '' COMMENT '送货方式',
+  `invoice` varchar(225) NOT NULL DEFAULT '' COMMENT '发票',
+  `message` varchar(225) NOT NULL DEFAULT '' COMMENT '留言',
+  `backinfo` varchar(225) NOT NULL DEFAULT '',
+  `score` int(10) unsigned NOT NULL DEFAULT '0',
+  `codeid` varchar(225) NOT NULL DEFAULT '',
+  `codemoney` decimal(50,2) NOT NULL DEFAULT '0.00',
+  `send_name` varchar(225) NOT NULL DEFAULT '',
+  `send_contact` varchar(225) NOT NULL DEFAULT '',
+  `send_address` varchar(225) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='订单表';

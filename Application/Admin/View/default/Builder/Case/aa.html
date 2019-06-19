@@ -1,0 +1,33 @@
+<style>
+    .div_limit{display:none;margin:10px 5px}
+</style>
+<script>
+    $(function () {
+        $("#times").click(function () {
+            this.checked?$("#end_value").attr('style','display:block'):$("#end_value").removeAttr('style');
+        })
+        $("#today").click(function () {
+            this.checked?$("#today_value").attr('style','display:block'):$("#today_value").removeAttr('style');
+        })
+        $("#total").click(function () {
+            this.checked?$("#sub_value").attr('style','display:block'):$("#sub_value").removeAttr('style');
+        })
+    })
+</script>
+<div class="form-item">
+    <div class="controls">
+        <input type="checkbox" name="endtime"     id="times"  value="1" <if condition="$limit_info.enddate  neq 0">checked</if> />限定时间 &nbsp;
+        <input type="checkbox" name="today_total" id="today" value="1" <if condition="$limit_info.today_total  neq 0">checked</if> />限定每日量 &nbsp;
+        <input type="checkbox" name="sub_total"   id="total"  value="1" <if condition="$limit_info.sub_total  neq 0">checked</if> />限定全部总量 &nbsp;
+        <div class="div_limit" id="end_value"<if condition="$limit_info.enddate  eq 0">style="display:none;"<else />style="display:block;"</if>>
+        截止 <input type="date" value="<if condition="$limit_info.enddate eq ''">{$now|date="Y-m-d",###}<else />{$limit_info.enddate|date="Y-m-d",###}</if>"
+        name="end_value" class="text input-large"/>
+    </div>
+    <div class="div_limit" id="today_value"<if condition="$limit_info.today_total  eq 0">style="display:none;"<else />style="display:block;"</if>>
+    每日 <input type="text" name="today_value" value="{$limit_info.today_total}" class="text input-large">
+</div>
+<div class="div_limit" id="sub_value"<if condition="$limit_info.sub_total  eq 0">style="display:none;"<else />style="display:block;"</if>>
+总量 <input type="text"  name="sub_value" value="{$limit_info.sub_total}" class="text input-large">
+</div>
+</div>
+</div>

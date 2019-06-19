@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>题目预览</title>
+</head>
+
+     <!--[if lt IE 9]>
+    <script type="text/javascript" src="__STATIC__/jquery-1.10.2.min.js"></script>
+    <![endif]--><!--[if gte IE 9]><!-->
+    <script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
+	<link href="__STATIC__/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+<style type="text/css">
+						    body{background-color:#F6F6F6;margin:0px;padding:0px}
+							*{margin:0px;padding:0px}
+							.ul{margin:0px;padding:0px;list-style-type:none}
+							.ul li{border-bottom:1px solid #cccccc;padding:0px 0px;line-height:30px}
+                            .item{float:left;width:auto;margin:0px 5px}
+							.title{width:100px}
+							.pointer{cursor:pointer}
+							.clear{font-size:0px;line-height:0px;clear:both}
+</style>
+<script type="text/javascript">
+function init()
+{
+  //alert($(window).height());
+  $('iframe').height($(window).height());
+}
+$(function(){
+     
+	 setTimeout("init()", 1000);
+	 window.top.selectquestionwindow=window;
+})
+</script>
+			
+<body>
+<php>//dump($list);</php>
+<table width="800"  border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="395"><iframe allowtransparency="true" width="100%" height="400" frameborder="0" scrolling="auto" src='{:U("selectquestionleft",array("id"=>$id,"type"=>$type))}'></iframe></td>
+    <td width="10"></td>
+    <td width="395"><iframe allowtransparency="true" width="100%" height="400" frameborder="0" scrolling="no" src='{:U("selectquestionright",array("type"=>$type))}'></iframe></td>
+  </tr>
+</table>
+<input name="type" type="hidden" value="{$type}">
+</body>
+</html>
+

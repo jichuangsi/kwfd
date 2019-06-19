@@ -1,0 +1,37 @@
+-- phpMyAdmin SQL Dump
+-- version 3.3.7
+-- http://www.phpmyadmin.net
+--
+-- 主机: localhost
+-- 生成日期: 2015 年 02 月 18 日 21:26
+-- 服务器版本: 5.0.90
+-- PHP 版本: 5.3.5
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- 数据库: `thinkox`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `thinkox_avatar`
+--
+
+CREATE TABLE IF NOT EXISTS `thinkox_avatar` (
+  `id` int(11) NOT NULL auto_increment,
+  `uid` int(11) NOT NULL,
+  `path` varchar(200) NOT NULL,
+  `create_time` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `is_temp` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+--
+-- 转存表中的数据 `thinkox_avatar`
+--
+
+INSERT INTO `thinkox_avatar` (`id`, `uid`, `path`, `create_time`, `status`, `is_temp`) VALUES
+(6, 58, '2015-01-02/54a6aa68b1fb7-01a09554.gif', 1420208765, 1, 0);
