@@ -318,7 +318,7 @@ h2 {
   color: #333333;
 }
 .link-primary {
-  color: #03ae87;
+  color: #3d72fe;
 }
 .link-muted {
   color: #555555;
@@ -939,7 +939,7 @@ General list for item with image
 .friend_panel .btn-pull {
   position: absolute;
   border: 1px solid #029775;
-  background: #03AE87;
+  background: #3d72fe;
   padding: 15px 7px;
   border-right: 0;
   margin-right: 0;
@@ -1266,7 +1266,7 @@ a:hover {
   position: relative;
 }
 .nav_bar .navbar-toggle {
-  background-color: #03ae87;
+  background-color: #3d72fe;
   color: white;
   margin-top: 12px;
 }

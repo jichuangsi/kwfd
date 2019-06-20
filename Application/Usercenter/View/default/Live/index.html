@@ -11,7 +11,9 @@
 		.nav-tabs > li > a {
            line-height:18px;
         }
-
+		.toast-success {
+			background-color: #3d72fe;
+		}
 ul{list-style-type:none;margin:0px 0px;padding:10px 15px 0px 15px}
 .rmb-box{
     display:block;
@@ -216,7 +218,6 @@ ul{list-style-type:none;margin:0px 0px;padding:10px 15px 0px 15px}
 	 
 	 if(userid=="" || username=="")
 	 {
-	    //toastr.success('欢迎回来，页面正在跳转，请稍候。', '温馨提示');
         toastr.error("登录信息已过期，请重新登录。", '温馨提示');
 
 	    return false;
