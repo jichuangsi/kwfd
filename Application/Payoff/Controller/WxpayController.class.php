@@ -50,7 +50,7 @@ class WxpayController extends Controller
 		  $input->SetTime_start(date("YmdHis"));
 		  $input->SetTime_expire(date("YmdHis", time() + 600));
 		  $input->SetGoods_tag("test");
-		  $input->SetNotify_url("http://www.zaixianjiaoxue.net/index.php/Payoff/Wxpay/notifyurl.html");
+		  $input->SetNotify_url("http://".$_SERVER['HTTP_HOST']."/index.php/Payoff/Wxpay/notifyurl.html");
 		  $input->SetTrade_type("NATIVE");
 		  $input->SetProduct_id("123456789");
 

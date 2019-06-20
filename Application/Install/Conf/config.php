@@ -19,9 +19,9 @@ return array(
         '__JS__' => __ROOT__ . '/Public/' . MODULE_NAME . '/js',
         '__ZUI__'=>__ROOT__.'/Public/zui',
         '__NAME__'=>'集创思在线教学系统',
-        '__COMPANY__'=>'深圳市明天见科技有限公司',
-        '__WEBSITE__'=>'www.zaixianjiaoxue.net',
-        '__COMPANY_WEBSITE__'=>'www.mingtianjian.net'
+        '__COMPANY__'=>'集创思信息科技有限公司',
+        '__WEBSITE__'=>'zaixian.jichuangsi.com',
+        '__COMPANY_WEBSITE__'=>'www.jichuangsi.com'
     ),
     /* URL配置 */
     'URL_MODEL' => 3, //URL模式

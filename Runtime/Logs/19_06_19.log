@@ -1,8 +1,0 @@
-[ 2019-06-19T15:29:54+08:00 ] 192.168.31.19 /index.php?s=/news/index/detail/id/9.html
-ERR: 1054:Unknown column 'createtime' in 'order clause'
- [ SQL语句 ] : SELECT * FROM `onethink_news_category` WHERE ( `status` = 1 ) AND ( `id` = 1 ) ORDER BY createtime desc 
-
-[ 2019-06-19T17:09:20+08:00 ] 192.168.31.123 /index.php?s=/vod/index/detail/id/27.html
-ERR: 1054:Unknown column 'createtime' in 'order clause'
- [ SQL语句 ] : SELECT * FROM `onethink_vod_category` WHERE ( `status` = 1 ) AND ( `id` = 1 ) ORDER BY createtime desc 
-

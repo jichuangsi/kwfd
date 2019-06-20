@@ -1,1 +1,0 @@
-<?php if (!defined('THINK_PATH')) exit();?>News/setstatus?status=-1&ids=5

@@ -1,1 +1,0 @@
-<?php if (!defined('THINK_PATH')) exit();?>Feedback/add?id=4

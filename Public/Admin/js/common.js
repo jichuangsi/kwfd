@@ -30,7 +30,7 @@
             $.get(target).success(function(data){
                 if (data.status==1) {
                     if (data.url) {
-                        updateAlert(data.info + ' 页面即将自动跳转~','alert-success');
+                        updateAlert(data.info + ' 页面即将自动跳转。','alert-success');
                     }else{
                         updateAlert(data.info,'alert-success');
                     }
@@ -109,7 +109,7 @@
             $.post(target,query).success(function(data){
                 if (data.status==1) {
                     if (data.url) {
-                        updateAlert(data.info + ' 页面即将自动跳转~','alert-success');
+                        updateAlert(data.info + ' 页面即将自动跳转。','alert-success');
                     }else{
                         updateAlert(data.info ,'alert-success');
                     }

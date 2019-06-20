@@ -31,7 +31,7 @@ $(function () {
             $.get(target).success(function (data) {
                 if (data.status == 1) {
                     if (data.url) {
-                        toast.success(data.info + ' 页面即将自动跳转~', 'success');
+                        toast.success(data.info + ' 页面即将自动跳转。', 'success');
                     } else {
                         toast.success(data.info, 'success');
                     }
@@ -132,7 +132,7 @@ $(function () {
             $.post(target, query).success(function (data) {
                 if (data.status == 1) {
                     if (data.url) {
-                        toast.success(data.info + ' 页面即将自动跳转~');
+                        toast.success(data.info + ' 页面即将自动跳转。');
                     } else {
                         toast.success(data.info );
                     }
