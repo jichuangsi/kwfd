@@ -24,7 +24,7 @@ body{ background: #30333F; font-family: '微软雅黑'; color: #fff; font-size: 
     vertical-align: middle;
     cursor: pointer;
     border: 0 none;
-    background-color: #308B04;
+    background-color: #3d72fe;
     padding: 10px 20px;
     color: #fff;
     font-weight: bold;
@@ -33,7 +33,7 @@ body{ background: #30333F; font-family: '微软雅黑'; color: #fff; font-size: 
 }
 
 #btn-stop:hover,#href:hover{
-    background-color: #43BD08;
+    background-color: #7097fe;
 }
 </style>
 </head>

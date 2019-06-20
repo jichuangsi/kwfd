@@ -476,10 +476,10 @@ label.textarea ~ .check-tips {
 .page a:hover
  {
     text-decoration: none;
-    background-color: #387C0B;
+    background-color: #7097fe;
 }
 .page .current {
-	border-top: 1px solid #387C0B;
+	border-top: 1px solid #3d72fe;
 }
 .page .next,
 .page .prev {
