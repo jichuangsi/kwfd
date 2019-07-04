@@ -1,0 +1,171 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+main, menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, main, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+  background-color: #1B2A50;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.clearfix:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.clearfix {
+  zoom: 1;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+.MathJye table {
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+  line-height: normal;
+  font-size: inherit;
+  _font-size: 100%;
+  font-style: normal;
+  font-weight: normal;
+  border: 0;
+  float: none;
+  display: inline-block;
+  zoom: 0;
+}
+
+.mathjye-underpoint2 {
+  border-bottom: 2px dotted #000;
+  padding-bottom: 3px;
+}
+
+#q_answer {
+  display: none;
+}
+
+table.edittable {
+  border-collapse: collapse;
+  text-align: center;
+  margin: 2px;
+}
+
+table.edittable td,
+table.edittable th {
+  line-height: 30px;
+  padding: 5px;
+  white-space: normal;
+  word-break: break-all;
+  border: 1px solid #000;
+  vertical-align: middle;
+}
+
+table.composition {
+  border-collapse: collapse;
+  text-align: left;
+  margin: 2px;
+  width: 98%;
+}
+
+table.composition td,
+table.composition th {
+  line-height: 30px;
+  white-space: normal;
+  word-break: break-all;
+  border-width: 0;
+  vertical-align: middle;
+}
+
+table.composition2 {
+  border-collapse: collapse;
+  width: auto;
+}
+
+table.composition2 td,
+table.composition2 th {
+  text-align: left;
+  line-height: 30px;
+  white-space: normal;
+  word-break: break-all;
+  border: none;
+  border-width: 0;
+  vertical-align: middle;
+}
+
+text {
+  margin-bottom: 10px;
+}
+
+sup {
+  vertical-align: super;
+}
+
+sub {
+  vertical-align: sub;
+}
+/*# sourceMappingURL=index.css.map */
