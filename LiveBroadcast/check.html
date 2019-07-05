@@ -62,6 +62,7 @@
     	var room = GetQueryString(param,'room');
     	var title = GetQueryString(param,'title');
     	var appid = GetQueryString(param,'appid');
+        var JumpStatus = 1
     	
     	if(!room){
     		alert("Missing room number");
@@ -69,6 +70,8 @@
     	
     	if(!appid){
     		alert("Missing app id");
+            $('.jump')[0].style.backgroundColor = '#666'
+            JumpStatus = 2
     	}
     	
     	$('#title').html(title);
@@ -101,9 +104,11 @@
         }
         
         function jump () {
-            sessionStorage.setItem('videoSource',videoSource.value)
-            sessionStorage.setItem('audioSource',audioSource.value)
-            location.href = 'watch.html'
+            if(JumpStatus == 1) {
+                sessionStorage.setItem('videoSource',videoSource.value)
+                sessionStorage.setItem('audioSource',audioSource.value)
+                location.href = 'watch.html'
+            }
         }
         function checkStatus(){
             console.log(status)

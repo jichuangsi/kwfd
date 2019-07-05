@@ -29,14 +29,16 @@
     </div-->
 
     <div id="video" onmousemove="videofocus()" onmouseout="videoblur()">
-        <div id="agora_local" style="width:100%;height:650px;display:inline-block;"></div>
+        <div id="agora_local" style="width:100%;height:100%;display:inline-block;"></div>
+        <div class="UserCount">在线人数：<span>0</span>人</div>
         <div class="nav">
             <div>
                 <span class="s1" onclick="leave()"></span>
                 <span class="s2" onclick="CameraStop()"></span>
                 <span class="s3" onclick="MicrophoneStop()"></span>
                 <!-- <span class="s4" onclick="share()"></span> -->
-                <span class="s5" onclick="Same()"></span>
+                <!-- <span class="s5" onclick="Same()"></span> -->
+                <span class="s6" onclick="Rotate()"></span>
             </div>
         </div>
     </div>
@@ -45,7 +47,6 @@
         if (!AgoraRTC.checkSystemRequirements()) {
             alert("Your browser does not support WebRTC!");
         }
-
         /* select Log type */
         // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
         // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.ERROR);
@@ -62,6 +63,7 @@
         var client, localStream, camera, microphone;
         var Camera = 1
         var Microphone = 1
+        var rotate = 0
         var audioSelect = sessionStorage.getItem('audioSelect')
         var videoSelect = sessionStorage.getItem('videoSelect')
         var role = sessionStorage.getItem('role')
@@ -73,11 +75,9 @@
             $('.s3').remove()
             $('.s5').remove()
         }
-
         function join() {
             var channel_key = null;
 
-            // console.log("Init AgoraRTC client with App ID: " + '6e2c484b3949472bb220c48940f63bec');
             client = AgoraRTC.createClient({
                 mode: 'live'
             });
@@ -101,6 +101,11 @@
                             localStream.setVideoProfile('720p_3');
 
                         // }
+             
+        // console.log(localStream.SessionStats())
+                        client.getSessionStats((state)=>{
+                            $('.UserCount>span').text(state.UserCount-1)
+                        })
      
                         // The user has granted access to the camera and mic.
                         localStream.on("accessAllowed", function () {
@@ -128,6 +133,7 @@
                             else {
                                 localStream.stop('agora_local');
                             }
+                            
                         }, function (err) {
                             console.log("getUserMedia failed", err);
                         });
@@ -154,6 +160,8 @@
 
             client.on('stream-added', function (evt) {
                 var stream = evt.stream;
+                
+                
                 console.log("New stream added: " + stream.getId());
                 console.log("Subscribe ", stream);
                 client.subscribe(stream, function (err) {
@@ -167,7 +175,7 @@
                     console.log("Subscribe remote stream successfully: " + stream.getId());
                     if ($('div#video #agora_remote' + stream.getId()).length === 0) {
                         $('div#video').append('<div id="agora_remote' + stream.getId() +
-                            '" style="position: absolute;right:0px;top:0px;width:100%;height:650px;display:inline-block;"></div>');
+                            '" style="position: absolute;right:0px;top:0px;width:100%;height:100%;display:inline-block;"></div>');
                     }
                     // stream.stop('agora_local');
                     stream.play('agora_remote' + stream.getId());
@@ -226,6 +234,10 @@
         }
         function videoblur(){
             $('.nav')[0].style.bottom = '-60px'
+        }
+        function Rotate (){
+            rotate -= 90
+            $('#video').find('video')[0].style.transform = "rotate("+rotate+"deg) rotateY(180deg)"
         }
 
 

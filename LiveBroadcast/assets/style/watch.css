@@ -4,11 +4,23 @@
     top: 26px;
 }
 #video {
+    /* width: 640px; */
+    height: 480px;
     position: relative;
     overflow: hidden;
-    margin: 0px 20px;
+    margin: 0px auto;
     margin-top: 100px;
     background-color: black;
+}
+#video video {
+    object-fit:contain !important;
+}
+#video .UserCount {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 15;
+    color: #fff;
 }
 #video .nav {
     width: 100%;
@@ -51,4 +63,7 @@
 }
 #video .nav .s5 {
     background-position: -37px -366px;
+}
+#video .nav .s6 {
+    background-position: -31px -425px;
 }
