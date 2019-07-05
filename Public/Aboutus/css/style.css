@@ -6,6 +6,9 @@
   margin-top: 0;
   font-size: 16px;
 }
+.detailcontent span{
+	background-color: #fff0 !important;
+}
 #contents h3 a {
   color: #333 !important;
 }

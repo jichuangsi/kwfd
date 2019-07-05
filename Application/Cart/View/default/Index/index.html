@@ -5,7 +5,7 @@
 <style>
 
 
-.headerRow{background-color:#F6F6F6;height:40px;padding:10px;}
+.headerRow{background-color:#f6f6f69c;height:40px;padding:10px;}
 .headerRow .item-name{float:left;width:40%;}
 .headerRow .item-price{float:left;margin-right:0px;width:15%;}
 .headerRow .item-decrement{float:left;margin-left:0px;width:5%;}
@@ -80,7 +80,7 @@
 	 </volist>
 	 </if>
 	 <if condition="$cart['total_items'] eq 0">
-         <div style="font-size:2em;padding:2em 0;color: #ccc;text-align: center;"><img src="__IMG__/cart.png">您的购物车还是空的。<button type="button" class="btn btn-primary" onclick="window.location.href='{:U(\"/Home/Index/index\")}'">  返回首页  </button></div>
+         <div style="font-size:1.5em;padding:2em 0;color: #ccc;text-align: center;"><img src="__IMG__/cart.png">您的购物袋还是空的。<button type="button" class="btn btn-primary" onclick="window.location.href='{:U(\"/Home/Index/index\")}'">  返回首页  </button></div>
      </if>
     </div>
 </div>
