@@ -1,0 +1,54 @@
+.logo {
+    position: absolute;
+    left: 39px;
+    top: 26px;
+}
+#video {
+    position: relative;
+    overflow: hidden;
+    margin: 0px 20px;
+    margin-top: 100px;
+    background-color: black;
+}
+#video .nav {
+    width: 100%;
+    height: 60px;
+    position: absolute;
+    bottom: -60px;
+    left: 0px;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+    transition: bottom .1s linear;
+}
+#video .nav div {
+    height: 60px;
+    width: 60%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+#video .nav span {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    background: url('../images//按钮.png') no-repeat;
+}
+#video .nav .s1 {
+    background-position: -37px -40px;
+}
+#video .nav .s2 {
+    background-position: -167px -108px;
+}
+#video .nav .s3 {
+    /* -35px -108px */
+    background-position: -169px -189px;
+}
+#video .nav .s4 {
+    /* -34px -189px */
+    background-position: -36px -274px;
+}
+#video .nav .s5 {
+    background-position: -37px -366px;
+}
