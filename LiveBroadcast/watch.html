@@ -74,6 +74,7 @@
             $('.s2').remove()
             $('.s3').remove()
             $('.s5').remove()
+            $('.UserCount').remove()
         }
         function join() {
             var channel_key = null;
@@ -101,8 +102,7 @@
                             localStream.setVideoProfile('720p_3');
 
                         // }
-             
-        // console.log(localStream.SessionStats())
+                            
                         client.getSessionStats((state)=>{
                             $('.UserCount>span').text(state.UserCount-1)
                         })
