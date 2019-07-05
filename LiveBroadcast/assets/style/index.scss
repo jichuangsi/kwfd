@@ -1,0 +1,176 @@
+@import './reset.scss';
+@import './iconfont/iconfont.css';
+@media only screen and (max-width:   1080px), only screen and (max-device-width:    1080px) {
+  html,body {
+  font-size:     18px;
+  }
+  }
+      @media only screen and (max-width:   960px), only screen and (max-device-width:    960px) {
+  html,body {
+  font-size:     16px;
+  }
+  }
+      @media only screen and (max-width:   800px), only screen and (max-device-width:    800px) {
+  html,body {
+  font-size:     13.333333333333332px;
+  }
+  }
+      @media only screen and (max-width:   720px), only screen and (max-device-width:    720px) {
+  html,body {
+  font-size:     12px;
+  }
+  }
+      @media only screen and (max-width:   640px), only screen and (max-device-width:    640px) {
+  html,body {
+  font-size:     10.666666666666666px;
+  }
+  }
+      @media only screen and (max-width:   600px), only screen and (max-device-width:    600px) {
+  html,body {
+  font-size:     10px;
+  }
+  }
+      @media only screen and (max-width:   540px), only screen and (max-device-width:    540px) {
+  html,body {
+  font-size:     9px;
+  }
+  }
+      @media only screen and (max-width:   480px), only screen and (max-device-width:    480px) {
+  html,body {
+  font-size:     8px;
+  }
+  }
+      @media only screen and (max-width:   414px), only screen and (max-device-width:    414px) {
+  html,body {
+  font-size:     6.8999999999999995px;
+  }
+  }
+      @media only screen and (max-width:   400px), only screen and (max-device-width:    400px) {
+  html,body {
+  font-size:     6.666666666666666px;
+  }
+  }
+      @media only screen and (max-width:   375px), only screen and (max-device-width:    375px) {
+  html,body {
+  font-size:     6.25px;
+  }
+  }
+      @media only screen and (max-width:   360px), only screen and (max-device-width:    360px) {
+  html,body {
+  font-size:     6px;
+  }
+  }
+      @media only screen and (max-width:   320px), only screen and (max-device-width:    320px) {
+  html,body {
+  font-size:     5.333333333333333px;
+  }
+  }
+      @media only screen and (max-width:   240px), only screen and (max-device-width:    240px) {
+  html,body {
+  font-size:     4px;
+  }
+  }
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.clearfix:after{
+  content: "";
+  display: block;
+  clear: both;
+}
+.clearfix{
+  zoom: 1;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+html,
+body,
+#app {
+  height: 100%;
+}
+.MathJye table {
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+    line-height: normal;
+    font-size: inherit;
+    _font-size: 100%;
+    font-style: normal;
+    font-weight: normal;
+    border: 0;
+    float: none;
+    display: inline-block;
+    zoom: 0;
+  }
+  .mathjye-underpoint2 {
+    border-bottom: 2px dotted #000;
+    padding-bottom: 3px;
+  }
+  #q_answer {
+    display: none;
+  }
+  table.edittable {
+    border-collapse: collapse;
+    text-align: center;
+    margin: 2px;
+  }
+  table.edittable td,
+  table.edittable th {
+    line-height: 30px;
+    padding: 5px;
+    white-space: normal;
+    word-break: break-all;
+    border: 1px solid #000;
+    vertical-align: middle;
+  }
+  table.composition {
+    border-collapse: collapse;
+    text-align: left;
+    margin: 2px;
+    width: 98%;
+  }
+  table.composition td,
+  table.composition th {
+    line-height: 30px;
+    white-space: normal;
+    word-break: break-all;
+    border-width: 0;
+    vertical-align: middle;
+  }
+  table.composition2 {
+    border-collapse: collapse;
+    width: auto;
+  }
+  table.composition2 td,
+  table.composition2 th {
+    text-align: left;
+    line-height: 30px;
+    white-space: normal;
+    word-break: break-all;
+    border: none;
+    border-width: 0;
+    vertical-align: middle;
+  }
+  text {
+      margin-bottom: 10px;
+  }
+  sup {
+    vertical-align: super;
+  }
+  sub{
+      vertical-align: sub;
+  }

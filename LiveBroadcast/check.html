@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Agora Web Sample</title>
+    <script src="AgoraRTCSDK-2.7.0.js"></script>
+    <script src="vendor/jquery.js"></script>
+    <script src="vendor/jquery.base64.js"></script>
+    <link rel="stylesheet" href="assets/style/index.css">
+    <link rel="stylesheet" href="assets/style/check.css">
+</head>
+
+<body>
+    <div class="logo"><img src="./assets/images/logo.png" alt=""></div>
+    <h3>检测设备</h3>
+    <div id="selectbox">
+        <div class="text">
+            课程名称：<div id="title">数学教程</div>
+        </div>
+        <div class="text">
+            基本模式：AL
+        </div>
+        <div class="text">
+            视频配置文件：30TPS/750KBPS
+        </div>
+        <div class="text">
+            转码：VP8
+        </div>
+        <div class="title">
+                检测视频：在摄像机前移动，检测是否正常工作！
+        </div>
+        <div class="select">
+            <label for="videoSource"></label><select id="videoSource"></select>
+        </div>
+        <div id="video">
+            <div id="agora_local" style="width:210px;height:147px;display:inline-block;"></div>
+            <div id="checkbox" class="fr" onclick="checkStatus()">
+                <div></div>
+                <span></span>
+            </div>
+        </div>
+        <div class="title">
+            检测音频：发出声音检测麦克风是否正常工作！
+        </div>
+        <div class="select">
+            <label for="audioSource"></label><select id="audioSource"></select>
+        </div>
+        <div id="audioSourceNew">
+            <div></div>
+        </div>
+        <div class="jump" onclick="jump()">快速进入</div>
+    </div>
+
+    <script language="javascript">
+    	var param = $.base64.decode(decodeURIComponent(GetQueryString(window.location.search.substr(1),'a')));
+    	
+    	var userid = GetQueryString(param,'userid');
+    	var user = GetQueryString(param,'user');
+    	var role = GetQueryString(param,'role');
+    	var room = GetQueryString(param,'room');
+    	var title = GetQueryString(param,'title');
+    	var appid = GetQueryString(param,'appid');
+    	
+    	if(!room){
+    		alert("Missing room number");
+    	}
+    	
+    	if(!appid){
+    		alert("Missing app id");
+    	}
+    	
+    	$('#title').html(title);
+    	sessionStorage.setItem('role',role);
+    	sessionStorage.setItem('room',room);
+    	sessionStorage.setItem('appid',appid);
+        /* select Log type */
+        // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
+        // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.ERROR);
+        // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.WARNING);
+        // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.INFO);  
+        // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.DEBUG);
+
+        /* simulated data to proof setLogLevel() */
+        AgoraRTC.Logger.error('this is error');
+        AgoraRTC.Logger.warning('this is warning');
+        AgoraRTC.Logger.info('this is info');
+        AgoraRTC.Logger.debug('this is debug');
+
+        var client, localStream, camera, microphone;
+        var status = 1
+        var audioSelect = document.querySelector('select#audioSource');
+        var videoSelect = document.querySelector('select#videoSource');
+        var check = document.getElementById('checkbox');
+        
+        function GetQueryString(param,name) {
+	        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	        var r = param.match(reg);
+	        if(r!=null) return unescape(r[2]); return null;
+        }
+        
+        function jump () {
+            sessionStorage.setItem('videoSource',videoSource.value)
+            sessionStorage.setItem('audioSource',audioSource.value)
+            location.href = 'watch.html'
+        }
+        function checkStatus(){
+            console.log(status)
+            if(status == 1){
+                status = 2
+                $(check).find('div')[0].style.width = '42px'
+                $(check).find('span')[0].style.left = '10px'
+                localStream.stop('agora_local');
+            }else {
+                status = 1
+                $(check).find('div')[0].style.width = '92px'
+                $(check).find('span')[0].style.left = '60px'
+                localStream.play('agora_local');
+            }
+        }
+        function getDevices() {
+            AgoraRTC.getDevices(function (devices) {
+                console.log(devices)
+                for (var i = 0; i !== devices.length; ++i) {
+                    var device = devices[i];
+                    var option = document.createElement('option');
+                    option.value = device.deviceId;
+                    if (device.kind === 'audioinput') {
+                        option.text = device.label || 'microphone ' + (audioSelect.length + 1);
+                        audioSelect.appendChild(option);
+                    } else if (device.kind === 'videoinput') {
+                        option.text = device.label || 'camera ' + (videoSelect.length + 1);
+                        videoSelect.appendChild(option);
+                    } else {
+                        console.log('Some other kind of source/device: ', device);
+                    }
+                }
+            });
+        }
+
+        function localStreamxx() {
+            camera = videoSource.value;
+            microphone = audioSource.value;
+            localStream = AgoraRTC.createStream({
+                audio: true,
+                cameraId: camera,
+                microphoneId: microphone,
+                video: true,
+                screen: false
+            });
+            localStream.unmuteVideo()
+            setInterval(function () {
+                var a = localStream.getAudioLevel()
+                // var b = a*10
+                if(a<0) a = 0
+                if(a>1) a = 1
+                var c = a*100+'%'
+                $(document.getElementById('audioSourceNew')).find('div')[0].style.width = c
+            }, 60)
+            //localStream = AgoraRTC.createStream({streamID: uid, audio: false, cameraId: camera, microphoneId: microphone, video: false, screen: true, extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg'});
+            if (document.getElementById("video").checked) {
+                localStream.setVideoProfile('720p_3');
+            }
+
+            // The user has granted access to the camera and mic.
+            localStream.on("accessAllowed", function () {
+                console.log("accessAllowed");
+            });
+
+            // The user has denied access to the camera and mic.
+            localStream.on("accessDenied", function () {
+                console.log("accessDenied");
+            });
+
+            localStream.init(function () {
+                console.log("getUserMedia successfully");
+                localStream.play('agora_local');
+            }, function (err) {
+                console.log("getUserMedia failed", err);
+            });
+        }
+
+        //audioSelect.onchange = getDevices;
+        //videoSelect.onchange = getDevices;
+        getDevices();
+        localStreamxx()
+    </script>
+</body>
+
+</html>

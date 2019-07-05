@@ -101,12 +101,12 @@ class IndexController extends Controller
 		$this->crypt=new Crypt();
 		$this->crypt->init("TESTTEST");
 		
-		
-		$parameter="userid=".$uid."&user=".$username."&role=".$role."&room=".$id;
+		$meetingappid=modC('MEETINGWEB_APP_ID',0,'Config');
+		$parameter="userid=".$uid."&user=".$username."&role=".$role."&room=".$id."-".$data["createtime"]."&title=".$data["title"]."&appid=".$meetingappid;
 		//echo $parameter;
 		//$parameter="userid=1431958326&user=user1431958326&role=manager&room=7";
-		$parameter=$this->crypt->encrypt($parameter);
-        $parameter=urlencode($parameter);
+		//$parameter=$this->crypt->encrypt($parameter);
+		$parameter=urlencode(base64_encode($parameter));
 		//echo $parameter;
 		//die();
         $meetingurl=modC('MEETINGWEB_URL',0,'Config');

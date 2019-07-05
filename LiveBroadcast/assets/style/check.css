@@ -1,0 +1,235 @@
+.logo {
+    position: absolute;
+    left: 39px;
+    top: 26px;
+}
+h3 {
+    text-align: center;
+    font-size: 26px;
+    margin-top: 50px;
+    margin-bottom: 37px;
+    color: #04FFD2;
+    font-weight: 100;
+}
+#selectbox {
+    width: 600px;
+    padding: 10px 60px;
+    margin: 10px auto;
+    background-color: #243765;
+    border-radius:10px;
+}
+.text {
+    color: #04FFD2;
+    font-size: 16px;
+    margin:28px 0px;
+}
+.title {
+    color: #04FFD2;
+    font-size: 16px;
+    margin:28px 0px;
+    margin-top: 60px;
+}
+select {
+    width: 100%;
+    height: 50px;
+    border-color: #04FFD2;
+    background-color: transparent;
+    border-radius: 50px;
+    text-indent: 20px;
+    color: #04FFD2;
+    outline: none;
+}
+select option {
+    line-height: 50px;
+    text-indent: 20px;
+}
+#video {
+    margin: 20px 0px;
+}
+#checkbox {
+    width: 92px;
+    height: 43px;
+    background-color: #f2f2f2;
+    margin-top: 42px;
+    overflow: hidden;
+    border-radius: 43px;
+    position: relative;
+    cursor: pointer;
+}
+#checkbox div {
+    width: 92px;
+    height: 43px;
+    background-color: #00FFD2;
+    border-radius: 43px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    transition: width 0.2s linear;
+}
+#checkbox span {
+    width: 25px;
+    height: 25px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    left: 60px;
+    top: 10px;
+    transition: left 0.2s linear;
+}
+#audioSourceNew {
+    width: 100%;
+    height: 23px;
+    border-radius: 23px;
+    margin-top: 32px;
+    margin-bottom: 70px;
+    position: relative;
+    border: 1px solid #00FFD2;
+    overflow: hidden;
+}
+#audioSourceNew div {
+    width: 0%;
+    height: 23px;
+    border-radius: 23px;
+    position: absolute;
+    background-color: #00FFD2;
+    left: 0px;
+    top: 0px;
+    transition: width 0.1s linear;
+}
+.jump {
+    width: 80%;
+    height: 65px;
+    line-height: 65px;
+    background-color: #00FFD2;
+    margin: 45px auto;
+    text-align: center;
+    color: #fff;
+    font-size: 25px;
+    border-radius: 65px;
+    cursor: pointer;
+}
+@media screen and (max-width:600px){
+    .logo {
+        position: absolute;
+        width: 92px;
+        height: 28px;
+        left: 19.5px;
+        top: 13px;
+    }
+    .logo img {
+        width: 100%;
+        height: 100%;
+    }
+    h3 {
+        text-align: center;
+        font-size: 13px;
+        margin-top: 25px;
+        margin-bottom: 18.5px;
+        color: #04FFD2;
+        font-weight: 100;
+    }
+    #selectbox {
+        width: 300px;
+        padding: 5px 30px;
+        margin: 5px auto;
+        background-color: #243765;
+        border-radius:5px;
+    }
+    .text {
+        color: #04FFD2;
+        font-size: 8px;
+        margin:14px 0px;
+    }
+    .title {
+        color: #04FFD2;
+        font-size: 8px;
+        margin:14px 0px;
+        margin-top: 30px;
+    }
+    select {
+        width: 100%;
+        height: 25px;
+        border-color: #04FFD2;
+        background-color: transparent;
+        border-radius: 25px;
+        text-indent: 10px;
+        color: #04FFD2;
+        outline: none;
+    }
+    select option {
+        line-height: 50px;
+        text-indent: 20px;
+    }
+    #video {
+        margin: 20px 0px;
+        margin-bottom: 60px;
+    }
+    #checkbox {
+        width: 92px;
+        height: 43px;
+        background-color: #f2f2f2;
+        margin-top: 42px;
+        overflow: hidden;
+        border-radius: 43px;
+        position: relative;
+        cursor: pointer;
+        float: none;
+        margin: 10px auto;
+    }
+    #agora_local {
+        display: block !important;
+        margin: 10px auto;
+    }
+    #checkbox div {
+        width: 92px;
+        height: 43px;
+        background-color: #00FFD2;
+        border-radius: 43px;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        transition: width 0.2s linear;
+    }
+    #checkbox span {
+        width: 25px;
+        height: 25px;
+        background-color: #fff;
+        border-radius: 50%;
+        position: absolute;
+        left: 60px;
+        top: 10px;
+        transition: left 0.2s linear;
+    }
+    #audioSourceNew {
+        width: 100%;
+        height: 23px;
+        border-radius: 23px;
+        margin-top: 32px;
+        margin-bottom: 70px;
+        position: relative;
+        border: 1px solid #00FFD2;
+        overflow: hidden;
+    }
+    #audioSourceNew div {
+        width: 0%;
+        height: 23px;
+        border-radius: 23px;
+        position: absolute;
+        background-color: #00FFD2;
+        left: 0px;
+        top: 0px;
+        transition: width 0.1s linear;
+    }
+    .jump {
+        width: 80%;
+        height: 35px;
+        line-height: 35px;
+        background-color: #00FFD2;
+        margin: 45px auto;
+        text-align: center;
+        color: #fff;
+        font-size: 20px;
+        border-radius: 35px;
+        cursor: pointer;
+    }
+}
