@@ -240,9 +240,11 @@ class ConfigController extends AdminController {
 		
 		$builder->group("支付配置", array('ALIPAY_STATUS','ALIPAY_APPID', 'ALIPAY_PRIVATE_KEY', 'ALIPAY_PUBLIC_KEY', 'WXPAY_STATUS','WXPAY_APPID', 'WXPAY_MCHID', 'WXPAY_KEY'));
 		
-		$builder->keyText('MEETINGWEB_URL', "在线课堂地址","默认地址为 http://你的网址:5080/meeting.jsp");
+		$builder->keyText('MEETINGWEB_URL', "在线课堂地址","默认地址为 https://你的网址:端口/LiveBroadcast/check.html");
 		
-        $builder->group("在线课堂", array('MEETINGWEB_URL'));
+		$builder->keyText('MEETINGWEB_APP_ID', "在线课堂第三方接口KEY","声网APPID");
+		
+		$builder->group("在线课堂", array('MEETINGWEB_URL','MEETINGWEB_APP_ID'));
 
         //$builder->group("APP配置", array('APP_ANDROID_QRCODE', 'APP_IOS_QRCODE'));
 

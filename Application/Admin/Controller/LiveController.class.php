@@ -193,9 +193,15 @@ class LiveController extends AdminController
 			$data['starttime'] = $starttime;
 			$data['endtime'] = $endtime;
 			$data['pid'] = $pid;
-			$data['teacherid'] = $teacherid;
+			if(IS_ROOT)
+			    $data['teacherid'] = $teacherid;
+			else
+			    $data['teacherid'] = UID;
 			
 			if ($isEdit) {
+			    if(IS_ROOT){
+			        $data['userId'] = $teacherid;
+			    }
                 $rs = $this->datamodel->where('id=' . $id)->save($data);
             } else {
                 //商品名存在验证
@@ -205,7 +211,12 @@ class LiveController extends AdminController
                 if ($this->datamodel->where($map)->count()) {
                     $this->error('已存在同名数据');
                 }
-				*/
+                */
+                if(IS_ROOT){
+                    $data['userId'] = $teacherid;
+                }else{
+                    $data['userId'] = UID;
+                }
                 $data['userId'] = UID;
                 $data['createtime'] = time();
                 $rs = $this->datamodel->add($data);
@@ -235,13 +246,22 @@ class LiveController extends AdminController
 			$tree = $this->categorymodel->getTree(0, 'id,title,sort,pid,status');
 			//var_dump($tree);
 			//->keyTime('content', '开始时间')->keyTime('content', '结束时间')
-			$builder->keyId()->keyText('title', $this->_modelname.'名称')->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
+			if(IS_ROOT)
+			    $builder->keyId()->keyText('title', $this->_modelname.'名称')->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
+			    ->keyText('price', '价格','')
+			    ->keyTime('starttime', '开始时间','')->keyTime('endtime', '结束时间','')
+			    ->keyRadio("teacherid","老师","",$teachersoptions)
+			    ->keyCategory('categoryid',"分类","",$tree)
+			    ->keyHidden('pid')
+			    ->keyStatus('status', '状态');
+		  else
+                $builder->keyId()->keyText('title', $this->_modelname.'名称')->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
                 ->keyText('price', '价格','')
-				->keyTime('starttime', '开始时间','')->keyTime('endtime', '结束时间','')
-				->keyRadio("teacherid","老师","",$teachersoptions)
-				->keyCategory('categoryid',"分类","",$tree)
-				->keyHidden('pid')
-				->keyStatus('status', '状态');
+                ->keyTime('starttime', '开始时间','')->keyTime('endtime', '结束时间','')
+                //->keyRadio("teacherid","老师","",$teachersoptions)
+			    ->keyCategory('categoryid',"分类","",$tree)
+			    ->keyHidden('pid')
+			    ->keyStatus('status', '状态');
             if ($isEdit) {
                 $data = $this->datamodel->where('id=' . $id)->find();
                 $builder->data($data);
