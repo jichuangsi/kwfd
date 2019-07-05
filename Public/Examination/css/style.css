@@ -66,12 +66,12 @@ ul{list-style-type:none}
 }
 .prop-attrs .v-fold .f-list a:hover,
 .prop-attrs .v-fold .f-list a.selected,
-.prop-attrs .v-fold .f-list li.selected{background:#3d72fe;color:#ffffff}
+.prop-attrs .v-fold .f-list li.selected{background:#949dd1;color:#ffffff}
 .prop-attrs .v-fold .f-list li.selected{position:relative}
 .prop-attrs .v-fold .f-list li.selected a{color:#FFF;}
 .prop-attrs .v-fold .f-list li.selected em{background:#E77302 url(../images/delete.png) no-repeat;width:16px;height:16px;position:absolute;right:3px;top:4px;cursor:pointer}
 .prop-attrs .v-unfold .f-list{height:auto}
-.rank_num {display: inline-block;	background-color: #3d72fe;	color: white;	width: 20px;	height: 20px;	text-align: center;	float: left;	margin-right: 10px;}
+.rank_num {display: inline-block;	background-color: #949dd1;	color: white;	width: 20px;	height: 20px;	text-align: center;	float: left;	margin-right: 10px;}
 
 .summary{min-height:65px;height:auto!important;height:65px;}
 .detailtitle{font-weight:bold;}

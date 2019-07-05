@@ -54,11 +54,11 @@
   margin-right: 1em;
 }
 .ucenter_tab li a:hover {
-  border-bottom: 3px solid #3d72fe;
+  border-bottom: 3px solid #949dd1;
 }
 .ucenter_tab .active a {
   color: #666 !important;
-  border-bottom: 3px solid #3d72fe;
+  border-bottom: 3px solid #949dd1;
 }
 .expandinfo-noticeinfo {
   margin-left: 30px;

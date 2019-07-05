@@ -16,7 +16,7 @@
     });
 </script>
 <style>
- 
+
 </style>
  <div class="slider" style="margin-top:-15px">
         <div class="flexslider">
@@ -29,7 +29,7 @@
           </ul>
         </div>
  </div>
- <div style="height:15px"></div>
+ <!--<div style="height:15px"></div>-->
 </block>
 <block name="body">
     <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
@@ -37,8 +37,8 @@
         <div class="row">
             <div class="col-md-12">
                 <!---------------------------------------->
-				<div class="common_block_border">
-                    <div class="common_block_title">最新课程</div>
+				<div class="common_block_border1">
+                    <div class="common_block_title1 btn-background-groud btn-background">最新课程</div>
                     
                       <ul>
 					    <volist name="livehotdata" id="vo">
@@ -64,12 +64,12 @@
 					 <if condition="count($livehotdata) eq 0">
                         <div style="font-size:3em;padding:2em 0;color: #ccc;text-align: center;height:200px">该分类下现在还没有内容哦。O(∩_∩)O~</div>
 					 <else />
-                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/Live/Index/index')}" class="btn btn-default">&nbsp;&nbsp;更多课程 >&nbsp;&nbsp;</a></div>
+                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/Live/Index/index')}" class="btn btn-default btn-background btn-background-an" style="color: white;">&nbsp;&nbsp;查看更多课程 &nbsp;&nbsp;</a></div>
                      </if>
 				</div>
 				
-				<div class="common_block_border">
-                    <div class="common_block_title">视频点播</div>
+				<div class="common_block_border1">
+                    <div class="common_block_title1 btn-background-groud btn-background">视频点播</div>
                      
                       <ul>
 					    <volist name="vodhotdata" id="vo">
@@ -94,28 +94,28 @@
 					 <if condition="count($livehotdata) eq 0">
                         <div style="font-size:3em;padding:2em 0;color: #ccc;text-align: center;height:200px">该分类下现在还没有内容哦。O(∩_∩)O~</div>
 					 <else />
-                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/Vod/Index/index')}" class="btn btn-default">&nbsp;&nbsp;更多视频 >&nbsp;&nbsp;</a></div>
+                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/Vod/Index/index')}" class="btn btn-default  btn-background btn-background-an" style="color: white;">&nbsp;&nbsp;查看更多视频&nbsp;&nbsp;</a></div>
                      </if>
 					 
 				</div>
 				
-				<div class="common_block_border">
-                    <div class="common_block_title">名师风采</div>
+				<div class="common_block_border1 ">
+                    <div class="common_block_title1 btn-background-groud btn-background">名师风采</div>
                     
                       <ul>
 					    <volist name="teachers" id="vo">
-					     <li class="rmb-box">
+					     <li class="rmb-box btn-background-teacher btn-background" title="{$vo.signature}">
                     
-					        <div class="rmb-product-detail">
+					        <div class="rmb-product-detail rmb-product-detail-img">
 									<a href="{:U('/Teacher/index/Detail',array('id'=>$vo["uid"]))}" target="_blank">
 										<img src="<php>echo str_replace('.','_128_128.',$vo['path']);</php>" data-echo="<php>echo str_replace('.','_128_128.',$vo['path']);</php>">	
 									</a>													 
 								</div>  
 								<div class="rmb-product-desc">
 									<div class="rmb-product-explain"><a href="{:U('/Teacher/index/Detail',array('id'=>$vo["uid"]))}" target="_blank">{$vo.nickname}</a></div>
-									<p class="rmb-product-price">
+									<!--<p class="rmb-product-price">
 										{$vo.signature}
-									</p>
+									</p>-->
 						    </div>
         
 					     </li> 
@@ -125,12 +125,12 @@
 					 <if condition="count($livehotdata) eq 0">
                         <div style="font-size:3em;padding:2em 0;color: #ccc;text-align: center;height:200px">该分类下现在还没有内容哦。O(∩_∩)O~</div>
 					 <else />
-                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/Teacher/Index/index')}" class="btn btn-default">&nbsp;&nbsp;更多名师 >&nbsp;&nbsp;</a></div>
+                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/Teacher/Index/index')}" class="btn btn-default  btn-background btn-background-an" style="color: white;">&nbsp;&nbsp;查看更多名师 >&nbsp;&nbsp;</a></div>
                      </if>						
 				</div>
 				
-				<div class="common_block_border">
-                    <div class="common_block_title">最新资讯</div>
+				<div class="common_block_border1">
+                    <div class="common_block_title1 btn-background-groud btn-background">最新资讯</div>
                     
                       <volist name="newshotdata" id="vo">
                       <div class="newsli" style="" transitionparent>                     
@@ -155,7 +155,7 @@
 					<if condition="count($newshotdata) eq 0">
                         <div style="font-size:3em;padding:2em 0;color: #ccc;text-align: center;height:500px">该分类下现在还没有内容哦。O(∩_∩)O~</div>
 					<else />
-                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/News/Index/index')}" class="btn btn-default">&nbsp;&nbsp;更多资讯 >&nbsp;&nbsp;</a></div>
+                        <div style="text-align:center;clear:both;padding:0px 0px 10px 0px"><a href="{:U('/News/Index/index')}" class="btn btn-default btn-background btn-background-an" style="color: white;">&nbsp;&nbsp;查看更多资讯 >&nbsp;&nbsp;</a></div>
                     </if>
 					<div style="clear:both;width:1px;height:1px"></div>
 				</div>
