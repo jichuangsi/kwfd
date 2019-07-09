@@ -3,7 +3,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Agora Web Sample</title>
+    <title>课程中心-直播间</title>
     <link rel="stylesheet" href="assets/style/index.css">
     <link rel="stylesheet" href="assets/style/watch.css">
     <script src="AgoraRTCSDK-2.7.0.js"></script>
@@ -103,7 +103,7 @@
                         });
                         //localStream = AgoraRTC.createStream({streamID: uid, audio: false, cameraId: camera, microphoneId: microphone, video: false, screen: true, extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg'});
                         // if (document.getElementById("video").checked) {
-                            localStream.setVideoProfile('720p_3');
+                        localStream.setVideoProfile('480p');//720p_3
 
                         // }
 
@@ -120,7 +120,11 @@
 
                         localStream.init(function () {
                             console.log("getUserMedia successfully");
-                                localStream.play('agora_local');
+                                localStream.play('agora_local', {fit: "contain"}, function(errState){
+                                    if (errState && errState !== "abort"){
+                                        // 播放失败，一般为浏览器策略阻止。引导用户用手势触发恢复播放。
+                                    }
+                                });
                             if(role == '4'){
                                 client.publish(localStream, function (err) {
                                     console.log("Publish local stream error: " + err);
@@ -176,7 +180,11 @@
                             '" style="position: absolute;right:0px;top:0px;width:100%;height:100%;display:inline-block;"></div>');
                     }
                     // stream.stop('agora_local');
-                    stream.play('agora_remote' + stream.getId());
+                    stream.play('agora_remote' + stream.getId(), {fit: 'contain'}, function(errState){
+                        if (errState && errState !== "abort"){
+                            // 播放失败，一般为浏览器策略阻止。引导用户用手势触发恢复播放。
+                        }
+                    });
                     sessionStorage.setItem('streamId','agora_remote' + stream.getId())
                     if(shareState == 1){
                         demo = $('#'+sessionStorage.getItem('streamId')).prev()[0]
@@ -199,6 +207,10 @@
                 demo.style.height = '100%'
             });
 
+            client.on("peer-online", function(evt) {
+            	console.log("peer-online", evt.uid);
+            });
+            
             client.on('peer-leave', function (evt) {
                 var stream = evt.stream;
                 if (stream) {
@@ -215,9 +227,9 @@
             }, function (err) {
                 console.log("Leave channel failed");
             });
-            setTimeout(function(){
+            /* setTimeout(function(){
                 join()
-            },10000)
+            },10000) */
         }
         function CameraStop(){
                 if(Camera == 1){
@@ -260,7 +272,7 @@
 
         function share(){
          var channel_key = null;
-         var screenClient = AgoraRTC.createClient({mode: 'live', codec: 'vp8'});
+         var screenClient = AgoraRTC.createClient({mode: 'live'});
          screenClient.init(appid, function() {
           screenClient.join(channel_key, room, null, function(uid) {
           // 保存本地流的uid
@@ -289,16 +301,17 @@
                // Firefox
                mediaSource: 'window' // 'screen', 'application', 'window'
               });
+          screenStream.setScreenProfile('480p_2');
           //}          
           // 初始化流
           screenStream.init(function() {
            // 播放流
            //screenStream.play('Screen');
            // 推流
-            AgoraRTC.getScreenSources(function(err, sources) {
+            /* AgoraRTC.getScreenSources(function(err, sources) {
                 console.log(sources)
-            })
-            debugger;
+            }) */
+            //debugger;
            screenClient.publish(screenStream);
 
            // 监听流（用户）加入频道事件
