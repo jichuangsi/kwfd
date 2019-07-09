@@ -30,13 +30,13 @@
 
     <div id="video" onmousemove="videofocus()" onmouseout="videoblur()">
         <div id="agora_local" style="width:100%;height:100%;display:inline-block;"></div>
-        <div class="UserCount">在线人数：<span>0</span>人</div>
+        <!-- <div class="UserCount">在线人数：<span>0</span>人</div> -->
         <div class="nav">
             <div>
                 <span class="s1" onclick="leave()"></span>
                 <span class="s2" onclick="CameraStop()"></span>
                 <span class="s3" onclick="MicrophoneStop()"></span>
-                <!-- <span class="s4" onclick="share()"></span> -->
+                <span class="s4" onclick="share()"></span>
                 <!-- <span class="s5" onclick="Same()"></span> -->
                 <span class="s6" onclick="Rotate()"></span>
             </div>
@@ -64,6 +64,9 @@
         var Camera = 1
         var Microphone = 1
         var rotate = 0
+        var shareState = 0
+        var localStreams = [];
+        var demo
         var audioSelect = sessionStorage.getItem('audioSelect')
         var videoSelect = sessionStorage.getItem('videoSelect')
         var role = sessionStorage.getItem('role')
@@ -73,6 +76,7 @@
         if(role == '2'){
             $('.s2').remove()
             $('.s3').remove()
+            $('.s4').remove()
             $('.s5').remove()
             $('.UserCount').remove()
         }
@@ -102,11 +106,7 @@
                             localStream.setVideoProfile('720p_3');
 
                         // }
-                            
-                        client.getSessionStats((state)=>{
-                            $('.UserCount>span').text(state.UserCount-1)
-                        })
-     
+
                         // The user has granted access to the camera and mic.
                         localStream.on("accessAllowed", function () {
                             console.log("accessAllowed");
@@ -120,7 +120,7 @@
 
                         localStream.init(function () {
                             console.log("getUserMedia successfully");
-                            localStream.play('agora_local');
+                                localStream.play('agora_local');
                             if(role == '4'){
                                 client.publish(localStream, function (err) {
                                     console.log("Publish local stream error: " + err);
@@ -130,8 +130,8 @@
                                     console.log("Publish local stream successfully");
                                 });
                             }
-                            else {
-                                localStream.stop('agora_local');
+                            else{
+                                localStream.stop('agora_local')
                             }
                             
                         }, function (err) {
@@ -160,13 +160,11 @@
 
             client.on('stream-added', function (evt) {
                 var stream = evt.stream;
-                
-                
                 console.log("New stream added: " + stream.getId());
                 console.log("Subscribe ", stream);
-                client.subscribe(stream, function (err) {
-                    console.log("Subscribe stream failed", err);
-                });
+                    client.subscribe(stream, function (err) {
+                        console.log("Subscribe stream failed", err);
+                    });
             });
 
             if(role == '2'){
@@ -179,7 +177,15 @@
                     }
                     // stream.stop('agora_local');
                     stream.play('agora_remote' + stream.getId());
-                    sessionStorage.setItem('streamID','agora_remote' + stream.getId())
+                    sessionStorage.setItem('streamId','agora_remote' + stream.getId())
+                    if(shareState == 1){
+                        demo = $('#'+sessionStorage.getItem('streamId')).prev()[0]
+                        demo.style.zIndex = '10'
+                        demo.style.width = '210px'
+                        demo.style.height = '156px'
+                        shareState=0
+                    }
+                    shareState++
                 });
             }
 
@@ -188,6 +194,9 @@
                 stream.stop();
                 $('#agora_remote' + stream.getId()).remove();
                 console.log("Remote stream is removed " + stream.getId());
+                demo.style.zIndex = '1'
+                demo.style.width = '100%'
+                demo.style.height = '100%'
             });
 
             client.on('peer-leave', function (evt) {
@@ -206,6 +215,9 @@
             }, function (err) {
                 console.log("Leave channel failed");
             });
+            setTimeout(function(){
+                join()
+            },10000)
         }
         function CameraStop(){
                 if(Camera == 1){
@@ -244,6 +256,75 @@
         //audioSelect.onchange = getDevices;
         //videoSelect.onchange = getDevices;
         join();
+
+
+        function share(){
+         var channel_key = null;
+         var screenClient = AgoraRTC.createClient({mode: 'live', codec: 'vp8'});
+         screenClient.init(appid, function() {
+          screenClient.join(channel_key, room, null, function(uid) {
+          // 保存本地流的uid
+          localStreams.push(uid);
+          // 创建屏幕共享流
+          /* Number.tem = ua.match(/(Chrome(?=\/))\/?(\d+)/i);
+          if(parseInt(tem[2]) >= 72  && navigator.mediaDevices.getDisplayMedia ) {
+           // Create the stream for screensharing
+              screenStream = AgoraRTC.createStream({
+                  streamID: uid,
+                  audio: false,
+                  video: false,
+                  screen: true,
+               // Firefox
+                  mediaSource: 'window' // 'screen', 'application', 'window'
+              });
+
+          }else{ */
+           screenStream = AgoraRTC.createStream({
+               streamID: uid,
+               audio: false, // 设置屏幕共享不带音频，避免订阅端收到的两路流中都有音频，导致回声
+               video: false,
+               screen: true,
+               // Chrome
+               //extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg',
+               // Firefox
+               mediaSource: 'window' // 'screen', 'application', 'window'
+              });
+          //}          
+          // 初始化流
+          screenStream.init(function() {
+           // 播放流
+           //screenStream.play('Screen');
+           // 推流
+            AgoraRTC.getScreenSources(function(err, sources) {
+                console.log(sources)
+            })
+            debugger;
+           screenClient.publish(screenStream);
+
+           // 监听流（用户）加入频道事件
+           screenClient.on('stream-added', function(evt) {
+            var stream = evt.stream;
+            var uid = stream.getId();
+
+            // 收到流加入频道的事件后，先判定是不是本地的uid
+            if(!localStreams.includes(uid)) {
+              console.log('subscribe stream:' + uid);
+              // 拉流
+              screenClient.subscribe(stream);
+            }
+           })
+          }, function (err) {
+            console.log(err);
+          });
+         }, function (err) {
+           console.log(err);
+         })
+         })
+        }
+
+
+
+
     </script>
 </body>
 
