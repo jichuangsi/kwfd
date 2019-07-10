@@ -4,7 +4,7 @@ namespace Live\Controller;
 use Live\Api\SecretUtilTools;
 use Live\Api\Crypt;
 use Think\Controller;
-
+//header('Access-Control-Allow-Origin:*');
 /**
  * Class IndexController
  * @package Shop\Controller
@@ -96,13 +96,15 @@ class IndexController extends Controller
 		  
 		}
 		
+		$room = $id.'-'.$data["createtime"];		
+		
 		$this->des = new SecretUtilTools();
 		//dump($this->des->encrypt('wefwefwe'));
 		$this->crypt=new Crypt();
 		$this->crypt->init("TESTTEST");
 		
 		$meetingappid=modC('MEETINGWEB_APP_ID',0,'Config');
-		$parameter="userid=".$uid."&user=".$username."&role=".$role."&room=".$id."-".$data["createtime"]."&title=".$data["title"]."&appid=".$meetingappid;
+		$parameter="userid=".$uid."&user=".$username."&role=".$role."&room=".$room."&title=".$data["title"]."&appid=".$meetingappid;
 		//echo $parameter;
 		//$parameter="userid=1431958326&user=user1431958326&role=manager&room=7";
 		//$parameter=$this->crypt->encrypt($parameter);
@@ -112,6 +114,75 @@ class IndexController extends Controller
         $meetingurl=modC('MEETINGWEB_URL',0,'Config');
 		//die($meetingurl);
 		header("location: $meetingurl?a=".$parameter);
+	}
+	
+	public function statistics(){
+	    $action = $_POST['action'];
+	    $room = $_POST['room'];
+	    $uid = $_POST['uid']?$_POST['uid']:get_uid();
+	    $uname = $_POST['uname']?$_POST['uname']:session('user_auth')['username'];
+	    $isteacher = $_POST['isteacher']?$_POST['isteacher']:session('user_auth')['isteacher'];
+	    //echo 'room:'.$room.';uid:'.$uid.';uname:'.$uname.';isteacher:'.$isteacher;	    
+	    
+	    if(!is_dir('lock')){
+	        mkdir('lock');
+	    }
+	    if(!is_dir('lock/Live')){	        
+	        mkdir('lock/Live');
+	    }	        
+	    
+	    $fp = fopen('lock/Live/'.$room.'.txt', "w+");
+	    if(flock($fp,LOCK_EX)){
+    	    if(!$isteacher){
+    	        if(strcasecmp($action,'JOIN')==0){
+    	            $join_users = F('Live/'.$room);
+    	            if($join_users){
+    	                $ids = $join_users['ids'];
+    	                if(!array_key_exists($uid, $ids)){
+    	                    $ids[$uid] = $uname;
+    	                    $total = count($ids);
+    	                    $max = $join_users['max']<$total?$total:$join_users['max'];
+    	                    $join_users = array('ids'=>$ids,'total'=>$total,'max'=>$max);
+    	                }
+    	            }else{
+    	                $join_users = array('ids'=>array($uid=>$uname),'total'=>1,'max'=>1);
+    	            }
+    	            F('Live/'.$room,$join_users);	            
+    	        }else if(strcasecmp($action,'LEAVE')==0){
+    	            $join_users = F('Live/'.$room);
+    	            if($join_users){
+    	                $ids = $join_users['ids'];
+    	                if(array_key_exists($uid, $ids)){
+    	                    $ids = array_diff_key($ids, [$uid=>$uname]);
+    	                    $total = count($ids);
+    	                    $max = $join_users['max']<$total?$total:$join_users['max'];
+    	                    $join_users = array('ids'=>$ids,'total'=>$total,'max'=>$max);
+    	                    F('Live/'.$room,$join_users);
+    	                }
+    	            }
+    	        }
+    	        //print_r($join_users);
+    	    }else{
+    	        if(strcasecmp($action,'QUERY')==0){
+    	            $join_users = F('Live/'.$room);
+    	            if($join_users){
+    	                return $this->ajaxReturn($join_users);
+    	            }
+    	        }else if(strcasecmp($action,'LEAVE')==0){
+    	            $rid = strtok($room,'-');	            
+    	            $join_users = F('Live/'.$room);
+    	            
+    	            if($join_users){
+    	                $data['max'] = $join_users['max'];
+    	                $this->datamodel->where('id=' . $rid)->save($data);
+    	                //echo $this->datamodel->_sql();
+    	                F('Live/'.$room,NULL);
+    	            }	            
+    	        }
+    	    }
+    	    flock($fp,LOCK_UN);
+	    }
+	    fclose($fp);
 	}
 	
     /*

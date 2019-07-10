@@ -5304,6 +5304,7 @@ CREATE TABLE IF NOT EXISTS `onethink_live` (
   `createtime` int(11) NOT NULL COMMENT '创建时间',
   `category` int(11) NOT NULL COMMENT '分类',
   `view` int(10) NOT NULL DEFAULT '0',
+  `max` int(10) NOT NULL DEFAULT '0' COMMENT '观看人数',
   `price` float(10,2) NOT NULL DEFAULT '0.00' COMMENT '价格',
   `starttime` int(11) unsigned DEFAULT NULL COMMENT '开始时间',
   `endtime` int(11) unsigned DEFAULT NULL COMMENT '结束时间',
