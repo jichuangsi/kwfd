@@ -10,7 +10,7 @@
     <script src="vendor/jquery.js"></script>
 </head>
 
-<body>
+<body onunload="leave()">
         <div class="logo fl"><img src="./assets/images/logo.png" alt=""></div>
 
     <!--style>
@@ -29,8 +29,9 @@
     </div-->
 
     <div id="video" onmousemove="videofocus()" onmouseout="videoblur()">
+        <div class="title">主播正在路上...</div>
         <div id="agora_local" style="width:100%;height:100%;display:inline-block;"></div>
-        <!-- <div class="UserCount">在线人数：<span>0</span>人</div> -->
+        <div class="UserCount">在线人数：<span>0</span>人</div>
         <div class="nav">
             <div>
                 <span class="s1" onclick="leave()"></span>
@@ -65,6 +66,7 @@
         var Microphone = 1
         var rotate = 0
         var shareState = 0
+        var leaveState = 0
         var localStreams = [];
         var demo
         var audioSelect = sessionStorage.getItem('audioSelect')
@@ -79,6 +81,8 @@
             $('.s4').remove()
             $('.s5').remove()
             $('.UserCount').remove()
+        }else{
+            $('.title').remove()
         }
         function join() {
             var channel_key = null;
@@ -106,7 +110,8 @@
                         localStream.setVideoProfile('480p');//720p_3
 
                         // }
-
+                        
+                    
                         // The user has granted access to the camera and mic.
                         localStream.on("accessAllowed", function () {
                             console.log("accessAllowed");
@@ -169,6 +174,7 @@
                     client.subscribe(stream, function (err) {
                         console.log("Subscribe stream failed", err);
                     });
+                    $('.title')[0].style.display = 'none'
             });
 
             if(role == '2'){
@@ -194,7 +200,25 @@
                         shareState=0
                     }
                     shareState++
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'JOIN',uid:'',uname:'',isteacher:0},function(result){
+                                    console.log(result);
+                    });
                 });
+            }else {
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'JOIN',uid:'',uname:'',isteacher:1},function(result){
+                                    console.log(result);
+                    });
+                    
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'QUERY',uid:'',uname:'',isteacher:1},function(result){
+                        console.log(result);
+                        $('.UserCount').find('span').text(result.total)
+                });
+                setInterval(function(){
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'QUERY',uid:'',uname:'',isteacher:1},function(result){
+                        console.log(result);
+                        $('.UserCount').find('span').text(result.total)
+                });
+                },30000)
             }
 
             client.on('stream-removed', function (evt) {
@@ -217,16 +241,29 @@
                     stream.stop();
                     $('#agora_remote' + stream.getId()).remove();
                     console.log(evt.uid + " leaved from this channel");
+                    $('.title')[0].style.display = 'block'
                 }
             });
         }
 
         function leave() {
-            client.leave(function () {
-                console.log("Leavel channel successfully");
-            }, function (err) {
-                console.log("Leave channel failed");
-            });
+            if(leaveState == 0){
+                if(role == '2'){
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'LEAVE',uid:'',uname:'',isteacher:0},function(result){
+                                    console.log(result);
+                    });
+                }else{
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'LEAVE',uid:'',uname:'',isteacher:1},function(result){
+                                    console.log(result);
+                    });
+                }
+                client.leave(function () {
+                    console.log("Leavel channel successfully");
+                    leaveState++
+                }, function (err) {
+                    console.log("Leave channel failed");
+                });
+            }
             /* setTimeout(function(){
                 join()
             },10000) */
@@ -334,7 +371,6 @@
          })
          })
         }
-
 
 
 
