@@ -244,8 +244,10 @@ ul{list-style-type:none;margin:0px 0px;padding:10px 15px 0px 15px}
 	//alert(Base64.encode(JSON.stringify(messageToPost)));
 	//alert(encodeURI(Base64.encode(JSON.stringify(messageToPost))));
      //StageWebViewBridge.call('fnCalledFromJS',null,JSON.stringify(messageToPost));
-	 var url="{:U('gotomeeting',array('jscallas'=>'_args_','success'=>'1'))}";
-	 url=url.replace('_args_',Base64.encode(JSON.stringify(messageToPost)));
+	 //var url="{:U('gotomeeting',array('jscallas'=>'_args_','success'=>'1'))}";
+	 //url=url.replace('_args_',Base64.encode(JSON.stringify(messageToPost)));
+	 var url = "{:U('/Live/Index/gotomeeting',array('id'=>'_args_'))}";
+	 url=url.replace('_args_',room);
 	 //alert(url);
 	 window.location.href=url;
   }

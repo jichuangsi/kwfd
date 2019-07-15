@@ -23,6 +23,9 @@ h3 {
     font-size: 16px;
     margin:28px 0px;
 }
+.text div {
+    display: inline-block;
+}
 .title {
     color: #04FFD2;
     font-size: 16px;

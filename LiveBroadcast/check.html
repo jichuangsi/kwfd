@@ -2,10 +2,12 @@
 <html>
 
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Agora Web Sample</title>
+    <title>课程中心-设备检测</title>
     <script src="AgoraRTCSDK-2.7.0.js"></script>
     <script src="vendor/jquery.js"></script>
+    <script src="vendor/jquery.base64.js"></script>
     <link rel="stylesheet" href="assets/style/index.css">
     <link rel="stylesheet" href="assets/style/check.css">
 </head>
@@ -15,7 +17,7 @@
     <h3>检测设备</h3>
     <div id="selectbox">
         <div class="text">
-            房间名称：数学教程
+            课程名称：<div id="title">数学教程</div>
         </div>
         <div class="text">
             基本模式：AL
@@ -52,7 +54,30 @@
     </div>
 
     <script language="javascript">
-
+    	var param = $.base64.decode(decodeURIComponent(GetQueryString(window.location.search.substr(1),'a')));
+    	
+    	var userid = GetQueryString(param,'userid');
+    	var user = GetQueryString(param,'user');
+    	var role = GetQueryString(param,'role');
+    	var room = GetQueryString(param,'room');
+    	var title = GetQueryString(param,'title');
+    	var appid = GetQueryString(param,'appid');
+        var JumpStatus = 1
+    	
+    	if(!room){
+    		alert("Missing room number");
+    	}
+    	
+    	if(!appid){
+    		alert("Missing app id");
+            $('.jump')[0].style.backgroundColor = '#666'
+            JumpStatus = 2
+    	}
+    	
+    	$('#title').html(title);
+    	sessionStorage.setItem('role',role);
+    	sessionStorage.setItem('room',room);
+    	sessionStorage.setItem('appid',appid);
         /* select Log type */
         // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
         // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.ERROR);
@@ -71,11 +96,19 @@
         var audioSelect = document.querySelector('select#audioSource');
         var videoSelect = document.querySelector('select#videoSource');
         var check = document.getElementById('checkbox');
-
+        
+        function GetQueryString(param,name) {
+	        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	        var r = param.match(reg);
+	        if(r!=null) return unescape(r[2]); return null;
+        }
+        
         function jump () {
-            sessionStorage.setItem('videoSource',videoSource.value)
-            sessionStorage.setItem('audioSource',audioSource.value)
-            location.href = 'watch.html'
+            if(JumpStatus == 1) {
+                sessionStorage.setItem('videoSource',videoSource.value)
+                sessionStorage.setItem('audioSource',audioSource.value)
+                location.href = 'watch.html'
+            }
         }
         function checkStatus(){
             console.log(status)
