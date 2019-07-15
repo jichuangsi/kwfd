@@ -308,7 +308,6 @@ font {
 	padding: 7px 5px;
 	color: #7984c6;
 	font-size: 14px;
-	
 }
 
 .whole input:focus {
@@ -368,7 +367,7 @@ font {
 	}
 	.date input[type=date] {
 		background-color: transparent !important;
-		color: #fff0  !important;
+		color: #fff0 !important;
 		border: 0 !important;
 		-webkit-appearance: none;
 		-webkit-tap-highlight-color: rgba(0, 0, 0, 0)!important;
@@ -417,6 +416,13 @@ font {
 	/*.tab_body form {
 		width: 700px
 	}*/
+	.whole textarea {
+		width: 36%;
+		height: 150px;
+		padding: 5px;
+		resize: none;
+		border: #e8bb45 1px solid;
+	}
 	.btn-background-input {
 		background-position: 98px -3023px !important;
 		background-size: 552px 790px !important;

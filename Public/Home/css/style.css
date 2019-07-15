@@ -384,8 +384,8 @@ ul {
 
 @media screen and (max-width:960px) {
 	.content-background-body {
-		/*	background: #E2E7FD !important;*/
-		background: url(../images/8.png)!important;
+			background: #F2DBD4 !important;
+		/*background: url(../images/8.png)!important;*/
 		/*background-size: auto;*/
 	}
 	.btn-background-teacher {
@@ -421,10 +421,10 @@ ul {
 		float: left
 	}
 	.content-background-body {
-		background: #E2E7FD;
+		background: #F2DBD4 !important;
 	}
 	.btn-background-teacher {
-		background-position: 449px -63px !important;
+		background-position: 488px -67px !important;
 		width: 160px !important;
 		height: 167px !important;
 	}
