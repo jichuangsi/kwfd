@@ -428,11 +428,11 @@ ul {
 		width: 160px !important;
 		height: 167px !important;
 	}
-	/*.btn-background-teacher:hover {
-		background-position: 543px -67px !important;
+	.btn-background-teacher:hover {
+		background-position: 646px -67px !important;
 		width: 160px !important;
 		height: 167px !important;
-	}*/
+	}
 	.rmb-box {
 		display: block;
 		float: left;
