@@ -319,7 +319,6 @@ body {
 	font-size: 14px;
 	line-height: 1.428571429;
 	color: #333333;
-	background-color: #E2E7FD;
 }
 
 input,
@@ -332,7 +331,7 @@ textarea {
 }
 
 a {
-	color: #949dd1;
+	color: #e8bb45;
 	text-decoration: none;
 }
 
@@ -2023,7 +2022,7 @@ output {
 }
 
 .form-control:focus {
-	border-color: #949dd1;
+	border-color: #e8bb45;
 	outline: 0;
 	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(3, 174, 135, 0.6);
 	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(3, 174, 135, 0.6);
@@ -2457,7 +2456,7 @@ fieldset[disabled] .btn-default.active {
 
 .btn-primary {
 	color: #ffffff;
-	background-color: #949dd1;
+	background-color: #e8bb45;
 	border-color: #7984c6;
 }
 
@@ -2467,8 +2466,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
 	color: #ffffff;
-	background-color: #949dd1;
-	border-color: #949dd1;
+	background-color: #e8bb45;
+	border-color: #e8bb45;
 }
 
 .btn-primary:active,
@@ -4226,7 +4225,7 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 .nav-tabs>li.active>a:hover,
 .nav-tabs>li.active>a:focus {
 	color: #555555;
-	background-color: #f1f1f1;
+	background-color: #e8bb45;
 	border: 1px solid #dddddd;
 	border-bottom-color: transparent;
 	cursor: default;
@@ -5038,7 +5037,7 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 .pagination>li>span:hover,
 .pagination>li>a:focus,
 .pagination>li>span:focus {
-	color: #949dd1;
+	color: #e8bb45;
 	background-color: #eeeeee;
 	border-color: #dddddd;
 }
@@ -5051,8 +5050,8 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 .pagination>.active>span:focus {
 	z-index: 2;
 	color: #ffffff;
-	background-color: #949dd1;
-	border-color: #949dd1;
+	background-color: #e8bb45;
+	border-color: #e8bb45;
 	cursor: default;
 }
 

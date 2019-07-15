@@ -36,10 +36,10 @@
 	-moz-border-radius-topright: 5px;
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
-	color: #949dd1;
+	color: #e8bb45;
 	font-size: 18px;
 	margin: 5px 0 10px 10px;
-	border-left: 5px solid #949dd1;
+	border-left: 5px solid #e8bb45;
 	letter-spacing: 2px;
 	font-weight: normal;
 }
@@ -166,6 +166,7 @@ a:hover {
 
 body {
 	font-family: "Microsoft YaHei";
+	background-color: #F2DBD4 !important;
 }
 
 .cpointer {
@@ -411,7 +412,7 @@ h2 {
 }
 
 .link-primary {
-	color: #949dd1;
+	color: #e8bb45;
 }
 
 .link-muted {
@@ -1168,7 +1169,7 @@ General list for item with image
 .friend_panel .btn-pull {
 	position: absolute;
 	border: 1px solid #029775;
-	background: #949dd1;
+	background: #e8bb45;
 	padding: 15px 7px;
 	border-right: 0;
 	margin-right: 0;
@@ -1438,7 +1439,7 @@ a {
 }
 
 a:hover {
-	color: #949dd1;
+	color: #e8bb45;
 }
 
 
@@ -1568,9 +1569,9 @@ a:hover {
 /*悬浮样式end*/
 
 .nav_bar {
-	border-bottom: 4px solid #7984c6;
-	box-shadow: 0px 0px 0px #949dd1;
-	background: #949dd1;
+	border-bottom: 4px solid #daa315;
+	box-shadow: 0px 0px 0px #e8bb45;
+	background: #e8bb45;
 	z-index: 999;
 }
 
@@ -1579,7 +1580,7 @@ a:hover {
 }
 
 .nav_bar .navbar-toggle {
-	background-color: #949dd1;
+	background-color: #e8bb45;
 	color: white;
 	margin-top: 12px;
 }
@@ -1598,7 +1599,7 @@ a:hover {
 
 .nav_bar .active a {
 	color: #ffffff;
-	background: #7984c6;
+	background: #daa315;
 }
 
 .nav_bar .nav>li>a {
@@ -1608,7 +1609,7 @@ a:hover {
 .nav_bar .nav>li>a:hover,
 .nav_bar .nav>li>a:focus {
 	text-decoration: none;
-	background: #7984c6;
+	background: #daa315;
 	/*background-color: transparent;*/
 	color: #ffffff;
 }
@@ -1895,7 +1896,7 @@ a:hover {
 }
 
 #nav_bar_main {
-	background: #949dd1;
+	background: #e8bb45;
 }
 
 

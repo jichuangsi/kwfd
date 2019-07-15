@@ -148,6 +148,6 @@
 .cf a{display:inline-block;line-height:20px;padding:0px}
 .hdd{width:auto;float:left;word-break:break-all;}
 .hdd a{ display:inline-block;padding:0px 5px;line-height:30px;margin-right:10px}
-.hdd a:hover{color:#ffffff;background-color:#949dd1;border-radius:6px;-moz-border-radius:6px; /* Old Firefox */}
-.hdd .active{color:#ffffff;background-color:#949dd1;border-radius:6px;-moz-border-radius:6px; /* Old Firefox */}
+.hdd a:hover{color:#ffffff;background-color:#e8bb45;border-radius:6px;-moz-border-radius:6px; /* Old Firefox */}
+.hdd .active{color:#ffffff;background-color:#e8bb45;border-radius:6px;-moz-border-radius:6px; /* Old Firefox */}
 .cate-item:nth-child(2n){margin-top: 5px;}

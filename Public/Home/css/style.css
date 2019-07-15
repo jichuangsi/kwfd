@@ -35,11 +35,9 @@
 
 .content-background-body {
 	padding-top: 75px;
-	/*background-image: url(../images/03.png) !important;*/
-	background: url(../images/03.png)0 -15px no-repeat, url(../images/04.png)0 393px no-repeat, url(../images/05.png)0 1233px no-repeat, url(../images/06.png)0 2153px no-repeat;
+	background: url(../images/02.png)0 -199px no-repeat , url(../images/03.png)0 393px no-repeat, url(../images/04.png)0 1233px no-repeat, url(../images/05.png)0 2086px no-repeat;
 	background-repeat: no-repeat;
 	background-size: auto;
-	/*background-size: 100% 100%;*/
 }
 
 .jumbotron {
@@ -367,9 +365,8 @@ ul {
 
 @media screen and (max-width:1280px) {
 	.content-background-body {
-		/*background: #E2E7FD !important;*/
-		background: url(../images/7.png)no-repeat !important;
-		/*background-size: auto;*/
+		background: #F2DBD4;
+		/*background: url(../images/7.png)no-repeat !important;*/
 	}
 	.btn-background-teacher {
 		background-position: 200px -88px !important;
