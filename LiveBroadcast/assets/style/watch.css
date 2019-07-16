@@ -3,13 +3,257 @@
     left: 39px;
     top: 26px;
 }
+.box {
+    width: 100%;
+    height: 480px;
+    margin-top: 100px;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+}
+.text {
+    width: 300px;
+    height: 480px;
+    background-color: #fff;
+    position: relative;
+}
+.text .nav {
+    width: 100%;
+    height: 36px;
+    display: flex;
+    box-shadow: 0px -1px 10px rgba(0,0,0,0.4);
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 13;    
+}
+.text .nav div {
+    width: 50%;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    cursor: pointer;
+}
+.text .nav .check {
+    color: #0094ff;
+}
+
+.text .nav div i {
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    border-radius: 50%;
+}
+.text .userList {
+    width: 100%;
+    height: 444px;
+    overflow: auto;
+    position: absolute;
+    left: 0px;
+    top: 36px;
+    background-color: #fff;
+    padding: 0px 10px
+}
+.text .userList div {
+    margin: 10px 0px;
+    width: 100%;
+    line-height: 36px;
+    cursor: pointer;
+    position: relative;
+}
+.text .userList div i {
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    border-radius: 50%;
+}
+.text .sendbox {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 36px;
+    box-shadow: 0px -1px 10px rgba(0,0,0,0.4);
+    display: flex;
+    overflow: hidden;
+    z-index: 11;
+}
+.text input {
+    flex: 1;
+    height: 36px;
+    line-height: 36px;
+    color: #333;
+}
+.text button {
+    height: 36px;
+    padding: 0px 10px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+.text .message,.text .Onemessage{
+    width: 100%;
+    height: 408px;
+    overflow: auto;
+    position: absolute;
+    left: 0px;
+    top: 36px;
+    background-color: #fff;
+}
+.text .message {
+    z-index: 1;
+}
+.message::-webkit-scrollbar,.userList::-webkit-scrollbar,.Onemessage::-webkit-scrollbar,.onlymessage::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 1px;
+}
+.message::-webkit-scrollbar-thumb,.userList::-webkit-scrollbar-thumb,.Onemessage::-webkit-scrollbar-thumb,.onlymessage::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 10px;
+     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: #535353;
+}
+.message::-webkit-scrollbar-track,.userList::-webkit-scrollbar-track,.Onemessage::-webkit-scrollbar-track,.onlymessage::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    background: #EDEDED;
+}
+.text .message div,.text .Onemessage div,.only .onlymessage div {
+    width: 100%;
+    line-height: 32px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.text .message i,.text .Onemessage i ,.only .onlymessage i{
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #333;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    transform: rotate(45deg);
+    position: absolute;
+    right: -5px;
+    top: 8px;
+    background-color: #fff;
+}
+.text .message em,.text .Onemessage em ,.only .onlymessage em{
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #333;
+    border-bottom-color: transparent;
+    border-right-color: transparent;
+    transform: rotate(-45deg);
+    position: absolute;
+    left: -5px;
+    top: 8px;
+    background-color: #fff;
+}
+.text .message div span:nth-child(2),.text .Onemessage div span:nth-child(2),.only .onlymessage div span:nth-child(2) {
+    border: 1px solid #333;
+    border-radius: 5px;
+    margin-right: 10px;
+    max-width: 60%;
+    padding: 0px 5px;
+    word-wrap:break-word;
+    white-space:normal;
+    vertical-align: middle;
+    position: relative;
+}
+.text .message div span:nth-child(1),.text .Onemessage div span:nth-child(1),.only .onlymessage div span:nth-child(1) {
+    border: 1px solid red;
+    border-radius: 50%;
+    padding: 0px 5px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.only {
+    width: 0px;
+    height: 0px;
+    background-color: #fff;
+    position: absolute;
+    left: 40%;
+    top: 50%;
+    transform:translate(-50%,-50%);
+    z-index: 13;
+    transition: width 0.2s linear, height 0.2s linear;
+    overflow: hidden;
+}
+.only .Popupbox {
+    width: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 0;
+}
+.only .Popup_z {
+    z-index: 1;
+}
+.only .onlymessage {
+    width: 100%;
+    height: 325px;
+    overflow: auto;
+    position: absolute;
+    left: 0px;
+    top: 36px;
+    background-color: #fff;
+}
+.only .top {
+    width: 100%;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    box-shadow: 0px -1px 10px rgba(0,0,0,0.4);
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 13; 
+    background-color: #fff;
+}
+.only .top strong{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 0px 15px;
+    cursor: pointer;
+}
+.only .sendbox {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 36px;
+    box-shadow: 0px -1px 10px rgba(0,0,0,0.4);
+    display: flex;
+    overflow: hidden;
+    z-index: 11;
+}
+.only input {
+    flex: 1;
+    height: 36px;
+    line-height: 36px;
+    color: #333;
+}
+.only button {
+    height: 36px;
+    padding: 0px 10px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
 #video {
-    /* width: 640px; */
+    width: 640px;
     height: 480px;
     position: relative;
     overflow: hidden;
-    margin: 0px auto;
-    margin-top: 100px;
     background-color: black;
 }
 #video .title {

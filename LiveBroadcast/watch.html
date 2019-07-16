@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="assets/style/index.css">
     <link rel="stylesheet" href="assets/style/watch.css">
     <script src="AgoraRTCSDK-2.7.0.js"></script>
+    <script src="agora-rtm-sdk-0.9.1.js"></script>
     <script src="vendor/jquery.js"></script>
 </head>
 
@@ -28,21 +29,54 @@
         </div>
     </div-->
 
-    <div id="video" onmousemove="videofocus()" onmouseout="videoblur()">
-        <div class="title">主播正在路上...</div>
-        <div id="agora_local" style="width:100%;height:100%;display:inline-block;"></div>
-        <div class="UserCount">在线人数：<span>0</span>人</div>
-        <div class="nav">
-            <div>
-                <span class="s1" onclick="leave()"></span>
-                <span class="s2" onclick="CameraStop()"></span>
-                <span class="s3" onclick="MicrophoneStop()"></span>
-                <span class="s4" onclick="share()"></span>
-                <!-- <span class="s5" onclick="Same()"></span> -->
-                <span class="s6" onclick="Rotate()"></span>
-            </div>
-        </div>
+    <div class="box">
+            <div id="video" onmousemove="videofocus()" onmouseout="videoblur()">
+                    <div class="title">主播正在路上...</div>
+                    <div id="agora_local" style="width:100%;height:100%;display:inline-block;"></div>
+                    <div class="UserCount">
+                        在线人数：<span>0</span>人
+                        <i></i>
+                        <ul>
+                            <li></li>
+                        </ul>
+                    </div>
+                    <div class="nav">
+                        <div>
+                            <span class="s1" onclick="leave()"></span>
+                            <span class="s2" onclick="CameraStop()"></span>
+                            <span class="s3" onclick="MicrophoneStop()"></span>
+                            <span class="s4" onclick="share()"></span>
+                            <!-- <span class="s5" onclick="Same()"></span> -->
+                            <span class="s6" onclick="Rotate()"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text">
+                    <div class="nav">
+                        <div class="check" onclick = "switchDiv(this)">群聊</div>
+                        <div onclick = "switchDiv(this)">用户列表</div>
+                    </div>
+                    <div class="userList">
+
+                    </div>
+                    <div class="message">
+                        
+                    </div>
+                    <div class="Onemessage">
+                        
+                    </div>
+                    <div class="sendbox">
+                        <input type="text" class="allipt" onkeyup = "sendkey(event)"><button onclick="send()">发送</button>
+                    </div>
+                </div>
+                <div class="only">
+                    
+                    <div class="sendbox">
+                        <input type="text" class="onlyipt" onkeyup = "sendkey(event)"><button onclick="send()">发送</button>
+                    </div>
+                </div>
     </div>
+
 
     <script language="javascript">
         if (!AgoraRTC.checkSystemRequirements()) {
@@ -60,8 +94,9 @@
         AgoraRTC.Logger.warning('this is warning');
         AgoraRTC.Logger.info('this is info');
         AgoraRTC.Logger.debug('this is debug');
-
         var client, localStream, camera, microphone;
+        var chat,channel_room,userId,studentId;
+        var userList = []
         var Camera = 1
         var Microphone = 1
         var rotate = 0
@@ -81,6 +116,8 @@
             $('.s4').remove()
             $('.s5').remove()
             $('.UserCount').remove()
+            $('.nav>div').eq(2).remove()
+            $('.only').remove()
         }else{
             $('.title').remove()
         }
@@ -123,6 +160,7 @@
                             console.log("accessDenied");
                         });
 
+                        if(role == '4'){
                         localStream.init(function () {
                             console.log("getUserMedia successfully");
                                 localStream.play('agora_local', {fit: "contain"}, function(errState){
@@ -130,7 +168,7 @@
                                         // 播放失败，一般为浏览器策略阻止。引导用户用手势触发恢复播放。
                                     }
                                 });
-                            if(role == '4'){
+                            // if(role == '4'){
                                 client.publish(localStream, function (err) {
                                     console.log("Publish local stream error: " + err);
                                 });
@@ -138,15 +176,15 @@
                                 client.on('stream-published', function (evt) {
                                     console.log("Publish local stream successfully");
                                 });
-                            }
-                            else{
-                                localStream.stop('agora_local')
-                            }
+                            // }
+                            // else{
+                            //     localStream.stop('agora_local')
+                            // }
                             
                         }, function (err) {
                             console.log("getUserMedia failed", err);
                         });
-                        // }
+                        }
                 }, function (err) {
                     console.log("Join channel failed", err);
                 });
@@ -212,11 +250,25 @@
                     $.post("/index.php?s=/live/index/statistics",{room:room,action:'QUERY',uid:'',uname:'',isteacher:1},function(result){
                         console.log(result);
                         $('.UserCount').find('span').text(result.total)
+                        var num = 0
+                        for(let i = 0; i < result.ids.length; i++) {
+                            num++
+                            var li = document.createElement('li')
+                            li.text = num + result.ids
+                            $('.UserCount').find('ul').append(li)
+                        }
                 });
                 setInterval(function(){
                     $.post("/index.php?s=/live/index/statistics",{room:room,action:'QUERY',uid:'',uname:'',isteacher:1},function(result){
                         console.log(result);
                         $('.UserCount').find('span').text(result.total)
+                        var num = 0;
+                        for(let i = 0;i<result.ids.length;i++){
+                            num++;
+                            var li = document.createElement('li')
+                            li.text = num + result.ids
+                            $('.UserCount').find('ul').append(li)
+                        }
                 });
                 },30000)
             }
@@ -233,7 +285,7 @@
 
             client.on("peer-online", function(evt) {
             	console.log("peer-online", evt.uid);
-            });
+            }); 
             
             client.on('peer-leave', function (evt) {
                 var stream = evt.stream;
@@ -244,9 +296,108 @@
                     $('.title')[0].style.display = 'block'
                 }
             });
+            // 群聊
+            chat = AgoraRTM.createInstance(appid)
+            userId = Math.floor(Math.random()*100+1)+'s'
+            console.log(userId)
+            sessionStorage.setItem('userId',userId)
+            channel_room = chat.createChannel(room)
+            chat.login({ token: null, uid: userId }).then(() => {
+                console.log('AgoraRTM client login success');
+                channel_room.join().then(() => {
+                    /* 加入频道成功的处理逻辑 */
+                    channel_room.getMembers().then(membersList => { // membersList 为获取到的频道成员列表
+                    /* 获取频道成员列表成功的处理逻辑 */
+                    userList.push(...membersList)
+                    for(let i = 0;i<userList.length;i++){
+                        if(role == '4'&&userList[i]==userId){
+                            userList.splice(i,1)
+                        }
+                    }
+                    
+                    var arr = userList
+                    $('.userList').children().remove()
+                    for(let i = 0;i<arr.length;i++){
+                                var div = document.createElement('div')
+                                div.innerHTML = '<div onclick="Popup(this)">'+arr[i]+'</div>'
+                                console.log($('.userList'))
+                                $('.userList').append(div)
+                                var div = document.createElement('div')
+                                div.className = 'Popupbox'
+                                div.innerHTML = '<div class="top"><span>'+arr[i]+'</span><strong onclick="Popupout()">x</strong></div><div class="onlymessage"></div>'
+                                $('.only').append(div)
+                            }
+                    }).catch(error => {
+                    /* 频道消息发送失败的处理逻辑 */
+                    });
+                    }).catch(error => {
+                    /* 加入频道失败的处理逻辑 */
+                    console.log(22222)
+                })
+                }).catch(err => {
+                console.log('AgoraRTM client login failure', err);
+            });
+            channel_room.on('ChannelMessage', ({ text }, senderId) => { // text 为收到的频道消息文本，senderId 为发送方的 User ID
+            /* 收到频道消息的处理逻辑 */
+                console.log(text)
+                var div = document.createElement('div')
+                div.className = 'clearfix'
+                div.innerHTML = '<span class="fl" style="margin-left: 10px;">'+senderId+'</span><span class="fl">'+text+'<em></em></span>'
+                $('.message').append(div)
+            });
+            channel_room.on('MemberJoined', memberId => { // memberId 为加入频道的用户 ID
+            /* 收到频道用户加入通知的处理逻辑 */
+                userList.push(memberId)
+                $('.userList').children().remove()
+                for(let i = 0;i<userList.length;i++){
+                        var div = document.createElement('div')
+                        div.innerHTML = '<div onclick="Popup(this)">'+userList[i]+'</div>'
+                        $('.userList').append(div)
+                    }
+                        var div = document.createElement('div')
+                        div.className = 'Popupbox'
+                        div.innerHTML = '<div class="top"><span>'+memberId+'</span><strong onclick="Popupout()">x</strong></div><div class="onlymessage"></div>'
+                        $('.only').append(div)
+            })
+            channel_room.on('MemberLeft', memberId => { // memberId 为离开频道的用户 ID
+            /* 收到频道用户离开通知的处理逻辑 */
+            for(let i = 0;i<userList.length;i++){
+                if(userList[i] == memberId){
+                    userList.splice(i,1)
+                    $('.Popupbox').eq(i).remove()
+                }
+            }
+            var arr = userList
+            $('.userList').children().remove()
+            for(let i = 0;i<arr.length;i++){
+                        var div = document.createElement('div')
+                        div.innerHTML = '<div onclick="Popup(this)">'+arr[i]+'</div>'
+                        $('.userList').append(div)
+                    }
+            })
+            chat.on('MessageFromPeer', ({ text }, peerId) => { // text 为消息文本，peerId 是消息发送方 User ID
+            /* 收到点对点消息的处理逻辑 */
+                if(role == '2'){
+                    var div = '<div onclick = "switchDiv(this)">'+peerId+'<i></i></div>'
+                    $('.text>.nav').append(div)
+                    var div = document.createElement('div')
+                    div.className = 'clearfix'
+                    div.innerHTML = '<span class="fl" style="margin-left: 10px;">'+peerId+'</span><span class="fl">'+text+'<em></em></span>'
+                    $('.Onemessage').append(div)
+                }else{
+                    // var num = '.'+peerId
+                    var i = document.createElement('i')
+                    $('.nav>div').eq(2).append(i)
+                    $('.userList>div').eq(userList.indexOf(peerId)).find('div').append(i)
+                    var div = document.createElement('div')
+                    div.className = 'clearfix'
+                    div.innerHTML = '<span class="fl" style="margin-left: 10px;">'+peerId+'</span><span class="fl">'+text+'<em></em></span>'
+                    $('.Popupbox').eq(userList.indexOf(peerId)).find('.onlymessage').append(div)
+                }
+            });
         }
 
-        function leave() {
+        function leave() {  
             if(leaveState == 0){
                 if(role == '2'){
                     $.post("/index.php?s=/live/index/statistics",{room:room,action:'LEAVE',uid:'',uname:'',isteacher:0},function(result){
@@ -263,6 +414,7 @@
                 }, function (err) {
                     console.log("Leave channel failed");
                 });
+                channel_room.leave()
             }
             /* setTimeout(function(){
                 join()
@@ -371,6 +523,95 @@
          })
          })
         }
+        function send(){
+            var message = $('.allipt').val()
+            if($('.check').text() == '群聊'){
+                channel_room.sendMessage({ text: message }).then(() => {
+                /* 频道消息发送成功的处理逻辑 */
+                var div = document.createElement('div')
+                div.className = 'clearfix'
+                div.innerHTML = '<span class="fr">'+userId+'</span><span class="fr">'+message+'<i></i></span>'
+                $('.message').append(div)
+                $('.allipt').val("")
+                }).catch(error => {
+                /* 频道消息发送失败的处理逻辑 */
+                });
+            }else if($('.check').text() != '群聊'){
+                var messageId
+                if(role == '2'){
+                    messageId =  $('.nav>div').eq(2).text()
+                }else{
+                    messageId = studentId
+                    message = $('.onlyipt').val()
+                }
+                chat.sendMessageToPeer(
+                    { text: message }, // 符合 RtmMessage 接口的参数对象
+                    messageId, // 远端用户 ID
+                ).then(sendResult => {
+                var div = document.createElement('div')
+                div.className = 'clearfix'
+                div.innerHTML = '<span class="fr">'+userId+'</span><span class="fr">'+message+'<i></i></span>'
+                if(role == '2'){
+                    $('.Onemessage').append(div)
+                    $('.allipt').val("")
+                }else{
+                    $('.onlyipt').val("")
+                    // $('.onlymessage').append(div)+
+                    console.log(userList.indexOf(studentId))
+                    $('.Popupbox').eq(userList.indexOf(studentId)).find('.onlymessage').append(div)
+                }
+                if (sendResult.hasPeerReceived) {
+                    /* 远端用户收到消息的处理逻辑 */
+                } else {
+                    /* 服务器已接收、但远端用户不可达的处理逻辑 */
+                }
+                }).catch(error => {
+                /* 发送失败的处理逻辑 */
+                });
+            }
+        }
+        function switchDiv(e){
+            $(e).addClass('check').siblings().removeClass('check')
+            console.log(e)
+            if($(e).text() == '群聊'){
+                $('.message')[0].style.zIndex = '10'
+                $('.userList')[0].style.zIndex = '0'
+                $('.Onemessage')[0].style.zIndex = '0'
+            }else if($(e).text() == '用户列表'){
+                $('.userList')[0].style.zIndex = '12'
+                $('.message')[0].style.zIndex = '0'
+                $('.Onemessage')[0].style.zIndex = '0'
+                $('.nav>div').eq(2).find('i').remove()
+            }else if($(e).text() != '用户列表'&&$(e).text() != '群聊'){
+                $('.Onemessage')[0].style.zIndex = '10'
+                $('.message')[0].style.zIndex = '0'
+                $('.userList')[0].style.zIndex = '0'
+                $('.nav>div').eq(2).find('i').remove()
+            }
+        }
+        function sendkey(event){
+            if(event.keyCode == 13){
+                send()
+            }
+        }
+        function Popup(val){
+            studentId = $(val).text()
+            $(val).find('i').remove()
+            $('.only')[0].style.width = '400px'
+            $('.only')[0].style.height = '400px'
+            if(userList.indexOf(studentId)!=-1){
+                $('.Popupbox').removeClass('Popup_z')
+                $('.Popupbox').eq(userList.indexOf($(val).text())).addClass('Popup_z')
+            }else{
+                $('.Popupbox').removeClass('Popup_z')
+                
+            }
+        }
+        function Popupout(){
+            $('.only')[0].style.width = '0px'
+            $('.only')[0].style.height = '0px'
+        }
+        // 
 
 
 
