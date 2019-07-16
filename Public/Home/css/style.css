@@ -35,7 +35,7 @@
 
 .content-background-body {
 	padding-top: 75px;
-	background: url(../images/02.png)0 -199px no-repeat , url(../images/03.png)0 393px no-repeat, url(../images/04.png)0 1233px no-repeat, url(../images/05.png)0 2086px no-repeat;
+	background: url(../images/02.png)0 -199px no-repeat, url(../images/03.png)0 393px no-repeat, url(../images/04.png)0 1233px no-repeat, url(../images/05.png)0 2086px no-repeat;
 	background-repeat: no-repeat;
 	background-size: auto;
 }
@@ -365,17 +365,17 @@ ul {
 
 @media screen and (max-width:1280px) {
 	.content-background-body {
-		background: #F2DBD4;
+		background: url(../images/7.png)!important;
 		/*background: url(../images/7.png)no-repeat !important;*/
 	}
 	.btn-background-teacher {
-		background-position: 200px -88px !important;
+		background-position: 235px -88px !important;
 		background-size: 435px 419px !important;
 		width: 24%;
 		height: 210px !important;
 	}
 	.btn-background-teacher:hover {
-		background-position: 409px -88px !important;
+		background-position: 443px -88px !important;
 		background-size: 435px 419px !important;
 		width: 24%;
 		height: 210px !important;
@@ -384,18 +384,18 @@ ul {
 
 @media screen and (max-width:960px) {
 	.content-background-body {
-			background: #F2DBD4 !important;
-		/*background: url(../images/8.png)!important;*/
+		background: url(../images/7.png)!important;
+		background-size: 960px 2680px !important;
 		/*background-size: auto;*/
 	}
 	.btn-background-teacher {
-		background-position: 150px -65px !important;
+		background-position: 166px -65px !important;
 		background-size: 325px 322px !important;
 		width: 24%;
 		height: 160px!important;
 	}
 	.btn-background-teacher:hover {
-		background-position: 307px -65px !important;
+		background-position: 323px -65px !important;
 		background-size: 325px 322px !important;
 		width: 24%;
 		height: 160px!important;
@@ -421,7 +421,9 @@ ul {
 		float: left
 	}
 	.content-background-body {
-		background: #F2DBD4 !important;
+		background: url(../images/8.png)!important;
+		background-size: 430px 2680px !important;
+		/*background: #F2DBD4 !important;*/
 	}
 	.btn-background-teacher {
 		background-position: 488px -67px !important;
