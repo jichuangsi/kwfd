@@ -50,7 +50,12 @@ function get_uid()
  */
 function is_administrator($uid = null){
     $uid = is_null($uid) ? is_login() : $uid;
-    return $uid && (intval($uid) === C('USER_ADMINISTRATOR'));
+    if(is_array(C('USER_ADMINISTRATOR'))){
+        return $uid && (in_array(intval($uid),C('USER_ADMINISTRATOR')));
+    }else{
+        return $uid && (intval($uid) === C('USER_ADMINISTRATOR'));
+    }   
+    
 }
 
 /**
