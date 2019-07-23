@@ -18,6 +18,8 @@
  * @param null $uid
  * @return array|null
  */
+require_once('./Conf/user.php');
+
 function query_user($fields = null, $uid = null)
 {
    if($fields===null){
@@ -56,13 +58,11 @@ function query_user($fields = null, $uid = null)
     $homeModel = M('Member');
     $ucenterModel = M('UcenterMember');
     $homeFields = $homeModel->getDbFields();
-    $ucenterFields = $ucenterModel->getDbFields();
 
     //分析每个表格分别要读取哪些字段
     $avatarFields = array('avatar32', 'avatar64', 'avatar128', 'avatar256', 'avatar512');
     $avatarFields = array_intersect($avatarFields, $fields);
     $homeFields = array_intersect($homeFields, $fields);
-    $ucenterFields = array_intersect($ucenterFields, $fields);
 
     //查询需要的字段
     $homeResult = array();
@@ -70,10 +70,18 @@ function query_user($fields = null, $uid = null)
     if ($homeFields) {
         $homeResult = D('Home/Member')->where(array('uid' => $uid))->field($homeFields)->find();
     }
-    if ($ucenterFields) {
-        $model = D('User/UcenterMember');
-		$ucenterFields=array('email');
-        $ucenterResult = $model->where(array('id' => $uid))->field($ucenterFields)->find();
+    if(UC_REMOTE){
+        require_once './api/uc_client/client.php';
+        $info = uc_get_user($uid, true);
+        $ucenterResult = array('email' => $info[2]);
+    }else{
+        $ucenterFields = $ucenterModel->getDbFields();
+        $ucenterFields = array_intersect($ucenterFields, $fields);        
+        if ($ucenterFields) {
+            $model = D('User/UcenterMember');
+            $ucenterFields=array('email');
+            $ucenterResult = $model->where(array('id' => $uid))->field($ucenterFields)->find();
+        }
     }
 
     //读取头像数据

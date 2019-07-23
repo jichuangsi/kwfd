@@ -150,4 +150,4 @@
 .hdd a{ display:inline-block;padding:0px 5px;line-height:30px;margin-right:10px}
 .hdd a:hover{color:#ffffff;background-color:#3d72fe;border-radius:6px;-moz-border-radius:6px; /* Old Firefox */}
 .hdd .active{color:#ffffff;background-color:#3d72fe;border-radius:6px;-moz-border-radius:6px; /* Old Firefox */}
-.cate-item:nth-child(2n){margin-top: 5px;}
+.cate-item:nth-child(n){margin-top: 5px;}

@@ -14,7 +14,9 @@ use Admin\Builder\AdminListBuilder;
 use Admin\Builder\AdminSortBuilder;
 use Home\Model\MemberModel;
 use User\Api\UserApi;
-
+use User\Api\UserRemoteApi;
+require_once('./Conf/user.php');
+if(UC_REMOTE) require_once('./api/uc_client/client.php');
 /**
  * 后台用户控制器
  * 
@@ -33,7 +35,9 @@ class UserController extends AdminController {
         }else{
             $map['nickname']    =   array('like', '%'.(string)$nickname.'%');
         }
-
+        if(IS_ROOT){
+            $map['uid']    =   array('neq', UID);
+        }
         $list   = $this->lists('Member', $map);
         int_to_string($list);
         $this->assign('_list', $list);
@@ -60,13 +64,22 @@ class UserController extends AdminController {
         }
 		
         //$ucModel = UCenterMember();
-		$ucModel = D('User/UcenterMember');
-        $data = $ucModel->create(array('password' => '123456'));
-        $res = $ucModel->where(array('id' => array('in', $uids)))->save(array('password' => $data['password']));
-        if ($res) {
+        if(UC_REMOTE){
+            foreach($uids as $k => $v){
+                $info =  uc_get_user($v, true);
+                if($info&&$info[1]&&$info[2]){
+                    $res = uc_user_edit($info[1],'',UC_RESET_PW,$info[2],true);
+                }
+            }
+        }else{
+            $ucModel = D('User/UcenterMember');
+            $data = $ucModel->create(array('password' => UC_RESET_PW));
+            $res = $ucModel->where(array('id' => array('in', $uids)))->save(array('password' => $data['password']));
+        }		
+        if ($res>=0) {
             $this->success("操作成功");
         } else {
-            $this->error("操作失败,假如旧密码是123456,则更新失败。");
+            $this->error("操作失败,密码更新失败。");
         }
 		 
     }
@@ -119,9 +132,19 @@ class UserController extends AdminController {
         empty($password) && $this->error('请输入密码');
 
         //密码验证
-        $User   =   new UserApi();
-        $uid    =   $User->login(UID, $password, 4);
-        ($uid == -2) && $this->error('密码不正确');
+        if(UC_REMOTE){
+            $User   =   new UserRemoteApi();
+            $info = $User->info(UID);
+            if($info&&$info[0]){
+                $uid = $info[0];
+            }else{
+                $this->error('密码不正确');
+            }          
+        }else{
+            $User   =   new UserApi();
+            $uid    =   $User->login(UID, $password, 4);
+            ($uid == -2) && $this->error('密码不正确');
+        }        
 
         $Member =   D('Member');
         $data   =   $Member->create(array('nickname'=>$nickname));
@@ -167,8 +190,12 @@ class UserController extends AdminController {
         if($data['password'] !== $repassword){
             $this->error('您输入的新密码与确认密码不一致');
         }
-
-        $Api    =   new UserApi();
+        
+        if(UC_REMOTE){
+            $Api    =   new UserRemoteApi();
+        }else{
+            $Api    =   new UserApi();
+        }        
         $res    =   $Api->updateInfo(UID, $password, $data);
         if($res['status']){
             $this->success('修改密码成功！');
@@ -268,7 +295,11 @@ class UserController extends AdminController {
             }
             
             /* 调用注册接口注册用户 */
-            $User   =   new UserApi;
+            if(UC_REMOTE){
+                $User   =   new UserRemoteApi;
+            }else{
+                $User   =   new UserApi;
+            }            
             $uid    =   $User->register($username, $username, $password, $email);
             if(0 < $uid){ //注册成功
                 /* $user = array('uid' => $uid, 'nickname' => $username, 'status' => 1);

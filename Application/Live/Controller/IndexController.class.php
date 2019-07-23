@@ -4,7 +4,6 @@ namespace Live\Controller;
 use Live\Api\SecretUtilTools;
 use Live\Api\Crypt;
 use Think\Controller;
-//header('Access-Control-Allow-Origin:*');
 /**
  * Class IndexController
  * @package Shop\Controller
@@ -209,7 +208,7 @@ class IndexController extends Controller
 			$map['price'] = array('between',$this->pricedata[I("price")]);
 		}
 		
-        $goods_list = $this->datamodel->where($map)->order('id desc,view desc')->page($page, $count )->select();
+        $goods_list = $this->datamodel->where($map)->order('recommend desc, createtime desc, view desc')->page($page, $count )->select();
         //echo $this->datamodel->_sql();
 		$totalCount = $this->datamodel->where($map)->count();
 		$this->assign('contents', $goods_list);

@@ -73,11 +73,20 @@ class LiveController extends AdminController
         {
 			$map["userId"]=array('eq',UID);
 		}		
-        $data = $this->datamodel->where($map)->order('createtime desc')->page($page, $r)->select();
+        $data = $this->datamodel->where($map)->order('recommend desc, createtime desc, view desc')->page($page, $r)->select();
+        //echo $this->datamodel->_sql();
 		$totalCount = $this->datamodel->where($map)->count();
 		
 		foreach ($data as $key=>&$val) {
-                $val['gotomeeting'] = '<a href="'.U('Live/index/gotomeeting?id='.$val["id"]).'" target="_blank" class="btn">进入课堂</a>';
+		    if($val['endtime']<time()){
+		        $val['gotomeeting'] = '<div class="btn" style="background-color:#ec2b2b">课堂已结束</div>';
+		    }else{
+		        if($val['online']){
+		            $val['gotomeeting'] = '<a href="'.U('Live/index/gotomeeting?id='.$val["id"]).'" target="_blank" class="btn">进入课堂</a>';
+		        }else{
+		            $val['gotomeeting'] = '<div onclick="alert(\'该课程不提供直播功能。\')"  class="btn">进入课堂</div>';
+		        }
+		    }                
         }
 		 
 		$builder = new AdminListBuilder();
@@ -86,11 +95,22 @@ class LiveController extends AdminController
 		$builder->buttonNew(U($this->_model.'/add'));
 		//->buttonDelete(U('setStatus'))->setStatusUrl(U('setStatus'));
 
-		$builder->keyId()->keyText('title', $this->_modelname.'名称')->keyUpdateTime('changetime', '更新时间')->keyCreateTime('createtime', '创建时间')->keyHtml('gotomeeting', '进入课堂')
-		->keyStatus()
-		->keyDoAction('chapters?courseid=###','章节管理','操作')
-		->keyDoActionEdit($this->_model.'/add?id=###')
-		->keyDoAction($this->_model.'/setstatus?status=-1&ids=###','删除','操作',array('class'=>'confirm ajax-get'));
+		if(IS_ROOT){
+		    $builder->keyId()->keyText('title', $this->_modelname.'名称')->keyUpdateTime('changetime', '更新时间')->keyCreateTime('createtime', '创建时间')->keyHtml('gotomeeting', '进入课堂')
+		    ->keyOnline()
+		    ->keyStatus()
+		    ->keyRecommend()->setRecommendUrl(U('setRecommend'))
+		    ->keyDoAction('chapters?courseid=###','章节管理','操作')
+		    ->keyDoActionEdit($this->_model.'/add?id=###')
+		    ->keyDoAction($this->_model.'/setstatus?status=-1&ids=###','删除','操作',array('class'=>'confirm ajax-get'));
+		}else{
+		    $builder->keyId()->keyText('title', $this->_modelname.'名称')->keyUpdateTime('changetime', '更新时间')->keyCreateTime('createtime', '创建时间')->keyHtml('gotomeeting', '进入课堂')
+		    ->keyOnline()
+		    ->keyStatus()
+		    ->keyDoAction('chapters?courseid=###','章节管理','操作')
+		    ->keyDoActionEdit($this->_model.'/add?id=###')
+		    ->keyDoAction($this->_model.'/setstatus?status=-1&ids=###','删除','操作',array('class'=>'confirm ajax-get'));
+		}		
 
         //$builder->search('内容', 'name');
 		$builder->setSearchPostUrl(U('lists'));
@@ -102,6 +122,7 @@ class LiveController extends AdminController
         $builder->pagination($totalCount, $r);
         $builder->display();
 	}
+		
 	public function chapters($courseid=0,$pid=0,$page = 1, $r = 20)
     {
 		
@@ -171,7 +192,9 @@ class LiveController extends AdminController
      * @param $is_new
      * @param $sell_num
 	 */
-    public function add($id = 0, $title = '', $image = '', $content = '', $categoryid = array(), $price=0,$status = '',$starttime=0,$endtime=0,$pid=0,$teacherid=0)
+	public function add(
+	    $id = 0, $title = '', $image = '', $content = '', $categoryid = array(), $price=0,$status = '',$recommend = 0,
+	    $starttime=0,$endtime=0,$pid=0,$teacherid=0,$commission=0,$online=0)
     {
 	   $isEdit = $id ? 1 : 0;
 	   if (IS_POST) 
@@ -179,24 +202,42 @@ class LiveController extends AdminController
 	        if ($title == '' || $title == null) {
                 $this->error('请输入名称');
             }    
-            if (!is_numeric($price))	
+            if (!is_numeric($price)||$price<0)	
             {
 				$this->error('请输入正确的价格。');
-			}				
+			}	
+			if (IS_ROOT&&(!is_numeric($commission)||$commission<0))
+			{
+			    $this->error('请输入正确的分润。');
+			}
+			if (IS_ROOT&&$recommend>0)
+			{
+			    $rs = $this->datamodel->field('id')->where('recommend=' . $recommend)->select();
+			    $ret = array();
+			    foreach($rs as $k=>$v){
+			        array_push($ret,$v['id']);
+			    }
+			    if(!in_array($id, $ret)&&count($ret)>=C('RECOMMEND_MAX_NUM')){
+			        $this->error('已推荐三个课程。');
+			    }			    
+			}
             $data['title'] = $title;
 			$data['categoryid'] = implode(",",$categoryid);
             $data['image'] = $image;
             $data['content'] = $content;
-            $data['price'] = $price;	
+            $data['price'] = $price;	            
             $data['status'] = $status;
+            $data['online'] = $online;
             $data['changetime'] = time();
 			$data['starttime'] = $starttime;
 			$data['endtime'] = $endtime;
 			$data['pid'] = $pid;
-			if(IS_ROOT)
-			 $data['teacherid'] = $teacherid;
-			else
-			 $data['teacherid'] = UID;
+			if(IS_ROOT){
+			    $data['teacherid'] = $teacherid;
+			    $data['commission'] = $commission;
+			    $data['recommend'] = $recommend;
+			}else
+			    $data['teacherid'] = UID;
 			
 			if ($isEdit) {
 			    if(IS_ROOT){
@@ -242,17 +283,23 @@ class LiveController extends AdminController
 			$teachersoptions = array_combine(array_column($teachers, 'teacherid'), array_column($teachers, 'title'));
 			//dump($teachersoptions); 
 			
+			$onlineoptions = array('否','是');
+			//dump($onlineoptions); 
+			
 			$tree = $this->categorymodel->getTree(0, 'id,title,sort,pid,status');
 			//var_dump($tree);
 			//->keyTime('content', '开始时间')->keyTime('content', '结束时间')
 			if(IS_ROOT)
 			 $builder->keyId()->keyText('title', $this->_modelname.'名称')->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
                 ->keyText('price', '价格','')
+                ->keyText('commission', '分润','请填0~100')
 				->keyTime('starttime', '开始时间','')->keyTime('endtime', '结束时间','')
 				->keyRadio("teacherid","老师","",$teachersoptions)
 				->keyCategory('categoryid',"分类","",$tree)
 				->keyHidden('pid')
-				->keyStatus('status', '状态');
+				->keyStatus('status', '状态')
+				->keyRecommend('recommend', '推荐', '最多推荐三个课程')
+				->keyRadio("online","是否线上","",$onlineoptions);
 			else 
 			 $builder->keyId()->keyText('title', $this->_modelname.'名称')->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
 			    ->keyText('price', '价格','')
@@ -260,7 +307,9 @@ class LiveController extends AdminController
 			    //->keyRadio("teacherid","老师","",$teachersoptions)
 			    ->keyCategory('categoryid',"分类","",$tree)
 			    ->keyHidden('pid')
-			    ->keyStatus('status', '状态');
+			    ->keyStatus('status', '状态')
+			    ->keyRadio("online","是否线上","",$onlineoptions);
+			
             if ($isEdit) {
                 $data = $this->datamodel->where('id=' . $id)->find();
                 $builder->data($data);
@@ -270,6 +319,8 @@ class LiveController extends AdminController
             } else {
                 $data['price'] = 0;
                 $data['status'] = 1;
+                $data['recommend'] = 0;
+                $data['online'] = 0;
 				$data['pid'] = $pid;
 				if(count($teachersoptions)>0)
 				{
@@ -376,10 +427,18 @@ class LiveController extends AdminController
     public function setstatus($ids= '', $status)
     {
 		if ($ids=='') {
-                $this->error('请选择数据。');
+           $this->error('请选择数据。');
         }
 		$builder = new AdminListBuilder();
         $builder->doSetStatus($this->_model.'', $ids, $status);
+    }
+    public function setRecommend($ids= '', $recommend)
+    {
+        if ($ids=='') {
+            $this->error('请选择数据。');
+        }
+        $builder = new AdminListBuilder();
+        $builder->doSetRecommend($this->_model.'', $ids, $recommend);
     }
 	/**商品回收站
      * @param int $page

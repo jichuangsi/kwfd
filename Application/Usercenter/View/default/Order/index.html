@@ -29,22 +29,34 @@
     </p></if>
 	<if condition="count($list) neq 0">
 	<div style="background:#ffffff;padding:5px 10px;font-size:12px;margin-bottom:0px;font-weight:bold;color:#666666">
-	  <div class="col-md-3" style=";padding-left:0px">商品名称</div>
+	  <div class="col-md-3 hidden-xs" style=";padding-left:0px">商品名称</div>
+	  <div class="col-md-3 visible-xs" style=";text-align:center">商品名称</div>
 	  <div class="col-md-9" style="">
 	    <div class="col-md-3 hidden-xs" style="text-align:center">单价、数量</div>
 	    <div class="col-md-3 hidden-xs" style="text-align:center">商品总价</div>
-	    <div class="col-md-3 hidden-xs" style="text-align:center">订单总额(元)</div>
+	    <div class="col-md-3" style="text-align:center">订单总额(元)</div>
 	    <div class="col-md-3" style="text-align:center">交易操作</div>
 	  </div>
 	  <div class="clearfix"></div>	   
 	</div>
     </if>
     <volist name="list" id="order">
-	<div onMouseOver="this.style.backgroundColor='#fafafa'" onMouseOut="this.style.backgroundColor='#FFFFFF'">
-	  <div style="background:#f1f1f1;padding:5px 10px;font-size:12px;margin:0px 0px 10px 0px">订单号：<span >{$order.orderid}</span>&nbsp;&nbsp;&nbsp;下单时间：<span>{$order.create_time|date='Y-m-d H:i:s',###}&nbsp;</div>
+	<div onMouseOver="this.style.backgroundColor='#fafafa'" onMouseOut="this.style.backgroundColor='#FFFFFF'" style="float:left">
+	  <div style="background:#f1f1f1;padding:5px 10px;font-size:12px;margin:0px 0px 10px 0px;float:left;width:100%" class="hidden-xs">订单号：<span >{$order.orderid}</span>&nbsp;&nbsp;&nbsp;下单时间：<span>{$order.create_time|date='Y-m-d H:i:s',###}&nbsp;</div>
+      <div style="background:#f1f1f1;padding:5px 10px;font-size:12px;margin:0px 0px 10px 0px;float:left;width:100%" class="visible-xs">订单号：<span >{$order.orderid}</span><br/>下单时间：<span>{$order.create_time|date='Y-m-d H:i:s',###}&nbsp;</div>  
       <volist name="order.orderlist" id="orderlist">
-	   <div style="padding:0px 10px 0px 10px;font-size:12px;margin-bottom:0px">
-	     <div class="col-md-3" style="padding-left:0px;">
+	   <div style="padding:0px 10px 0px 10px;font-size:12px;margin-bottom:0px;float:left">
+	     <div class="col-md-3 hidden-xs" style="padding-left:0px;">
+		   <table>
+		     <tr>
+			   <td width="100%"><a href="{$orderlist.url}" target="_blank" style="word-break:break-all">
+			   {$orderlist.title}<br>
+			   <img src="{$orderlist['image']|get_cover='path'}" width=100 height=100 align="absmiddle"/></a></td>
+			   <td width="10"></td>
+			 </tr>
+		   </table>
+		 </div>
+		 <div class="col-md-3 visible-xs" style="text-align:center;">
 		   <table>
 		     <tr>
 			   <td width="100%"><a href="{$orderlist.url}" target="_blank" style="word-break:break-all">
@@ -58,12 +70,36 @@
 	       <div class="col-md-3 hidden-xs" style="text-align:center;line-height:100px">{$orderlist.price}({$orderlist.num}个)</div>
 	       <div class="col-md-3 hidden-xs" style="text-align:center;line-height:100px">{$orderlist["price"]*$orderlist["num"]}</div>
 	       <div class="col-md-3 hidden-xs" style="text-align:center;line-height:100px;border-left:1px solid #f1f1f1">
-		   <php>if($key==0) echo $order['total'];</php>
+		   <php>if($key==sizeof($order["orderlist"])-1) echo $order['total'];</php>
 		   </div>
-	       <div class="col-md-3" style="text-align:center;line-height:50px;border-left:1px solid #f1f1f1;height:100%">
-		  
+		   <if condition="$key eq (sizeof($order['orderlist'])-1)">
+		   <div style="text-align:center;background:#f1f1f1;height:1px;font-size:15px;margin:10px 0px" class="col-md-7 visible-xs">
+		   	<php>echo $order['total'];</php>
+		   </div>
+		   </if>
+		   
+	       <div class="col-md-3 hidden-xs" style="text-align:center;line-height:50px;border-left:1px solid #f1f1f1;height:100%">
 		     <if condition="$order['ispay'] eq 1">
-			    <if condition="$key eq 0">
+			    <if condition="$key eq (sizeof($order['orderlist'])-1)">
+				  <if condition="$order['status'] eq 6">
+				     <div style="line-height:100px">
+				        <a href="javascript:void(0)" class="btn btn-default btn-sm" style="margin:0px;display:inline-block">已 取 消</a>
+					 </div>
+				  <else/>
+			         <a href="{:U('cancel',array('orderid'=>$order['orderid']))}" class="btn btn-default btn-sm" style="margin:0px;display:inline-block">取消订单</a>
+			 	     <a href="{:U('/Payoff/Index/index',array('orderid'=>$order['orderid']))}" class="btn btn-primary btn-sm" style="margin:0px;display:inline-block">前去支付</a>
+			      </if>
+				</if>
+			 <elseif condition="$order['ispay'] eq 2"/>
+			         <div style="line-height:100px">
+				        已付款
+					 </div>
+			    
+			 </if>
+		   </div>
+		   <div class="col-md-3 visible-xs" style="text-align:center;line-height:50px;height:100%">
+		     <if condition="$order['ispay'] eq 1">
+			    <if condition="$key eq (sizeof($order['orderlist'])-1)">
 				  <if condition="$order['status'] eq 6">
 				     <div style="line-height:100px">
 				        <a href="javascript:void(0)" class="btn btn-default btn-sm" style="margin:0px;display:inline-block">已 取 消</a>
@@ -89,7 +125,7 @@
 	   if(sizeof($order["orderlist"])>1 && $key<sizeof($order["orderlist"])-1)
 	   {
 	   </php>
-       <div style="background:#f1f1f1;height:1px;font-size:1px;margin:10px 0px" class="col-md-8"></div>	  
+       <div style="background:#f1f1f1;height:1px;font-size:1px;margin:10px 0px" class="col-md-7"></div>	  
        <php>
 	   }
        </php>	   

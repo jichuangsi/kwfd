@@ -9,6 +9,7 @@
 namespace Usercenter\Controller;
 
 use Think\Controller;
+require_once('./Conf/user.php');
 
 class ConfigController extends BaseController
 {
@@ -39,7 +40,7 @@ class ConfigController extends BaseController
 
             $this->checkNickname($nickname);
             $this->checkSex($sex);
-            $this->checkEmail($email);
+            $this->checkEmail($email, $username);
             $this->checkSignature($signature);
 
 
@@ -55,15 +56,27 @@ class ConfigController extends BaseController
 
             $rs_member = D('Home/Member')->save($user);
 
-            $ucuser['id'] = get_uid();
-            $ucuser['email'] = $email;
-            $rs_ucmember = D('UcenterMember')->save($ucuser);
+            if(UC_REMOTE){
+                require_once './api/uc_client/client.php';                
+                if($username){
+                    $rs_ucmember = uc_user_edit($username,'','',$email,true);
+                }                
+                if($rs_ucmember){
+                    $uc = session('user_center');
+                    $uc[2] = $email;
+                    session('user_center', $uc);
+                }
+            }else{
+                $ucuser['id'] = get_uid();
+                $ucuser['email'] = $email;
+                $rs_ucmember = D('UcenterMember')->save($ucuser);
+            }
+            
             clean_query_user_cache(get_uid(), array('nickname', 'sex', 'signature', 'email', 'pos_province', 'pos_city', 'pos_district', 'pos_community'));
-
+            
             //TODO tox 清空缓存
             if ($rs_member || $rs_ucmember) {
                 $this->success('设置成功。');
-
             } else {
                 $this->success('未修改数据。');
             }
@@ -71,7 +84,7 @@ class ConfigController extends BaseController
         } else {
             //调用API获取基本信息
             //TODO tox 获取省市区数据
-            $user = query_user(array('nickname', 'signature', 'email', 'mobile', 'avatar128', 'rank_link', 'sex', 'pos_province', 'pos_city', 'pos_district', 'pos_community'), $uid);
+            $user = query_user(array('nickname', 'signature', 'email', 'mobile', 'avatar128', 'rank_link', 'sex', 'pos_province', 'pos_city', 'pos_district', 'pos_community'), get_uid());
 			//dump($user);
 			//显示页面
             $this->assign('user', $user);
@@ -443,9 +456,25 @@ class ConfigController extends BaseController
 
     public function doChangePassword($old_password, $new_password)
     {
-        //调用接口
-        $result = callApi('User/changePassword', array($old_password, $new_password));
-        $this->ensureApiSuccess($result);
+        if(UC_REMOTE){
+            require_once './api/uc_client/client.php';
+            $info = uc_get_user(get_uid(), true);
+            if($info&&$info[1]){
+                $rs = uc_user_edit($info[1],$old_password,$new_password);
+                if($rs>0){
+                    $result['message'] = '密码修改成功';
+                }else if($rs==0){
+                    $result['message'] = '密码未修改。';
+                }else{
+                    $this->error('密码修改失败');
+                }
+            }            
+        }else{
+            //调用接口
+            $result = callApi('User/changePassword', array($old_password, $new_password));
+            $this->ensureApiSuccess($result);
+        }
+        
 
         //显示成功信息
         $this->success($result['message']);
@@ -471,18 +500,33 @@ class ConfigController extends BaseController
      * @param $email
      * @auth 陈一枭
      */
-    private function checkEmail($email)
+    private function checkEmail($email, &$username)
     {
         $pattern = "/([a-z0-9]*[-_.]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[.][a-z]{2,3}([.][a-z]{2})?/i";
         if (!preg_match($pattern, $email)) {
             $this->error('邮箱格式错误。');
         }
 
-        $map['email'] = $email;
-        $map['id'] = array('neq', get_uid());
-        $had = D('UcenterMember')->where($map)->count();
-        if ($had) {
-            $this->error('该邮箱已被人使用。');
+        if(UC_REMOTE){
+            require_once './api/uc_client/client.php';
+            $info = uc_get_user(get_uid(), true);            
+            if(strcasecmp($info[2],$email)==0) {
+                return;
+            }
+            $username = $info[1];
+            $ret = uc_user_checkemail($email);
+            switch($ret){
+                case -4 : $this->error('邮箱格式错误。'); break;
+                case -5 : $this->error('该邮箱禁止使用。'); break;
+                case -6 : $this->error('该邮箱已被人使用。'); break;
+            }
+        }else{
+            $map['email'] = $email;
+            $map['id'] = array('neq', get_uid());
+            $had = D('UcenterMember')->where($map)->count();
+            if ($had) {
+                $this->error('该邮箱已被人使用。');
+            }
         }
     }
 

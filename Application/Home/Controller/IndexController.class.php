@@ -19,7 +19,8 @@ class IndexController extends HomeController {
     public function index($page = 1, $r = 5){
 
 		$map['status'] = 1;
-        $hotdata = D('Live/Live')->where($map)->order('id desc,view desc')->limit(8)->select();
+        $hotdata = D('Live/Live')->where($map)->order('recommend desc, createtime desc, view desc')->limit(8)->select();
+        //echo D('Live/Live')->_sql();
         $this->assign('livehotdata', $hotdata);
 		//var_dump($hotdata);
 		
