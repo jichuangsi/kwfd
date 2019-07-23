@@ -55,6 +55,7 @@ class MemberModel extends Model {
     public function logout(){
         session('user_auth', null);
         session('user_auth_sign', null);
+        session('user_center', null);
     }
 
     /**

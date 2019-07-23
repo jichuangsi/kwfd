@@ -36,7 +36,8 @@ if(!defined('IN_UC')) {
 	set_magic_quotes_runtime(0);
 
 	defined('MAGIC_QUOTES_GPC') || define('MAGIC_QUOTES_GPC', get_magic_quotes_gpc());
-	require_once DISCUZ_ROOT.'./Application/Common/Conf/config_ucenter.php';
+	//require_once DISCUZ_ROOT.'./Application/Common/Conf/config_ucenter.php';
+	require_once DISCUZ_ROOT.'./Conf/user.php';
 
 	$_DCACHE = $get = $post = array();
 
@@ -147,21 +148,24 @@ class uc_note {
         session_start();
 
         require_once DISCUZ_ROOT.'./api/uc_client/lib/db.class.php';
-        $toxconfig = require_once SITE_PATH.'/Application/Common/Conf/config.php';
+        //$toxconfig = require_once SITE_PATH.'/Application/Common/Conf/config.php';
+        $toxconfig = require_once SITE_PATH.'/Conf/common.php';
 
         $db = new ucclient_db;
         $db->connect($toxconfig['DB_HOST'], $toxconfig['DB_USER'], $toxconfig['DB_PWD'], $toxconfig['DB_NAME'], UC_DBCONNECT, true, 'utf8');
         define('TOX_DBTABLEPRE', $toxconfig['DB_PREFIX']);
-        $ref =  $db->fetch_first("SELECT * FROM ".TOX_DBTABLEPRE."ucenter_user_link WHERE uc_uid={$uid}");
-        $user =  $db->fetch_first("SELECT * FROM ".TOX_DBTABLEPRE."member WHERE uid={$ref['uid']}");
+        
+        //$ref =  $db->fetch_first("SELECT * FROM ".TOX_DBTABLEPRE."ucenter_user_link WHERE uc_uid={$uid}");
+        //$user =  $db->fetch_first("SELECT * FROM ".TOX_DBTABLEPRE."member WHERE uid={$ref['uid']}");
+        $user =  $db->fetch_first("SELECT * FROM ".TOX_DBTABLEPRE."member WHERE uid={$uid}");
         $auth = array(
-            'uid' => $ref['uid'],
-            'username' => $ref['uc_username'],
+            'uid' => $uid,
+            'username' => $user['nickname'],
             'last_login_time' => $user['last_login_time'],
         );
         $_SESSION['onethink_home']['user_auth']=$auth;
         $_SESSION['onethink_home']['user_auth_sign']=data_auth_sign($auth);
-
+        $_SESSION['onethink_home']['user_center'] = uc_get_user($uid, true);
 	}
 
 	function synlogout($get, $post) {
@@ -171,9 +175,10 @@ class uc_note {
 
 		//note 同步登出 API 接口
 		header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"');
-        session_start();
+		session_start();
         $_SESSION['onethink_home']['user_auth']=null;
         $_SESSION['onethink_home']['user_auth_sign']=null;
+        $_SESSION['onethink_home']['user_center'] = null;
         session_destroy();
 	}
 

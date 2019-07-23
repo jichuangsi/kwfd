@@ -10,6 +10,7 @@
 namespace Home\Model;
 use Think\Model;
 use User\Api\UserApi;
+use User\Api\UserRemoteApi;
 
 /**
  * 文档基础模型
@@ -33,9 +34,13 @@ class MemberModel extends Model{
         array('pos_community', 0, self::MODEL_INSERT),
     );
 
-	public function registerMember($nickname=''){
+    public function registerMember($nickname='', $uid=''){
         /* 在当前应用中注册用户 */
-        if($user = $this->create(array('nickname' => $nickname, 'status' => 1))){
+        $user = $this->create(array('nickname' => $nickname, 'status' => 1));
+        if(!empty($uid)){
+            $user['uid'] = $uid;
+        }
+        if($user){
             $uid=$this->add($user);
             if (!$uid) {
                 $this->error = '前台用户信息注册失败，请重试！';
@@ -57,7 +62,10 @@ class MemberModel extends Model{
         $user = $this->field(true)->find($uid);
         if(!$user){ //未注册
             /* 在当前应用中注册用户 */
-        	$Api = new UserApi();
+            if(UC_REMOTE)
+                $Api = new UserRemoteApi();
+            else
+                $Api = new UserApi();
         	$info = $Api->info($uid);
             $user = $this->create(array('nickname' => $info[1], 'status' => 1));
             $user['uid'] = $uid;
@@ -86,6 +94,7 @@ class MemberModel extends Model{
     public function logout(){
         session('user_auth', null);
         session('user_auth_sign', null);
+        session('user_center', null);
     }
 
     /**

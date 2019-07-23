@@ -101,7 +101,7 @@ ul{list-style-type:none;margin:0px 0px;padding:10px 15px 0px 15px}
 	padding-top: 0;
 	min-height: 200px;
  }
- .rmb-box:nth-child(2n){margin-right: 0;}
+ .rmb-box:nth-child(n){margin-right: 5px;}
  .rmb-box:hover{
 	box-shadow: 0 15px 30px rgba(0,0,0,0.1);
 	z-index: 20;
@@ -180,8 +180,16 @@ ul{list-style-type:none;margin:0px 0px;padding:10px 15px 0px 15px}
 									<div class="rmb-product-explain">时间：{$vo.starttime|date='Y-m-d H:i',###}~{$vo.endtime|date='H:i',###}</div>
 									<div class="rmb-product-price">
 									    <if condition="$vo.ispay eq '2'">
-										    <span class="visible-xs"><a href="javascript:gotomeeting({$vo["id"]})" class="btn btn-primary btn-sm" target="_blank">&nbsp;&nbsp;进入课堂 >&nbsp;&nbsp;</a></span>
-									        <span class="hidden-xs"><a href="{:U('/Live/Index/gotomeeting',array('id'=>$vo["id"]))}" class="btn btn-primary btn-sm" target="_blank">&nbsp;&nbsp;进入课堂 >&nbsp;&nbsp;</a></span>
+										    <if condition="$vo.endtime lt time()">
+									    		<span><a class="btn btn-primary btn-sm" >&nbsp;&nbsp;课堂已结束&nbsp;&nbsp;</a></span>
+										    <else/>
+										    	<if condition="$vo.online eq 1">
+											    	<span class="visible-xs"><a href="javascript:gotomeeting({$vo["id"]})" class="btn btn-primary btn-sm" target="_blank">&nbsp;&nbsp;进入课堂 >&nbsp;&nbsp;</a></span>
+											        <span class="hidden-xs"><a href="{:U('/Live/Index/gotomeeting',array('id'=>$vo["id"]))}" class="btn btn-primary btn-sm" target="_blank">&nbsp;&nbsp;进入课堂 >&nbsp;&nbsp;</a></span>
+										    	<else/>
+										    		<span><a class="btn btn-primary btn-sm" onclick='alert("该课程不提供直播功能。")'>&nbsp;&nbsp;进入课堂 >&nbsp;&nbsp;</a></span>											        
+										    	</if>
+											 </if>
 										<else/>
 										    <span><a href="{:U('/Payoff/Index/index',array('orderid'=>$vo['orderid']))}" class="btn btn-default btn-sm">&nbsp;&nbsp;前去支付 >&nbsp;&nbsp;</a></span>
 										</if>

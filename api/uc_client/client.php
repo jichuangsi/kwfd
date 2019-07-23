@@ -363,7 +363,8 @@ function uc_user_getprotected() {
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
-function uc_get_user($username, $isuid=0) {
+function uc_get_user($username, $isuid=0, $fromSession=true) {
+    if($fromSession&&session('user_center')) return session('user_center');
 	$return = call_user_func(UC_API_FUNC, 'user', 'get_user', array('username'=>$username, 'isuid'=>$isuid));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }

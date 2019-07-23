@@ -94,7 +94,13 @@ class AdminConfigBuilder extends AdminBuilder
         $map = array(-1 => '删除', 0 => '禁用', 1 => '启用', 2 => '未审核');
         return $this->keySelect($name, $title, $subtitle, $map);
     }
-
+    
+    public function keyRecommend($name = 'recommend', $title = '推荐', $subtitle = null)
+    {
+        $map = array(0 => '不启用', 1 => '启用');
+        return $this->keySelect($name, $title, $subtitle, $map);
+    }
+    
     public function keySelect($name, $title, $subtitle = null, $options)
     {
         return $this->key($name, $title, $subtitle, 'select', $options);

@@ -9,6 +9,7 @@
 
 namespace Home\Controller;
 use User\Api\UserApi;
+use User\Api\UserRemoteApi;
 require_once APP_PATH . 'User/Conf/config.php';
 
 /**
@@ -38,8 +39,11 @@ class UserController extends HomeController {
             }		
 
 			/* 调用注册接口注册用户 */
-            $User = new UserApi;
-			$uid = $User->register($username,$nickname,$password, $email);
+            if(UC_REMOTE)
+                $user = new UserRemoteApi;
+            else
+                $user = new UserApi;
+            $uid = $user->register($username,$nickname,$password, $email);
 			if(0 < $uid){ //注册成功
 				//TODO: 发送验证邮件
 				$this->success('注册成功！',U('login'));
@@ -67,7 +71,10 @@ class UserController extends HomeController {
             }
 
 			/* 调用UC登录接口登录 */
-			$user = new UserApi;
+            if(UC_REMOTE)
+                $user = new UserRemoteApi;
+            else
+                $user = new UserApi;
 			$uid = $user->login($username, $password);
 			if(0 < $uid){ //UC登录成功
 				/* 登录用户 */
@@ -137,6 +144,9 @@ class UserController extends HomeController {
 	public function logout(){
 		if(is_login()){
 			D('Member')->logout();
+			if(UC_REMOTE){
+			    UserRemoteApi::execSyncLoginScrpt(uc_user_synlogout());
+			}
 			$this->success('退出成功！', U('User/login'));
 		} else {
 			$this->redirect('User/login');

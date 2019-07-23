@@ -17,6 +17,7 @@ class AdminListBuilder extends AdminBuilder
     private $_data = array();
     private $_setStatusUrl;
     private $_searchPostUrl;
+    private $_setRecommendUrl;
 
     private $_search = array();
 
@@ -35,7 +36,17 @@ class AdminListBuilder extends AdminBuilder
         $this->_setStatusUrl = $url;
         return $this;
     }
-
+    
+    /**
+     * @param $url string 已被U函数解析的地址
+     * @return $this
+     */
+    public function setRecommendUrl($url)
+    {
+        $this->_setRecommendUrl = $url;
+        return $this;
+    }
+    
     /**设置搜索提交表单的URL
      * @param $url
      * @return $this
@@ -184,7 +195,19 @@ class AdminListBuilder extends AdminBuilder
         $map = array(-1 => '删除', 0 => '禁用', 1 => '启用', 2 => '未审核');
         return $this->key($name, $title, 'status', $map);
     }
-
+    
+    public function keyRecommend($name = 'recommend', $title = '推荐')
+    {
+        $map = array(0 => '不启用', 1 => '启用');
+        return $this->key($name, $title, 'recommend', $map);
+    }
+    
+    public function keyOnline($name = 'online', $title = '线上')
+    {
+        $map = array(0 => '否', 1 => '是');
+        return $this->key($name, $title, 'online', $map);
+    }
+    
     public function keyYesNo($name, $title)
     {
         $map = array(0 => '不是', 1 => '是');
@@ -414,7 +437,24 @@ class AdminListBuilder extends AdminBuilder
             }
             return implode(' ', $result);
         });
-
+            
+        //status转换为html
+        //$setStatusUrl = $this->_setStatusUrl;
+        //$that = & $this;
+        $this->convertKey('online', 'html', function ($value, $key, $item) {
+            //如果没有设置修改状态的URL，则直接返回文字
+            $map = $key['opt'];
+            $text = $map[$value];
+            if (!$setStatusUrl) {
+                return $text;
+            }
+                    
+            //返回带链接的文字
+            /* $switchStatus = $value == 1 ? 0 : 1;
+            $url = $that->addUrlParam($setStatusUrl, array('status' => $switchStatus, 'ids' => $item['id']));
+            return "<a href=\"{$url}\" class=\"ajax-get\">$text</a>"; */
+        });
+                
         //status转换为html
         $setStatusUrl = $this->_setStatusUrl;
         $that = & $this;
@@ -430,8 +470,25 @@ class AdminListBuilder extends AdminBuilder
             $switchStatus = $value == 1 ? 0 : 1;
             $url = $that->addUrlParam($setStatusUrl, array('status' => $switchStatus, 'ids' => $item['id']));
             return "<a href=\"{$url}\" class=\"ajax-get\">$text</a>";
+        });            
+            
+        //recommend转换为html
+        $setRecommendUrl = $this->_setRecommendUrl;
+        $that = & $this;
+        $this->convertKey('recommend', 'html', function ($value, $key, $item) use ($setRecommendUrl, $that) {
+            //如果没有设置修改状态的URL，则直接返回文字
+            $map = $key['opt'];
+            $text = $map[$value];
+            if (!$setRecommendUrl) {
+                return $text;
+            }
+                
+            //返回带链接的文字
+            $switchRecommend = $value == 1 ? 0 : 1;
+            $url = $that->addUrlParam($setRecommendUrl, array('recommend' => $switchRecommend, 'ids' => $item['id']));
+            return "<a href=\"{$url}\" class=\"ajax-get\">$text</a>";
         });
-
+        
         //如果html为空
         $this->convertKey('html', 'html', function ($value) {
             if ($value === '') {
@@ -471,8 +528,28 @@ class AdminListBuilder extends AdminBuilder
         M($model)->where(array('id' => array('in', $ids)))->save(array('status' => $status));
 	 
         $this->success('设置成功', $_SERVER['HTTP_REFERER']);
+    }    
+    
+    public function doSetRecommend($model, $ids, $recommend)
+    {
+        if ($model != '')
+        {
+            if($recommend>0){
+                $rt = M($model)->where('recommend='.$recommend)->count();
+                if($rt>=C('RECOMMEND_MAX_NUM')){
+                    $this->error('推荐个数已到上限。');
+                }
+            }
+            $ids = is_array($ids) ? $ids : explode(',', $ids);
+            M($model)->where(array('id' => array('in', $ids)))->save(array('recommend' => $recommend));
+            
+            $this->success('设置成功', $_SERVER['HTTP_REFERER']);
+        } else {
+            $this->error('请选择要清空的模型。');
+        }
+        
     }
-
+    
     private function convertKey($from, $to, $convertFunction)
     {
         foreach ($this->_keyList as &$key) {

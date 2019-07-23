@@ -9,7 +9,9 @@
 
 namespace Admin\Controller;
 use User\Api\UserApi;
-
+use User\Api\UserRemoteApi;
+require_once('./Conf/user.php');
+if(UC_REMOTE) require_once('./api/uc_client/client.php');
 /**
  * 后台首页控制器
  * 
@@ -29,7 +31,11 @@ class PublicController extends \Think\Controller {
             }
 
             /* 调用UC登录接口登录 */
-            $User = new UserApi;
+            if(UC_REMOTE){
+                $User = new UserRemoteApi;
+            }else{
+                $User = new UserApi;
+            }
             $uid = $User->login($username, $password);
             if(0 < $uid){ //UC登录成功
                 /* 登录用户 */

@@ -50,7 +50,12 @@ function get_uid()
  */
 function is_administrator($uid = null){
     $uid = is_null($uid) ? is_login() : $uid;
-    return $uid && (intval($uid) === C('USER_ADMINISTRATOR'));
+    if(is_array(C('USER_ADMINISTRATOR'))){
+        return $uid && (in_array(intval($uid),C('USER_ADMINISTRATOR')));
+    }else{
+        return $uid && (intval($uid) === C('USER_ADMINISTRATOR'));
+    }
+    
 }
 
 /**
@@ -421,7 +426,11 @@ function get_username($uid = 0){
     if(isset($list[$key])){ //已缓存，直接使用
         $name = $list[$key];
     } else { //调用接口获取用户信息
-        $User = new User\Api\UserApi();
+        if(UC_REMOTE){
+            $User = new User\Api\UserRemoteApi();
+        }else{
+            $User = new User\Api\UserApi();
+        }
         $info = $User->info($uid);
         if($info && isset($info[1])){
             $name = $list[$key] = $info[1];
