@@ -66,7 +66,7 @@ class UserController extends AdminController {
         //$ucModel = UCenterMember();
         if(UC_REMOTE){
             foreach($uids as $k => $v){
-                $info =  uc_get_user($v, true);
+                $info =  uc_get_user($v, true, false);
                 if($info&&$info[1]&&$info[2]){
                     $res = uc_user_edit($info[1],'',UC_RESET_PW,$info[2],true);
                 }
