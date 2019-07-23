@@ -141,12 +141,13 @@ class UserRemoteApi extends Api{
         return $return;
     }
     
-    public static function execSyncLoginScrpt($script){
-        $ret = str_ireplace('" reload="1"></script>','$',str_replace('<script type="text/javascript" src="','$',$script));
-        $retArr = explode('$',$ret);
-        foreach($retArr as $k => $v){
-            if(!empty($v)&&substr_count($v, $_SERVER['HTTP_HOST'])==0){
-                file_get_contents($v);                
+    public static function execSyncLoginScrpt($ucsynlogin){
+        if (preg_match_all('/"http(.+?)"/', $ucsynlogin, $matches)) {
+            foreach ($matches[0] as $k=>$val){
+                $v=str_replace('"','',$val);
+                if(!empty($v)&&substr_count($v, $_SERVER['HTTP_HOST'])==0){
+                    file_get_contents($v);
+                }
             }
         }
     }
