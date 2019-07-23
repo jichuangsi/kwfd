@@ -158,14 +158,20 @@ class uc_note {
         //$ref =  $db->fetch_first("SELECT * FROM ".TOX_DBTABLEPRE."ucenter_user_link WHERE uc_uid={$uid}");
         //$user =  $db->fetch_first("SELECT * FROM ".TOX_DBTABLEPRE."member WHERE uid={$ref['uid']}");
         $user =  $db->fetch_first("SELECT * FROM ".TOX_DBTABLEPRE."member WHERE uid={$uid}");
+        if(!$user){
+            $db->query("INSERT INTO ".TOX_DBTABLEPRE."member (uid,nickname) values($uid,'$username')");
+            $nickname = $username;
+        }else{
+            $nickname = $user['nickname'];
+        }
         $auth = array(
             'uid' => $uid,
-            'username' => $user['nickname'],
+            'username' => $nickname,
             'last_login_time' => $user['last_login_time'],
         );
         $_SESSION['onethink_home']['user_auth']=$auth;
         $_SESSION['onethink_home']['user_auth_sign']=data_auth_sign($auth);
-        $_SESSION['onethink_home']['user_center'] = uc_get_user($uid, true);
+        $_SESSION['onethink_home']['user_center'] = uc_get_user($uid, true, false);
 	}
 
 	function synlogout($get, $post) {
