@@ -144,10 +144,11 @@ class UserController extends HomeController {
 	public function logout(){
 		if(is_login()){
 		    D('Member')->logout();
-			if(UC_REMOTE){
+			/* if(UC_REMOTE){
 			    UserRemoteApi::execSyncLoginScrpt(uc_user_synlogout());
-			}
-			$this->success('退出成功！', U('User/login'));
+			} */
+			//$this->success('退出成功！', U('User/login'));
+		    $this->successLogout('退出成功！', U('User/login'),false,true);
 		} else {
 			$this->redirect('User/login');
 		}

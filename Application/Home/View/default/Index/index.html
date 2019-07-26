@@ -16,14 +16,8 @@
     });
 </script>
 <php>
-$uc = session('user_center');
-if($uc[0]&&$uc[3]){
-require_once('./Conf/user.php');
-if(UC_REMOTE){
-require_once('./api/uc_client/client.php');
-echo uc_user_synlogin($uc[0]);
-}
-}
+require_once(APP_PATH . '/Common/Common/syncActionWithUC.php');
+login();
 </php>
 <style>
  
