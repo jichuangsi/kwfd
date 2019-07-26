@@ -217,17 +217,21 @@ class IndexController extends Controller
 		 
 		$this->display();
     }
-    public function Detail($id = 0,$category=1)
+    public function Detail($id = 0,$category=1,$u='')
     {
         $data = $this->datamodel->find($id);
         if (!$data) {
             $this->error('404 not found');
-        }
-		
+        }		
  
 		//var_dump($data);
 		$this->assign('data', $data);
         //dump($data);
+        
+		if(!empty($u)){
+		    $this->assign('suid', $u);
+		}
+		
 		$categorymap['status'] = 1;
         $categorymap['id'] = $category;
 		$categorydata = $this->categorymodel->where($categorymap)->order('createtime desc')->select();
@@ -266,7 +270,7 @@ class IndexController extends Controller
 		
 		$this->display();
     }
-    public function cart($id = 0)
+    public function cart($id = 0, $suid='')
     {
         $data = $this->datamodel->find($id);
         if (!$data) {
@@ -276,6 +280,7 @@ class IndexController extends Controller
 		$data['qty']=1;
 		$data['MODULE_NAME']=MODULE_NAME;
 		$data['url']=$_SERVER['HTTP_REFERER'];
+		if(!empty($suid)) $data['suid']=$suid;
 		//dump($data);	
 		$cart=A('Cart/Index');
 		$cart->insert($data);

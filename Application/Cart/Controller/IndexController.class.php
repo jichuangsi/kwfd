@@ -125,6 +125,9 @@ class IndexController extends Controller
 		$goodlist->sort =0;
 		$goodlist->num = $num;
 		$goodlist->uid=$uid;
+		if(!empty($val["suid"])){
+		    $goodlist->suid=$val["suid"];
+		}
 		$goodlist->username=query_user('nickname',$uid);
 		$goodlist->tag=$tag;//标识号必须相同
 		$goodlist->create_time= NOW_TIME;
