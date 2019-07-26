@@ -64,9 +64,9 @@ class UserRemoteApi extends Api{
         list($uid, $username, $password, $email) = uc_user_login($username, $password);
         if($uid){
             if($uid>0){
-                $uc = array($uid,$username,$email);
+                $uc = array($uid,$username,$email,1);
                 session('user_center', $uc);
-                self::execSyncLoginScrpt(uc_user_synlogin($uid));
+                //self::execSyncLoginScrpt(uc_user_synlogin($uid));
                 return $uid;
             }else{
                 return $uid;

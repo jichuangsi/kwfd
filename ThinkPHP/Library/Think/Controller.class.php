@@ -224,6 +224,18 @@ abstract class Controller {
     protected function success($message='',$jumpUrl='',$ajax=false) {
         $this->dispatchJump($message,1,$jumpUrl,$ajax);
     }
+    
+    /**
+     * 登出操作成功跳转的快捷方法
+     * @access protected
+     * @param string $message 提示信息
+     * @param string $jumpUrl 页面跳转地址
+     * @param mixed $ajax 是否为Ajax方式 当数字时指定跳转时间
+     * @return void
+     */
+    protected function successLogout($message='',$jumpUrl='',$ajax=false,$syncLogout=false) {
+        $this->dispatchJump($message,1,$jumpUrl,$ajax,$syncLogout);
+    }
 
     /**
      * Ajax方式返回数据到客户端
@@ -283,7 +295,7 @@ abstract class Controller {
      * @access private
      * @return void
      */
-    private function dispatchJump($message,$status=1,$jumpUrl='',$ajax=false) {
+    private function dispatchJump($message,$status=1,$jumpUrl='',$ajax=false,$syncLogout=false) {
         if(true === $ajax || IS_AJAX) {// AJAX提交
             $data           =   is_array($ajax)?$ajax:array();
             $data['info']   =   $message;
@@ -292,6 +304,7 @@ abstract class Controller {
             $this->ajaxReturn($data);
         }
         if(is_int($ajax)) $this->assign('waitSecond',$ajax);
+        if($syncLogout) $this->assign('syncLogout',$syncLogout);
         if(!empty($jumpUrl)) $this->assign('jumpUrl',$jumpUrl);
         // 提示标题
         $this->assign('msgTitle',$status? L('_OPERATION_SUCCESS_') : L('_OPERATION_FAIL_'));

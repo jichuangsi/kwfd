@@ -20,6 +20,12 @@ body{ background: #fff; font-family: '微软雅黑'; color: #333; font-size: 16p
 </style>
 </head>
 <body>
+<?php
+if($syncLogout){
+require_once(APP_PATH . '/Common/Common/syncActionWithUC.php');
+logout();
+}
+?>
 <div class="system-message">
 <present name="message">
 <h1>:)</h1>
