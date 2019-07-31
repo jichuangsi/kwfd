@@ -104,6 +104,8 @@
         }
         
         function jump () {
+                sessionStorage.setItem('videoSource',videoSource.value)
+                sessionStorage.setItem('audioSource',audioSource.value)
             if(JumpStatus == 1) {
                 sessionStorage.setItem('videoSource',videoSource.value)
                 sessionStorage.setItem('audioSource',audioSource.value)

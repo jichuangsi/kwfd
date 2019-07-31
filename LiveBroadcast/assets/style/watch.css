@@ -1,3 +1,7 @@
+body {
+    width: 100%;
+    /* overflow: hidden; */
+}
 .logo {
     position: absolute;
     left: 39px;
@@ -5,17 +9,29 @@
 }
 .box {
     width: 100%;
-    height: 480px;
+    height: 100%;
     margin-top: 100px;
     background-color: black;
-    display: flex;
-    justify-content: center;
+    position: relative;
+}
+.left_box {
+    width: 100%;
+    height: 100%;
+    background-color: #f3f3f3;
+}
+.right_box {
+    width: 320px;
+    height: 100%;
+    position: absolute;
+    right: 0px;
+    top: 0px;
 }
 .text {
-    width: 300px;
-    height: 480px;
+    width: 320px;
+    height: 395px;
     background-color: #fff;
-    position: relative;
+    position: absolute;
+    bottom: 0px;
 }
 .text .nav {
     width: 100%;
@@ -33,6 +49,16 @@
     line-height: 36px;
     text-align: center;
     cursor: pointer;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    overflow: hidden;
+}
+
+.text .nav div span {
+    position: absolute;
+    top: -36px;
+    left: 50%;
+    color: red;
 }
 .text .nav .check {
     color: #0094ff;
@@ -49,7 +75,7 @@
 }
 .text .userList {
     width: 100%;
-    height: 444px;
+    height: 360px;
     overflow: auto;
     position: absolute;
     left: 0px;
@@ -175,16 +201,13 @@
     margin-right: 10px;
 }
 .only {
-    width: 0px;
-    height: 0px;
-    background-color: #fff;
+    width: 100%;
+    height: 408px;
+    overflow: auto;
     position: absolute;
-    left: 40%;
-    top: 50%;
-    transform:translate(-50%,-50%);
-    z-index: 13;
-    transition: width 0.2s linear, height 0.2s linear;
-    overflow: hidden;
+    left: 0px;
+    top: 36px;
+    background-color: #fff;
 }
 .only .Popupbox {
     width: 100%;
@@ -198,11 +221,11 @@
 }
 .only .onlymessage {
     width: 100%;
-    height: 325px;
+    height: 408px;
     overflow: auto;
     position: absolute;
     left: 0px;
-    top: 36px;
+    top: 0px;
     background-color: #fff;
 }
 .only .top {
@@ -250,11 +273,11 @@
     cursor: pointer;
 }
 #video {
-    width: 640px;
-    height: 480px;
+    width: 320px;
+    height:240px;
     position: relative;
     overflow: hidden;
-    background-color: black;
+    background-color: red;
 }
 #video .title {
     position: absolute;
@@ -280,7 +303,7 @@
     width: 100% !important;
     height: 60px !important;
     position: absolute;
-    bottom: -60px;
+    bottom: 0px;
     left: 0px;
     background-color: rgba(0,0,0,0.4);
     display: flex;
@@ -290,7 +313,7 @@
 }
 #video .nav div {
     height: 60px;
-    width: 60%;
+    width: 90%;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -300,6 +323,7 @@
     height: 60px;
     cursor: pointer;
     background: url('../images//按钮.png') no-repeat;
+    transform: scale(0.5)
 }
 #video .nav .s1 {
     background-position: -37px -40px;
@@ -320,4 +344,54 @@
 }
 #video .nav .s6 {
     background-position: -31px -425px;
+}
+
+.baiban_nav {
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    cursor: pointer;
+}
+.baiban_nav div{
+    margin-top: 20px;
+    margin-left: 5px;
+}
+.baiban_nav .iconfont {
+    font-size: 30px !important;
+}
+.tab{
+    position: absolute;
+    left: 50%;
+    bottom: 50px;
+    transform: translateX(-50%);
+    /* background-color: red; */
+}
+.tab .button {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #0094ff;
+    display: inline-block;
+    cursor: pointer;
+}
+.tab .ys {
+    display: inline-block;
+}
+.tab .ys div {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #0094ff;
+    display: inline-block;
+    cursor: pointer;
+    margin:0px 5px;
+}
+.tab .ys .tab_check{
+    background-color: #0094ff;
+    color: #fff;
+}
+.text_small {
+    display: none;
+    transform: translateX(-125%);
+    z-index: 10000;
 }
