@@ -81,8 +81,8 @@ class UserRemoteApi extends Api{
      * @param  boolean $is_username 是否使用用户名查询
      * @return array                用户信息
      */
-    public function info($uid, $isuid = true){        
-        return uc_get_user($uid, $isuid);
+    public function info($uid, $isuid = true, $fromSession=true){
+        return uc_get_user($uid, $isuid, $fromSession);
     }
 
     /**

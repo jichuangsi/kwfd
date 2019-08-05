@@ -57,7 +57,7 @@
     	var param = $.base64.decode(decodeURIComponent(GetQueryString(window.location.search.substr(1),'a')));
     	
     	var userid = GetQueryString(param,'userid');
-    	var user = GetQueryString(param,'user');
+    	var username = GetQueryString(param,'user');
     	var role = GetQueryString(param,'role');
     	var room = GetQueryString(param,'room');
     	var title = GetQueryString(param,'title');
@@ -75,6 +75,8 @@
     	}
     	
     	$('#title').html(title);
+    	sessionStorage.setItem('uid',userid);
+    	sessionStorage.setItem('uname',username);
     	sessionStorage.setItem('role',role);
     	sessionStorage.setItem('room',room);
     	sessionStorage.setItem('appid',appid);
@@ -104,6 +106,8 @@
         }
         
         function jump () {
+                sessionStorage.setItem('videoSource',videoSource.value)
+                sessionStorage.setItem('audioSource',audioSource.value)
             if(JumpStatus == 1) {
                 sessionStorage.setItem('videoSource',videoSource.value)
                 sessionStorage.setItem('audioSource',audioSource.value)

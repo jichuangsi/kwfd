@@ -29,11 +29,13 @@ class WxPayConfig extends WxPayConfigInterface
 	 */
 	public function GetAppId()
 	{
-		return modC('WXPAY_APPID','','Config');
+	    return C('_CONFIG_WXPAY_APPID');
+	    //return modC('WXPAY_APPID','','Config');
 	}
 	public function GetMerchantId()
 	{
-		return modC('WXPAY_MCHID','','Config');
+	    return C('_CONFIG_WXPAY_MCHID');
+	    //return modC('WXPAY_MCHID','','Config');
 	}
 	
 	//=======【支付相关配置：支付成功回调地址/签名方式】===================================
@@ -89,7 +91,8 @@ class WxPayConfig extends WxPayConfigInterface
 	 */
 	public function GetKey()
 	{
-		return modC('WXPAY_KEY','','Config');
+	    return C('_CONFIG_WXPAY_KEY');
+	    //return modC('WXPAY_KEY','','Config');
 	}
 	public function GetAppSecret()
 	{

@@ -228,7 +228,7 @@ class ConfigController extends BaseController
                     $val['value'] = strtotime($val['value']);
                     $data[$key]['field_data'] = $val['value'];
                     break;
-                case 'textarea':
+                case 'textarea':case 'webeditor':
                     $val['value'] = op_t($_POST['expand_' . $val['id']]);
 					$val['value'] = $_POST['expand_' . $val['id']];
                     if (!$val['value'] || $val['value'] == '') {
@@ -286,7 +286,7 @@ class ConfigController extends BaseController
      */
     function _checkInput($data)
     {
-        if ($data['form_type'] == "textarea") {
+        if ($data['form_type'] == "textarea"||$data['form_type'] == "webeditor") {
             $validation = $this->_getValidation($data['validation']);
             if (($validation['min'] != 0 && mb_strlen($data['value'], "utf-8") < $validation['min']) || ($validation['max'] != 0 && mb_strlen($data['value'], "utf-8") > $validation['max'])) {
                 if ($validation['max'] == 0) {

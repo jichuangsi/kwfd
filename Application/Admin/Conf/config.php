@@ -97,9 +97,11 @@ return array(
     /* SESSION 和 COOKIE 配置 */
     //'SESSION_PREFIX' => 'onethink_admin', //session前缀
     //'COOKIE_PREFIX'  => 'onethink_admin_', // Cookie前缀 避免冲突
-	//为了前台老师用户直接访问后台，session 改成和前台一致了
-	'SESSION_PREFIX' => 'onethink_home', //session前缀
-    'COOKIE_PREFIX'  => 'onethink_home_', // Cookie前缀 避免冲突
+    //为了前台老师用户直接访问后台，session 改成和前台一致了
+    //'SESSION_PREFIX' => 'onethink_home', //session前缀
+    //'COOKIE_PREFIX'  => 'onethink_home_', // Cookie前缀 避免冲突
+    'SESSION_PREFIX' => $_SERVER['HTTP_HOST'], //session前缀
+    'COOKIE_PREFIX' => $_SERVER['HTTP_HOST'].'_', // Cookie前缀 避免冲突
     'VAR_SESSION_ID' => 'session_id',	//修复uploadify插件无法传递session_id的bug
 
     /* 后台错误页面模板 */

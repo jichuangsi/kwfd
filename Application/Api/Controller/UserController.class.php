@@ -43,6 +43,9 @@ class UserController extends ApiController
         if (!$image) {
             $this->apiError(1103, '图像不能为空');
         }
+        if($image['size']>1024000){
+            $this->apiError(1104, '图像大小不能超过1M');
+        }
         return $image;
     }
 

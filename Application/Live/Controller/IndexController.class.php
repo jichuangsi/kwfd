@@ -47,6 +47,10 @@ class IndexController extends Controller
         }
 
         $this->assign('menu_list', $menu_list);
+        
+        /* 读取站点配置 */
+        $config = api('Config/lists');
+        C($config); //添加配置
 
 		
 		//$http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
@@ -103,7 +107,8 @@ class IndexController extends Controller
 		$this->crypt=new Crypt();
 		$this->crypt->init("TESTTEST");
 		
-		$meetingappid=modC('MEETINGWEB_APP_ID',0,'Config');
+		//$meetingappid=modC('MEETINGWEB_APP_ID',0,'Config');
+		$meetingappid=C('_CONFIG_MEETINGWEB_APP_ID');
 		$parameter="userid=".$uid."&user=".$username."&role=".$role."&room=".$room."&title=".$data["title"]."&appid=".$meetingappid;
 		//echo $parameter;
 		//$parameter="userid=1431958326&user=user1431958326&role=manager&room=7";
@@ -111,7 +116,8 @@ class IndexController extends Controller
 		$parameter=urlencode(base64_encode($parameter));
 		//echo $parameter;
 		//die();
-        $meetingurl=modC('MEETINGWEB_URL',0,'Config');
+		//$meetingurl=modC('MEETINGWEB_URL',0,'Config');
+		$meetingurl=C('_CONFIG_MEETINGWEB_URL');
 		//die($meetingurl);
 		header("location: $meetingurl?a=".$parameter);
 	}
@@ -218,17 +224,21 @@ class IndexController extends Controller
 		 
 		$this->display();
     }
-    public function Detail($id = 0,$category=1)
+    public function Detail($id = 0,$category=1,$u='')
     {
         $data = $this->datamodel->find($id);
         if (!$data) {
             $this->error('404 not found');
         }
-		
- 
-		//var_dump($data);
-		$this->assign('data', $data);
+        
+        //var_dump($data);
+        $this->assign('data', $data);
         //dump($data);
+        
+        if(!empty($u)){
+            $this->assign('suid', $u);
+        }
+        
 		$categorymap['status'] = 1;
         $categorymap['id'] = $category;
 		$categorydata = $this->categorymodel->where($categorymap)->order('createtime desc')->select();
@@ -267,19 +277,20 @@ class IndexController extends Controller
 		
 		$this->display();
     }
-    public function cart($id = 0)
+    public function cart($id = 0, $suid='')
     {
         $data = $this->datamodel->find($id);
         if (!$data) {
             $this->error('404 not found');
         }
-		$data['name']=$data['title'];
-		$data['qty']=1;
-		$data['MODULE_NAME']=MODULE_NAME;
-		$data['url']=$_SERVER['HTTP_REFERER'];
-		//dump($data);	
-		$cart=A('Cart/Index');
-		$cart->insert($data);
+        $data['name']=$data['title'];
+        $data['qty']=1;
+        $data['MODULE_NAME']=MODULE_NAME;
+        $data['url']=$_SERVER['HTTP_REFERER'];
+        if(!empty($suid)) $data['suid']=$suid;
+        //dump($data);
+        $cart=A('Cart/Index');
+        $cart->insert($data);
     }
     public function appcourse($uid = 0)
     {

@@ -10,6 +10,10 @@ function login(){
         if(UC_REMOTE){
             require_once('./api/uc_client/client.php');
             execSyncScrpt(uc_user_synlogin($uc[0]));
+            if($uc[3]){
+                $uc[3] = 0;
+                session('user_center',$uc);
+            }
         }
     }
 }

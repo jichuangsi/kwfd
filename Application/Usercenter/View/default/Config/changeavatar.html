@@ -39,10 +39,10 @@
             <form action="{:U('UserCenter/Config/doUploadAvatar')}" id="avatar_form" method="post"
                   enctype="multipart/form-data">
                 <if condition="is_ie()">
-                    <input type="file" class="btn btn-default" name="image"/>
+                    <input type="file" class="btn btn-default" name="image"  accept="image/*"/>
                     <else/>
                     <p class="hide">
-                        <input type="file" name="image"/>
+                        <input type="file" name="image"  accept="image/*"/>
                     </p>
 
                     <div class="btn btn-primary" id="select_file_button">选择文件</div>
@@ -100,10 +100,29 @@
             //头像上传后显示图片内容
             $('#avatar_form').bind('onJson', function (e, json) {
                 //如果发生错误，则显示错误信息
-                if (!json.success) {
+                /* if (!json.success) {
                     $('#upload_tip').text(json.message);
+                } */
+                $('#upload_tip').text('');
+                if (!json.status) {
+                    $('#upload_tip').text(json.info);
+                    var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串  
+                    var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器  
+                    var isEdge = userAgent.indexOf("Edge") > -1 && !isIE; //判断是否IE的Edge浏览器  
+                    var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
+                    
+                    if(isIE||isIE11){
+                    	$('[name=image]').replaceWith('<input type="file" class="btn btn-default" name="image" accept="image/*"/>');
+                    }else{
+                    	$('[name=image]').replaceWith('<input type="file" name="image" accept="image/*"/>');
+                    }
+                    $('[name=image]').change(function () {
+                        $('#avatar_form').submit();
+                    });                   
+                    
+                    return;
                 }
-
+                
                 //隐藏图片上传表单
                 $('#avatar_form').hide();
 
