@@ -38,6 +38,12 @@ body{ background: #30333F; font-family: '微软雅黑'; color: #fff; font-size: 
 </style>
 </head>
 <body>
+<?php
+if($syncLogout){
+require_once(APP_PATH . '/Common/Common/syncActionWithUC.php');
+logout();
+}
+?>
 <div class="system-message">
 <h1>恭喜您!</h1>
 <p class="success"><?php echo($message); ?></p>

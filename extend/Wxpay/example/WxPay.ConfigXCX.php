@@ -15,7 +15,7 @@ require_once  dirname (dirname ( __FILE__ ))."/lib/WxPay.Config.Interface.php";
 * 
 */
 
-class WxPayConfig extends WxPayConfigInterface
+class WxPayConfigXCX extends WxPayConfigInterface
 {
 	//=======【基本信息设置】=====================================
 	/**
@@ -29,12 +29,12 @@ class WxPayConfig extends WxPayConfigInterface
 	 */
 	public function GetAppId()
 	{
-	    return C('_CONFIG_WXPAY_APPID');
+	    return C('WECHAT_APPLET_APPID');
 		//return modC('WXPAY_APPID','','Config');
 	}
 	public function GetMerchantId()
 	{
-	    return C('_CONFIG_WXPAY_MCHID');
+	    return C('WECHAT_APPLET_MCHID');
 		//return modC('WXPAY_MCHID','','Config');
 	}
 	
@@ -91,12 +91,13 @@ class WxPayConfig extends WxPayConfigInterface
 	 */
 	public function GetKey()
 	{
-	    return C('_CONFIG_WXPAY_KEY');
+	    return C('WECHAT_APPLET_KEY');
 		//return modC('WXPAY_KEY','','Config');
 	}
 	public function GetAppSecret()
 	{
-		return '7813490da6f1265e4901ffb80afaa36f';
+	    return C('WECHAT_APPLET_SECRET');
+		//return '7813490da6f1265e4901ffb80afaa36f';
 	}
 
 

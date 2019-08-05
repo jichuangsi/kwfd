@@ -96,7 +96,7 @@ class IndexController extends Controller
  
 		//老师课程
 		$hotmap['status'] = 1;
-		$hotmap['teacherid'] = $data["teacherid"];
+		$hotmap['teacherid'] = $data[0]["uid"];;
         $hotdata = D("Live/Live")->where($hotmap)->order('id desc')->page($page,$count)->select();
 		$totalCount = D("Live/Live")->where($hotmap)->count();
 

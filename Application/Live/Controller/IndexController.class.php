@@ -46,12 +46,14 @@ class IndexController extends Controller
         }
 
         $this->assign('menu_list', $menu_list);
-
+        
+        /* 读取站点配置 */
+        $config = api('Config/lists');
+        C($config); //添加配置
 		
 		//$http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
         //echo $http_type . $_SERVER['HTTP_HOST'];
-		//echo $http_type . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; 
- 		
+		//echo $http_type . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];  		
     }
 	public function getmenu()
     {
@@ -102,7 +104,8 @@ class IndexController extends Controller
 		$this->crypt=new Crypt();
 		$this->crypt->init("TESTTEST");
 		
-		$meetingappid=modC('MEETINGWEB_APP_ID',0,'Config');
+		//$meetingappid=modC('MEETINGWEB_APP_ID',0,'Config');
+		$meetingappid=C('_CONFIG_MEETINGWEB_APP_ID');
 		$parameter="userid=".$uid."&user=".$username."&role=".$role."&room=".$room."&title=".$data["title"]."&appid=".$meetingappid;
 		//echo $parameter;
 		//$parameter="userid=1431958326&user=user1431958326&role=manager&room=7";
@@ -110,7 +113,8 @@ class IndexController extends Controller
 		$parameter=urlencode(base64_encode($parameter));
 		//echo $parameter;
 		//die();
-        $meetingurl=modC('MEETINGWEB_URL',0,'Config');
+        //$meetingurl=modC('MEETINGWEB_URL',0,'Config');
+        $meetingurl=C('_CONFIG_MEETINGWEB_URL');
 		//die($meetingurl);
 		header("location: $meetingurl?a=".$parameter);
 	}
@@ -120,7 +124,7 @@ class IndexController extends Controller
 	    $room = $_POST['room'];
 	    $uid = $_POST['uid']?$_POST['uid']:get_uid();
 	    $uname = $_POST['uname']?$_POST['uname']:session('user_auth')['username'];
-	    $isteacher = $_POST['isteacher']?$_POST['isteacher']:session('user_auth')['isteacher'];
+	    $isteacher = $_POST['isteacher']?$_POST['isteacher']:session('user_auth')['isteacher'];	    
 	    //echo 'room:'.$room.';uid:'.$uid.';uname:'.$uname.';isteacher:'.$isteacher;	    
 	    
 	    if(!is_dir('lock')){

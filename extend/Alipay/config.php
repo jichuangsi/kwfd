@@ -3,10 +3,10 @@ $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset(
 //echo $http_type . $_SERVER['HTTP_HOST'];
 $config = array (	
 		//应用ID,您的APPID。
-		'app_id' => modC('ALIPAY_APPID','','Config'),
+		'app_id' => C('_CONFIG_ALIPAY_APPID'),//modC('ALIPAY_APPID','','Config'),
 
 		//商户私钥
-		'merchant_private_key' => modC('ALIPAY_PRIVATE_KEY','','Config'),
+		'merchant_private_key' => C('_CONFIG_ALIPAY_PRIVATE_KEY'),//modC('ALIPAY_PRIVATE_KEY','','Config'),
 		
 		//异步通知地址
 		'notify_url' => $http_type . $_SERVER['HTTP_HOST']."/".str_replace("?s=","",U('/'))."Payoff/Alipay/notifyurl.html",
@@ -24,5 +24,5 @@ $config = array (
 		'gatewayUrl' => "https://openapi.alipay.com/gateway.do",
 
 		//支付宝公钥,查看地址：https://openhome.alipay.com/platform/keyManage.htm 对应APPID下的支付宝公钥。切记不要点击 查看应用公钥 要点击查看支付宝公钥
-		'alipay_public_key' => modC('ALIPAY_PUBLIC_KEY','','Config'),
+		'alipay_public_key' => C('_CONFIG_ALIPAY_PUBLIC_KEY'),//modC('ALIPAY_PUBLIC_KEY','','Config'),
 );

@@ -7,15 +7,25 @@
  */
 namespace Api\Controller;
 
-// use Addons\ResetByEmail\ResetByEmailAddon;
-use Think\Controller;
-use User\Api\UserApi;
-//use Addons\Tianyi\TianyiAddon;
 header('Access-Control-Allow-Origin:*');
 
 class CourseController extends ApiController
 {
 
+    protected $datamodel;
+    protected $categorymodel;
+    protected $orderlistmodel;
+    protected $chaptersmodel;
+    
+    public function _initialize()
+    {
+        $this->datamodel = D('Live/Live');
+        $this->categorymodel = D('Live/LiveCategory');
+        $this->orderlistmodel = D('Cart/Orderlist');
+        $this->chaptersmodel = D('Live/LiveChapters');
+        parent::_initialize();
+    }
+    
     /**
      * 根据关键字搜索课堂列表API
      *
@@ -48,8 +58,7 @@ class CourseController extends ApiController
      */
     public function categoryQuery($id=0)
     {
-        $categorymodel = D('Live/LiveCategory');
-        $tree = $categorymodel->getTree($id);
+        $tree = $this->categorymodel->getTree($id);
         $this->apiSuccess("获取分类列表成功", null, array('data' => $tree));
     }
     
@@ -61,10 +70,72 @@ class CourseController extends ApiController
         $this->query($p, $r, $t, $c, $y, '获取推荐课程列表成功', true);
     }
     
-    private function query($page = 1, $row = 20, $title = '', $content = '', $category = '', $message = 'sucess', $recommend = false){
-        $datamodel = D('Live/Live');
-        $categorymodel = D('Live/LiveCategory');
-        $orderlistmodel = D('Cart/Orderlist');
+    public function detailQuery($id = 0)
+    {
+        if(empty($id)||$id===0){
+            $this->apiError('404', '该记录不存在！');
+        }
+        
+        $data = $this->datamodel->field('id,title,image,categoryid,content,view,price,starttime,endtime,teacherid,online')->find($id);
+        if (!$data) {
+            $this->apiError('404', '该记录不存在！');
+        }
+        
+        //dump($data);
+        if($data['content']&&!empty($data['content'])){
+            $data['content'] = $this->replace_img($data['content']);
+        }        
+        
+        /* 更新浏览数 */
+        $map = array('id' => $id);
+        $this->datamodel->where($map)->setInc('view');
+                
+        //查看最多
+        /* $hotmap['status'] = 1;
+        $hotdata = $this->datamodel->where($hotmap)->order('view desc')->limit(10)->select();
+        $this->assign('hotdata', $hotdata); */
+        
+        $chapters=$this->chaptersmodel->getTree($id);
+        //dump($chapters);
+        if($chapters){
+            $data['chapters'] = $chapters['_'];
+        }
+        
+        unset($map);
+        $map['m.uid'] = $data['teacherid'];
+        $teacher = M("Member")->alias("m")->field('m.uid,m.nickname,m.sex,m.signature,CASE WHEN ISNULL(a.path) THEN "Addons/Avatar/default.jpg" ELSE CONCAT("'.$this->protocol.'/Uploads/Avatar/",a.path) end as path')->join(C('DB_PREFIX').'avatar a ON m.uid=a.uid','LEFT')->where($map)->select();
+        //dump($teacher);        
+        if($teacher&&$teacher[0]){
+            $data['teacher'] = $teacher[0];
+        }
+        
+        if (!empty($data['categoryid'])) {
+            $data['category'] = '';
+            $categoryids = $data['categoryid'];
+            $categorydata = $this->categorymodel->where("id in ($categoryids) and status = 1")->select();
+            foreach ($categorydata as $ckey => $cval) {
+                $data['category'] .= $cval['title'] . ',';
+            }
+            $data['category'] = substr($data['category'], 0, strlen($data['category']) - 1);
+        }
+        
+        unset($map);
+        $map['o.goodid'] = $data['id'];
+        $map['o.MODULE_NAME']='Live';
+        $sold = M("Orderlist")->alias("o")->field('m.*,a.*,CASE WHEN ISNULL(a.path) THEN "Addons/Avatar/default.jpg" ELSE CONCAT("Uploads/Avatar/",a.path) end as path')->join(C('DB_PREFIX').'Member m ON m.uid=o.uid','LEFT')->join(C('DB_PREFIX').'avatar a ON m.uid=a.uid','LEFT')->where($map)->count();
+        //dump($orderlist);
+        if($sold){
+            $data['sold'] = $sold;
+        }
+        
+        if (!empty($data['image'])) {
+            $data['imageurl'] = $this->protocol . get_cover($data['image'], 'path');
+        }
+        
+        $this->apiSuccess('获取课堂详情成功', null, array('data'=>$data));
+    }
+    
+    private function query($page = 1, $row = 20, $title = '', $content = '', $category = '', $message = 'sucess', $recommend = false){        
         
         $order = $recommend?'recommend desc,createtime desc,view desc':'createtime desc,view desc';
         
@@ -99,7 +170,7 @@ class CourseController extends ApiController
             $categoryarr = explode("_", $search_category);
             $nodeIds = array();
             foreach($categoryarr as $key => $val){                
-                $this->iterateTree($categorymodel->getTree($val), $nodeIds);                
+                $this->iterateTree($this->categorymodel->getTree($val), $nodeIds);                
             }
             //print_r($nodeIds);
             $map['_string'] = '0=0';
@@ -116,19 +187,19 @@ class CourseController extends ApiController
             $map['_string'] .= ' AND ' .$temp;
         }
         
-        $data = $datamodel->field('id,title,image,categoryid,view,price')
+        $data = $this->datamodel->field('id,title,image,categoryid,view,price')
             ->where($map)
             ->order($order)
             ->page($page, $row)
             ->select();
         //echo $datamodel->_sql();
-        $totalCount = $datamodel->where($map)->count();
+        $totalCount = $this->datamodel->where($map)->count();
         
         foreach ($data as $key => $val) {
             if (! empty($val['categoryid'])) {
                 $data[$key]['category'] = '';
                 $categoryids = $val['categoryid'];
-                $categorydata = $categorymodel->where("id in ($categoryids) and status = 1")->select();
+                $categorydata = $this->categorymodel->where("id in ($categoryids) and status = 1")->select();
                 foreach ($categorydata as $ckey => $cval) {
                     $data[$key]['category'] .= $cval['title'] . ',';
                 }
@@ -138,10 +209,10 @@ class CourseController extends ApiController
             unset($map);
             $map['goodid'] = $val['id'];
             $map['MODULE_NAME'] = 'Live';
-            $data[$key]['sold'] = $orderlistmodel->where($map)->count();
+            $data[$key]['sold'] = $this->orderlistmodel->where($map)->count();
             
             if (! empty($val['image'])) {
-                $data[$key]['imageurl'] = get_cover($val['image'], 'path');
+                $data[$key]['imageurl'] = $this->protocol . get_cover($val['image'], 'path');
             }
         }
         

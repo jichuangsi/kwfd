@@ -52,7 +52,7 @@
                         <div>
                             <span class="s1" onclick="leave()"></span>
                             <span class="s2" onclick="CameraStop()"></span>
-                            <span class="s3" oncli ck="MicrophoneStop()"></span>
+                            <span class="s3" onclick="MicrophoneStop()"></span>
                             <span class="s4" onclick="share()"></span>
                             <!-- <span class="s5" onclick="Same()"></span> -->
                             <span class="s6" onclick="Rotate()"></span>
@@ -128,6 +128,8 @@
         var demo
         var audioSelect = sessionStorage.getItem('audioSelect')
         var videoSelect = sessionStorage.getItem('videoSelect')
+        var uid = sessionStorage.getItem('uid');
+    	var uname = sessionStorage.getItem('uname');
         var role = sessionStorage.getItem('role')
         var room = sessionStorage.getItem('room')
         var appid = sessionStorage.getItem('appid')
@@ -259,37 +261,41 @@
                         shareState=0
                     }
                     shareState++
-                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'JOIN',uid:'',uname:'',isteacher:0},function(result){
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'JOIN',uid:uid,uname:uname,isteacher:0},function(result){
                                     console.log(result);
                     });
                 });
             }else {
-                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'JOIN',uid:'',uname:'',isteacher:1},function(result){
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'JOIN',uid:uid,uname:uname,isteacher:1},function(result){
                                     console.log(result);
                     });
                     
-                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'QUERY',uid:'',uname:'',isteacher:1},function(result){
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'QUERY',uid:uid,uname:uname,isteacher:1},function(result){
                         console.log(result);
-                        $('.UserCount').find('span').text(result.total)
-                        var num = 0
-                        for(let i = 0; i < result.ids.length; i++) {
-                            num++
-                            var li = document.createElement('li')
-                            li.text = num + result.ids
-                            $('.UserCount').find('ul').append(li)
-                        }
+                        if(result){
+                        	$('.UserCount').find('span').text(result.total)
+                            var num = 0
+                            for(let i = 0; i < result.ids.length; i++) {
+                                num++
+                                var li = document.createElement('li')
+                                li.text = num + result.ids
+                                $('.UserCount').find('ul').append(li)
+                            }
+                        }                        
                 });
                 setInterval(function(){
-                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'QUERY',uid:'',uname:'',isteacher:1},function(result){
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'QUERY',uid:uid,uname:uname,isteacher:1},function(result){
                         console.log(result);
-                        $('.UserCount').find('span').text(result.total)
-                        var num = 0;
-                        for(let i = 0;i<result.ids.length;i++){
-                            num++;
-                            var li = document.createElement('li')
-                            li.text = num + result.ids
-                            $('.UserCount').find('ul').append(li)
-                        }
+                        if(result){
+                        	$('.UserCount').find('span').text(result.total)
+                            var num = 0;
+                            for(let i = 0;i<result.ids.length;i++){
+                                num++;
+                                var li = document.createElement('li')
+                                li.text = num + result.ids
+                                $('.UserCount').find('ul').append(li)
+                            }
+                        }                        
                 });
                 },30000)
             }
@@ -320,6 +326,7 @@
             // 群聊
             chat = AgoraRTM.createInstance(appid)
             userId = Math.floor(Math.random()*100+1)+'s'
+            userId = uid + '_' + userId;
             console.log(userId)
             sessionStorage.setItem('userId',userId)
             channel_room = chat.createChannel(room)
@@ -438,11 +445,11 @@
         function leave() {  
             if(leaveState == 0){
                 if(role == '2'){
-                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'LEAVE',uid:'',uname:'',isteacher:0},function(result){
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'LEAVE',uid:uid,uname:uname,isteacher:0},function(result){
                                     console.log(result);
                     });
                 }else{
-                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'LEAVE',uid:'',uname:'',isteacher:1},function(result){
+                    $.post("/index.php?s=/live/index/statistics",{room:room,action:'LEAVE',uid:uid,uname:uname,isteacher:1},function(result){
                                     console.log(result);
                     });
                 }
@@ -454,6 +461,9 @@
                 });
                 channel_room.leave()
             }
+            //聊天室登出
+            chat.logout();
+            //共享白板登出
             baibanLeave()
         }
         function CameraStop(){

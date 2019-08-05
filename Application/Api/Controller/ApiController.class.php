@@ -10,14 +10,17 @@ namespace Api\Controller;
 use Api\Exception\ReturnException;
 use Think\Controller;
 use User\Api\UserApi;
+use User\Api\UserRemoteApi;
 //use Addons\Digg\DiggAddon;
 //use Addons\LocalComment\LocalCommentAddon;
 use Addons\Avatar\AvatarAddon;
 require_once(dirname(__FILE__).'/../Common/function.php');
+require_once('./Conf/user.php');
 
 abstract class ApiController extends Controller {
     protected $api;
     protected $isInternalCall;
+    protected $protocol;
 
     public function _initialize() {
         //读取站点信息
@@ -28,9 +31,13 @@ abstract class ApiController extends Controller {
             $this->apiError(403, '站点已经关闭，请稍后访问~');
         }
         //定义API
-        $this->api = new UserApi();
+        if(UC_REMOTE)
+            $this->api = new UserREmoteApi();
+        else
+            $this->api = new UserApi();
 
         $this->$isInternalCall = false;
+        $this->protocol = $_SERVER['SERVER_PORT'] == 443 ? "https://" : "http://" . $_SERVER['HTTP_HOST'];
     }
 
     public function setInternalCallApi($value=true) {
@@ -331,5 +338,12 @@ abstract class ApiController extends Controller {
         }
         //返回结果
         return $result;
+    }
+    
+    protected function replace_img($htmls){
+        
+        $htmls=str_replace('/Uploads/', $this->protocol.'/Uploads/', $htmls);        
+        
+        return $htmls;
     }
 }

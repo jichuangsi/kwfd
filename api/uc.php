@@ -159,7 +159,7 @@ class uc_note {
         //$user =  $db->fetch_first("SELECT * FROM ".TOX_DBTABLEPRE."member WHERE uid={$ref['uid']}");
         $user =  $db->fetch_first("SELECT * FROM ".TOX_DBTABLEPRE."member WHERE uid={$uid}");
         if(!$user){
-            $db->query("INSERT INTO ".TOX_DBTABLEPRE."member (uid,nickname) values($uid,'$username')");
+            $db->query("INSERT INTO ".TOX_DBTABLEPRE."member (uid,nickname,status) values($uid,'$username',1)");
             $nickname = $username;
         }else{
             $nickname = $user['nickname'];
@@ -167,11 +167,12 @@ class uc_note {
         $auth = array(
             'uid' => $uid,
             'username' => $nickname,
+            'isteacher' => $user['isteacher'],
             'last_login_time' => $user['last_login_time'],
         );
-        $_SESSION['onethink_home']['user_auth']=$auth;
-        $_SESSION['onethink_home']['user_auth_sign']=data_auth_sign($auth);        
-        $_SESSION['onethink_home']['user_center'] = uc_get_user($uid, true, false);
+        $_SESSION[$_SERVER['HTTP_HOST']]['user_auth']=$auth;
+        $_SESSION[$_SERVER['HTTP_HOST']]['user_auth_sign']=data_auth_sign($auth);        
+        $_SESSION[$_SERVER['HTTP_HOST']]['user_center'] = uc_get_user($uid, true, false);
 
 	}
 
@@ -183,9 +184,9 @@ class uc_note {
 		//note 同步登出 API 接口
 		header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"');
         session_start();
-        $_SESSION['onethink_home']['user_auth']=null;
-        $_SESSION['onethink_home']['user_auth_sign']=null;
-        $_SESSION['onethink_home']['user_center'] = null;
+        $_SESSION[$_SERVER['HTTP_HOST']]['user_auth']=null;
+        $_SESSION[$_SERVER['HTTP_HOST']]['user_auth_sign']=null;
+        $_SESSION[$_SERVER['HTTP_HOST']]['user_center'] = null;
         session_destroy();
 	}
 
