@@ -96,7 +96,8 @@ class WxPayConfig extends WxPayConfigInterface
 	}
 	public function GetAppSecret()
 	{
-		return '7813490da6f1265e4901ffb80afaa36f';
+	    return C('_CONFIG_WXPAY_APPSECRET');
+		//return '7813490da6f1265e4901ffb80afaa36f';
 	}
 
 
