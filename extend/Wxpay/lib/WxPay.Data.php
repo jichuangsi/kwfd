@@ -69,11 +69,11 @@ class WxPayDataBase
     	$xml = "<xml>";
     	foreach ($this->values as $key=>$val)
     	{
-    		//if (is_numeric($val)){
+    		if (is_numeric($val)){
     			$xml.="<".$key.">".$val."</".$key.">";
-    		//}else{
-    			//$xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
-    		//}
+    		}else{
+    			$xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
+    		}
         }
         $xml.="</xml>";
         return $xml; 
