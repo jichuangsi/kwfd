@@ -41,10 +41,10 @@ class ConfigApi {
                 if($v['c_key']){//支付配置
                     switch ($v['c_key']){
                         case 'wap_ali_id'://wap版支付宝接口收款帐号
-                            $config['_CONFIG_ALIPAY_APPID'] = $v['c_value'];
+                            //$config['_CONFIG_ALIPAY_APPID'] = $v['c_value'];
                             break;
                         case 'wap_ali_partner'://wap版支付宝接口合作者身份
-                            //$config['_CONFIG_ALIPAY_APPID'] = $v['c_value'];
+                            $config['_CONFIG_ALIPAY_APPID'] = $v['c_value'];
                             break;
                         case 'wap_ali_private_keys'://小B支付宝接口私钥
                             $config['_CONFIG_ALIPAY_PRIVATE_KEY'] = $v['c_value'];
