@@ -8,7 +8,7 @@ use Think\Controller;
  * @package Shop\Controller
  * 
  */
-class AlipayController extends Controller
+class AliwappayController extends Controller
 {
 	protected $orderModel;
     public function _initialize()
@@ -22,9 +22,9 @@ class AlipayController extends Controller
 	{ 
 
 		if (IS_POST) {
-             include(ROOT_PATH.'extend/Alipay/config.php');
-			 include(ROOT_PATH.'extend/Alipay/pagepay/service/AlipayTradeService.php');
-			 include(ROOT_PATH.'extend/Alipay/pagepay/buildermodel/AlipayTradePagePayContentBuilder.php');
+             include(ROOT_PATH.'extend/alipaywap/config.php');
+			 include(ROOT_PATH.'extend/alipaywap/wappay/service/AlipayTradeService.php');
+			 include(ROOT_PATH.'extend/alipaywap/wappay/buildermodel/AlipayTradeWapPayContentBuilder.php');
              //商户订单号，商户网站订单系统中唯一订单号，必填
 			 $orderid=I('orderid');
 			 $order=$this->orderModel->where("orderid='$orderid'")->find();
@@ -35,34 +35,30 @@ class AlipayController extends Controller
              $out_trade_no = $orderid;
 
              //订单名称，必填
-             $subject = "在线支付";
+             $subject = "手机在线支付";
 
              //付款金额，必填
              $total_amount = $order['pricetotal'];
 
              //商品描述，可空
              $body = "";
+             
+             //超时时间
+             $timeout_express="1m";
 
 	         //构造参数
-	         $payRequestBuilder = new \AlipayTradePagePayContentBuilder();
+             $payRequestBuilder = new \AlipayTradeWapPayContentBuilder();
 	         $payRequestBuilder->setBody($body);
 	         $payRequestBuilder->setSubject($subject);
 	         $payRequestBuilder->setTotalAmount($total_amount);
 	         $payRequestBuilder->setOutTradeNo($out_trade_no);
-
-	         $aop = new \AlipayTradeService($config);
-
-	         /**
-	          * pagePay 电脑网站支付请求
-	          * @param $builder 业务参数，使用buildmodel中的对象生成。
-	          * @param $return_url 同步跳转地址，公网可以访问
-	          * @param $notify_url 异步通知地址，公网可以访问
-	          * @return $response 支付宝返回的信息
- 	        */
-	        $response = $aop->pagePay($payRequestBuilder,$config['return_url'],$config['notify_url']);
-
+	         $payRequestBuilder->setTimeExpress($timeout_express);
+	         
+	         $payResponse = new \AlipayTradeService($config);	         
+	         $result=$payResponse->wapPay($payRequestBuilder,$config['return_url'],$config['notify_url']);
+	        
 	        //输出表单
-	        var_dump($response);
+	         //var_dump($result);
         } 
 		else
 		{
@@ -79,8 +75,8 @@ class AlipayController extends Controller
      */
     public function returnurl() 
 	{
-		include(ROOT_PATH.'extend/Alipay/config.php');
-		include(ROOT_PATH.'extend/Alipay/pagepay/service/AlipayTradeService.php');
+		include(ROOT_PATH.'extend/alipaywap/config.php');
+		include(ROOT_PATH.'extend/alipaywap/wappay/service/AlipayTradeService.php');
 		$arr=$_GET;
 		$alipaySevice = new \AlipayTradeService($config); 
 		$result = $alipaySevice->check($arr);
@@ -136,8 +132,8 @@ class AlipayController extends Controller
      * 支付宝异步通知接口
      */
     public function notifyurl() {
-		include(ROOT_PATH.'extend/Alipay/config.php');
-		include(ROOT_PATH.'extend/Alipay/pagepay/service/AlipayTradeService.php');
+		include(ROOT_PATH.'extend/alipaywap/config.php');
+		include(ROOT_PATH.'extend/alipaywap/wappay/service/AlipayTradeService.php');
 		 
 		$arr=$_POST;
 		$alipaySevice = new \AlipayTradeService($config); 
@@ -192,7 +188,7 @@ class AlipayController extends Controller
 			    //付款完成后，支付宝系统发送该交易状态通知
 			    M("pay")->where(array('out_trade_no' => $out_trade_no))->setField('status',2);
 
-		        $data = array('status'=>'2','ispay'=>'2','paymode'=>'Alipay');//设置订单为已经支付,状态为已提交
+			    $data = array('status'=>'2','ispay'=>'2','paymode'=>'Alipay','backinfo'=>'支付完成');//设置订单为已经支付,状态为已提交
 		        M('order')->where(array('orderid' => $out_trade_no))->setField($data);
             }
 	        //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
