@@ -27,7 +27,7 @@ return array(
 
 /* 用户相关设置 */
 'USER_MAX_CACHE'     => 1000, //最大缓存用户数
-'USER_ADMINISTRATOR' => array(11), //管理员用户ID
+'USER_ADMINISTRATOR' => array(24), //管理员用户ID
 'RECOMMEND_MAX_NUM'     => 3, //最大推荐课堂数
 
 /* URL配置 */
