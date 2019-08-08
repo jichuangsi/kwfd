@@ -17,9 +17,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- 数据库: `jcszaixian`
+-- 数据库: `jcszx_bosheng`
 --
-
+CREATE database IF NOT EXISTS `jcszx_bosheng`;
+use `jcszx_bosheng`;
 -- --------------------------------------------------------
 
 --
@@ -5537,7 +5538,7 @@ CREATE TABLE IF NOT EXISTS `onethink_member` (
 --
 
 INSERT INTO `onethink_member` (`uid`, `nickname`, `sex`, `birthday`, `qq`, `score`, `login`, `reg_ip`, `reg_time`, `last_login_ip`, `last_login_time`, `status`, `companyid`, `signature`, `tox_money`, `pos_province`, `pos_city`, `pos_district`, `pos_community`, `isteacher`) VALUES
-(1, 'admin', 0, '0000-00-00', '', 930, 350, 0, 1417682189, 0, 1561020044, 1, 0, '都到我碗里来', 0, 0, 0, 0, 0, 0),
+(24, 'admin', 0, '0000-00-00', '', 930, 350, 0, 1417682189, 0, 1561020044, 1, 0, '都到我碗里来', 0, 0, 0, 0, 0, 0),
 (2, '韩老师', 1, '0000-00-00', '', 270, 158, 2130706433, 1262285313, 0, 1560996878, 1, 0, '做最好的老师', 0, 440000, 440300, 440303, 0, 1),
 (3, '黄老师', 0, '0000-00-00', '', 20, 2, 0, 0, 1032670198, 1535199122, 1, 0, '一切为了学生', 0, 0, 0, 0, 0, 1),
 (4, '王老师', 0, '0000-00-00', '', 60, 12, 0, 0, 1901732268, 1534175196, 1, 0, '老师好 好老师', 0, 110000, 0, 0, 0, 1),
