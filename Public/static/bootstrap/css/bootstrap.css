@@ -534,6 +534,7 @@ h6,
 
 p {
 	margin: 0 0 10px;
+	background-color: transparent !important;
 }
 
 .lead {
@@ -2409,9 +2410,10 @@ fieldset[disabled] .btn {
 }
 
 .btn-default {
-	color: #333333;
+	color: #f76b07;
 	background-color: #ffffff;
-	border-color: #cccccc;
+	border-color: #f76b07;
+	border-radius: 25px;
 }
 
 .btn-default:hover,
@@ -2419,8 +2421,8 @@ fieldset[disabled] .btn {
 .btn-default:active,
 .btn-default.active,
 .open .dropdown-toggle.btn-default {
-	color: #333333;
-	background-color: #ffffff;
+	color: #FFF;
+	background-color: #f76b07;
 	border-color: #d1d1d1;
 }
 
