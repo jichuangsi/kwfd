@@ -37,7 +37,8 @@ abstract class ApiController extends Controller {
             $this->api = new UserApi();
 
         $this->$isInternalCall = false;
-        $this->protocol = $_SERVER['SERVER_PORT'] == 443 ? "https://" : "http://" . $_SERVER['HTTP_HOST'];
+        $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+        $this->protocol = $http_type . $_SERVER['HTTP_HOST'];
     }
 
     public function setInternalCallApi($value=true) {
