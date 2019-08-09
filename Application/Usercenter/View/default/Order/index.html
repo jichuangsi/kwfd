@@ -41,6 +41,7 @@
 	</div>
     </if>
     <volist name="list" id="order">
+    <if condition="sizeof($order['orderlist']) gt 0">
 	<div onMouseOver="this.style.backgroundColor='#fafafa'" onMouseOut="this.style.backgroundColor='#FFFFFF'" style="float:left">
 	  <div style="background:#f1f1f1;padding:5px 10px;font-size:12px;margin:0px 0px 10px 0px;float:left;width:100%" class="hidden-xs">订单号：<span >{$order.orderid}</span>&nbsp;&nbsp;&nbsp;下单时间：<span>{$order.create_time|date='Y-m-d H:i:s',###}&nbsp;</div>
       <div style="background:#f1f1f1;padding:5px 10px;font-size:12px;margin:0px 0px 10px 0px;float:left;width:100%" class="visible-xs">订单号：<span >{$order.orderid}</span><br/>下单时间：<span>{$order.create_time|date='Y-m-d H:i:s',###}&nbsp;</div>  
@@ -133,6 +134,7 @@
 	  </volist>	
 	  <div style="margin-bottom:0px;height:10px;line-height:10px"></div>
 	</div>  
+    </if>
     </volist>
     <div class="text-center">
 	    {:getPagination($totalPageCount,$count)}
