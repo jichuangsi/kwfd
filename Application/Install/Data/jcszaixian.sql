@@ -19,7 +19,8 @@ SET time_zone = "+00:00";
 --
 -- 数据库: `jcszaixian`
 --
-
+CREATE database IF NOT EXISTS `jcszaixian`;
+use `jcszaixian`;
 -- --------------------------------------------------------
 
 --
@@ -1314,7 +1315,7 @@ INSERT INTO `onethink_config` (`id`, `name`, `type`, `title`, `group`, `extra`, 
 (11096, '_CONFIG_MEETINGWEB_URL', 0, '', 0, '', '', 1561025416, 1561025416, 1, '', 0),
 (11097, '_CONFIG_MEETINGWEB_APP_ID', 0, '', 0, '', '', 1561025416, 1561025416, 1, '', 0),
 (11098, '_CONFIG_MEETINGWEB_WB_TOKEN', 0, '', 0, '', '', 1561025416, 1561025416, 1, '', 0),
-(11099, 'MASTER_API_CONFIG', 0, '教育中台配置接口', 0, '', '教育中台配置URL', 1378898976, 1532097941, 1, 'http://portal.jichuangsi.com/parentjournalism/getconfig.php?domainname=', 0),
+(11099, 'MASTER_API_CONFIG', 0, '教育中台配置接口', 0, '', '教育中台配置URL', 1378898976, 1532097941, 1, 'http://www.jichuangsi.com/parentjournalism/getconfig.php?domainname=', 0),
 (11100, 'WECHAT_APPLET_APPID', 0, '微信小程序appid', 0, '', '微信小程序appid', 1378898976, 1532097941, 1, '', 0),
 (11101, 'WECHAT_APPLET_MCHID', 0, '微信小程序mchid', 0, '', '微信小程序mchid', 1378898976, 1532097941, 1, '', 0),
 (11101, 'WECHAT_APPLET_KEY', 0, '微信小程序key', 0, '', '微信小程序key', 1378898976, 1532097941, 1, '', 0),
