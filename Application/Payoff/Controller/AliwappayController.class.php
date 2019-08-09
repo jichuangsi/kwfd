@@ -80,7 +80,7 @@ class AliwappayController extends Controller
 		$arr=$_GET;
 		$alipaySevice = new \AlipayTradeService($config); 
 		$result = $alipaySevice->check($arr);
-
+		
 		/* 实际验证过程建议商户添加以下校验。
 		1、商户需要验证该通知数据中的out_trade_no是否为商户系统中创建的订单号，
 		2、判断total_amount是否确实为该订单的实际金额（即商户订单创建时的金额），
@@ -109,7 +109,7 @@ class AliwappayController extends Controller
 	        //处理业务订单、改名业务订单状态 为 支付成功
 		  
 			
-			$data= M('order')->where(array('orderid' => $out_trade_no))->find();
+		    $data= M('order')->where(array('orderid' => $out_trade_no))->find();
 			if(!$data)
 			{
 				echo "查无此订单。";
