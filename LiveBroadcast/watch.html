@@ -125,6 +125,7 @@
         var localStreams = [];
         var messagestate = 1
         var blockstate = 0
+        var Again = 0
         var demo
         var audioSelect = sessionStorage.getItem('audioSelect')
         var videoSelect = sessionStorage.getItem('videoSelect')
@@ -241,6 +242,9 @@
             if(role == '2'){
                 client.on('stream-subscribed', function (evt) {
                     var stream = evt.stream;
+                    
+                    var h = document.body.clientHeight
+                    var w = document.body.clientWidth
                     console.log("Subscribe remote stream successfully: " + stream.getId());
                     if ($('div#video #agora_remote' + stream.getId()).length === 0) {
                         $('div#video').append('<div id="agora_remote' + stream.getId() +
@@ -254,13 +258,17 @@
                     });
                     sessionStorage.setItem('streamId','agora_remote' + stream.getId())
                     if(shareState == 1){
-                        demo = $('#'+sessionStorage.getItem('streamId')).prev()[0]
-                        demo.style.zIndex = '10'
-                        demo.style.width = '210px'
-                        demo.style.height = '156px'
                         shareState=0
                     }
+                    if(Again > 0){
+                        demo = $('#'+sessionStorage.getItem('streamId'))[0]
+                        demo.style.zIndex = '9999'
+                        demo.style.width = w-320+'px'
+                        demo.style.height = h+'px'
+                        demo.style.right = '100%'
+                    }
                     shareState++
+                    Again++
                     $.post("/index.php?s=/live/index/statistics",{room:room,action:'JOIN',uid:uid,uname:uname,isteacher:0},function(result){
                                     console.log(result);
                     });
@@ -717,6 +725,14 @@
             // alert(document.body.clientHeight)
             console.log(document.body.clientHeight)
             h = document.body.clientHeight
+            w = document.body.clientWidth
+                if(Again > 0){
+                demo = $('#'+sessionStorage.getItem('streamId'))[0]
+                demo.style.zIndex = '9999'
+                demo.style.width = w-320+'px'
+                demo.style.height = h+'px'
+                demo.style.right = '100%'
+                }
             $('#whiteboard').text(h)
             $('#whiteboard')[0].style.height = h + 'px'
             $('.box')[0].style.height = h + 'px'

@@ -32,6 +32,7 @@ body {
     background-color: #fff;
     position: absolute;
     bottom: 0px;
+    z-index: 10;
 }
 .text .nav {
     width: 100%;
@@ -276,7 +277,7 @@ body {
     width: 320px;
     height:240px;
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
     background-color: red;
 }
 #video .title {
