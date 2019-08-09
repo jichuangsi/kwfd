@@ -13,8 +13,12 @@
 			$('.bot_div ul li').click(function(e) {
 				$(this).addClass('current').siblings().removeClass('current');
 				var id=$(this).find("a").attr("attr-id")
-				 $("input[name='paytype']").val(id);
-				 $("#thisform").attr("action",id);
+				$("input[name='paytype']").val(id);
+				if($("form:eq(0)").is(':visible')){
+					$("form:eq(0)").attr("action",id);
+				}else if($("form:eq(1)").is(':visible')){
+					$("form:eq(1)").attr("action",id);
+				}	
 			});
 		})
 	</script>
@@ -28,33 +32,61 @@
 
  <div class="row" >
   <div class="col-md-12">
-<form id="thisform" action="{:U('/Payoff/Alipay/index')}"  method="post">
+<form id="thisform" action="{:U('/Payoff/Alipagepay/index')}"  method="post" class="hidden-xs">
 订单号：{$data['orderid']}<input type="hidden"  name="orderid" class="form-control" id="orderid" value="{$orderid}"><br><br>
 金额：{$data['pricetotal']} 元<input type="hidden" name="money" class="form-control" id="goodprice" value="50"><br><br>
 请选择支付方式：<br><br>
-<input type="hidden" name="paytype" value="{:U('/Payoff/Alipay/index')}" checked=""/>
+<input type="hidden" name="paytype" value="{:U('/Payoff/Alipagepay/index')}" checked=""/>
 <div class="bot_div">
 	<ul>
 	    <if condition="C('_CONFIG_ALIPAY_STATUS') eq '1'"> 
-		   <li class=""><a attr-id="{:U('/Payoff/Alipay/index')}"><img src="__IMG__/zxzf_pic_01.jpg"></a></li>	
+		   <li class=""><a attr-id="{:U('/Payoff/Alipagepay/index')}"><img src="__IMG__/zxzf_pic_01.jpg"></a></li>	
 		</if>
-		<if condition="C('_CONFIG_ALIPAY_STATUS') eq '1'"> 
+		<if condition="C('_CONFIG_WXPAY_STATUS') eq '1'"> 
 		   <li class=""><a attr-id="{:U('/Payoff/Wxpay/index')}"><img src="__IMG__/zxzf_pic_03.jpg"></a></li>
 		</if>
 	</ul>
 </div>
 <button type="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;确&nbsp;定&nbsp;&nbsp;&nbsp;</button><br><br>
 </form>
+
+<form id="thisform" action="{:U('/Payoff/Aliwappay/index')}"  method="post"  class="visible-xs">
+订单号：{$data['orderid']}<input type="hidden"  name="orderid" class="form-control" id="orderid" value="{$orderid}"><br><br>
+金额：{$data['pricetotal']} 元<input type="hidden" name="money" class="form-control" id="goodprice" value="50"><br><br>
+请选择支付方式：<br><br>
+<input type="hidden" name="paytype" value="{:U('/Payoff/Aliwappay/index')}" checked=""/>
+<div class="bot_div">
+	<ul>
+	    <if condition="C('_CONFIG_ALIPAY_STATUS') eq '1'"> 
+		   <li class=""><a attr-id="{:U('/Payoff/Aliwappay/index')}"><img src="__IMG__/zxzf_pic_01.jpg"></a></li>	
+		</if>
+		<if condition="C('_CONFIG_WXPAY_STATUS') eq '1'"> 
+		   <li class=""><a attr-id="{:U('/Payoff/Wxpay/index')}"><img src="__IMG__/zxzf_pic_03.jpg"></a></li>
+		</if>
+	</ul>
+</div>
+<button type="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;确&nbsp;定&nbsp;&nbsp;&nbsp;</button><br><br>
+</form>
+
 <script type="text/javascript">
 
 $(function(){
   //$("#form").submit();   //current
   if($('.bot_div ul li').length>0)
   {
-      var url=$('.bot_div ul li:eq(0)').find("a:eq(0)").attr("attr-id");
-	  $('.bot_div ul li:eq(0)').addClass('current');
-	  $("input[name='paytype']").val(url);
-	  $("#thisform").attr("action",url);
+	  if($("form:eq(0)").is(':visible')){
+		  var url=$('.bot_div ul li:eq(0)').find("a:eq(0)").attr("attr-id");
+		  $('.bot_div ul li:eq(0)').addClass('current');
+		  $("input[name='paytype']").val(url);
+		  //$("#thisform").attr("action",url);
+		  $("form:eq(0)").attr("action",url);
+	  }else if($("form:eq(1)").is(':visible')){
+		  var url=$('.bot_div ul li:eq(2)').find("a:eq(0)").attr("attr-id");
+		  $('.bot_div ul li:eq(2)').addClass('current');
+		  $("input[name='paytype']").val(url);
+		  //$("#thisform").attr("action",url);
+		  $("form:eq(1)").attr("action",url);
+	  }
   }
 });
 </script>

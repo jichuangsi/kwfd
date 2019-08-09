@@ -41,10 +41,10 @@ class ConfigApi {
                 if($v['c_key']){//支付配置
                     switch ($v['c_key']){
                         case 'wap_ali_id'://wap版支付宝接口收款帐号
-                            $config['_CONFIG_ALIPAY_APPID'] = $v['c_value'];
+                            //$config['_CONFIG_ALIPAY_APPID'] = $v['c_value'];
                             break;
                         case 'wap_ali_partner'://wap版支付宝接口合作者身份
-                            //$config['_CONFIG_ALIPAY_APPID'] = $v['c_value'];
+                            $config['_CONFIG_ALIPAY_APPID'] = $v['c_value'];
                             break;
                         case 'wap_ali_private_keys'://小B支付宝接口私钥
                             $config['_CONFIG_ALIPAY_PRIVATE_KEY'] = $v['c_value'];
@@ -52,13 +52,16 @@ class ConfigApi {
                         case 'wap_ali_public_keys'://小B支付宝接口公钥
                             $config['_CONFIG_ALIPAY_PUBLIC_KEY'] = $v['c_value'];
                             break;
-                        case 'wxapp_appid'://中台微信支付appid
+                        case 'weixin_appid'://中台微信公众号AppID（应用ID）
                             $config['_CONFIG_WXPAY_APPID'] = $v['c_value'];
                             break;
-                        case 'wxapp_payid'://中台微信支付商户号
+                        case 'weixin_appsecret'://中台微信公众号AppSecret（应用密钥）
+                            $config['_CONFIG_WXPAY_APPSECRET'] = $v['c_value'];
+                            break;
+                        case 'weixin_payid'://中台微信支付接口MCHID（商户号）
                             $config['_CONFIG_WXPAY_MCHID'] = $v['c_value'];
                             break;
-                        case 'wxapp_paykey'://中台微信支付接口KEY（商户API密钥）
+                        case 'weixin_paykey'://中台微信支付接口KEY（商户API密钥）
                             $config['_CONFIG_WXPAY_KEY'] = $v['c_value'];
                             break;
                     }

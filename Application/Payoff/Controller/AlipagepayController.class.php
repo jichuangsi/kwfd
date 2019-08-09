@@ -8,14 +8,14 @@ use Think\Controller;
  * @package Shop\Controller
  * 
  */
-class AlipayController extends Controller
+class AlipagepayController extends Controller
 {
 	protected $orderModel;
     public function _initialize()
     {
         $this->orderModel = D('Cart/Order');
         $c = api('Config/lists');
-        C($c); //添加配置		
+        C($c); //添加配置
     }
  
     public function index() 
@@ -23,6 +23,7 @@ class AlipayController extends Controller
 
 		if (IS_POST) {
              include(ROOT_PATH.'extend/Alipay/config.php');
+             //include(ROOT_PATH.'extend/Alipay/configMTJ.php');
 			 include(ROOT_PATH.'extend/Alipay/pagepay/service/AlipayTradeService.php');
 			 include(ROOT_PATH.'extend/Alipay/pagepay/buildermodel/AlipayTradePagePayContentBuilder.php');
              //商户订单号，商户网站订单系统中唯一订单号，必填
@@ -35,7 +36,7 @@ class AlipayController extends Controller
              $out_trade_no = $orderid;
 
              //订单名称，必填
-             $subject = "在线支付";
+             $subject = "电脑在线支付";
 
              //付款金额，必填
              $total_amount = $order['pricetotal'];
@@ -51,7 +52,7 @@ class AlipayController extends Controller
 	         $payRequestBuilder->setOutTradeNo($out_trade_no);
 
 	         $aop = new \AlipayTradeService($config);
-
+	         
 	         /**
 	          * pagePay 电脑网站支付请求
 	          * @param $builder 业务参数，使用buildmodel中的对象生成。
@@ -62,7 +63,7 @@ class AlipayController extends Controller
 	        $response = $aop->pagePay($payRequestBuilder,$config['return_url'],$config['notify_url']);
 
 	        //输出表单
-	        var_dump($response);
+	        //var_dump($response);
         } 
 		else
 		{
@@ -192,7 +193,7 @@ class AlipayController extends Controller
 			    //付款完成后，支付宝系统发送该交易状态通知
 			    M("pay")->where(array('out_trade_no' => $out_trade_no))->setField('status',2);
 
-		        $data = array('status'=>'2','ispay'=>'2','paymode'=>'Alipay');//设置订单为已经支付,状态为已提交
+			    $data = array('status'=>'2','ispay'=>'2','paymode'=>'Alipay','backinfo'=>'支付完成');//设置订单为已经支付,状态为已提交
 		        M('order')->where(array('orderid' => $out_trade_no))->setField($data);
             }
 	        //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——

@@ -8,12 +8,12 @@ $config = array (
 		//商户私钥
         'merchant_private_key' => C('_CONFIG_ALIPAY_PRIVATE_KEY'),//modC('ALIPAY_PRIVATE_KEY','','Config'),
 		
-		//异步通知地址
-		'notify_url' => $http_type . $_SERVER['HTTP_HOST']."/".str_replace("?s=","",U('/'))."Payoff/Alipay/notifyurl.html",
-
-		//同步跳转
-		'return_url' =>  $http_type . $_SERVER['HTTP_HOST']."/".str_replace("?s=","",U('/'))."Payoff/Alipay/returnurl.html",
-
+        //异步通知地址
+        'notify_url' => $http_type . $_SERVER['HTTP_HOST']."".str_replace("?s=","",U('/'))."Payoff/Alipagepay/notifyurl.html",
+        
+        //同步跳转
+        'return_url' =>  $http_type . $_SERVER['HTTP_HOST']."".str_replace("?s=","",U('/'))."Payoff/Alipagepay/returnurl.html",
+    
 		//编码格式
 		'charset' => "UTF-8",
 

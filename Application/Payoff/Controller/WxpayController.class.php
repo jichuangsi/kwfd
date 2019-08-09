@@ -121,7 +121,7 @@ class WxpayController extends Controller
 			   {
 				   M("pay")->where(array('out_trade_no' => $out_trade_no))->setField('status',2);
 
-		           $data = array('status'=>'2','ispay'=>'2','paymode'=>'Wxpay');//设置订单为已经支付,状态为已提交
+				   $data = array('status'=>'2','ispay'=>'2','paymode'=>'Wxpay','backinfo'=>'支付完成');//设置订单为已经支付,状态为已提交
 		           M('order')->where(array('orderid' => $out_trade_no))->setField($data);
 			   }
 		   }

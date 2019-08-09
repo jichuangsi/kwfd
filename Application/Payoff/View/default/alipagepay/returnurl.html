@@ -21,19 +21,34 @@
 
  <div class="row" >
   <div class="col-md-12">
-<form id="thisform" action="#"  method="post">
+<form id="thisform" action="#"  method="post" class="hidden-xs">
 订单号：{$data['orderid']}<input type="hidden"  name="orderid" class="form-control" id="orderid" value="{$orderid}"><br><br>
 金额：{$data['pricetotal']} 元<input type="hidden" name="money" class="form-control" id="goodprice" value="50"><br><br>
 支付方式：<br><br>
-<input type="hidden" name="paytype" value="{:U('/Payoff/Alipay/index')}" checked=""/>
+<input type="hidden" name="paytype" value="{:U('/Payoff/AliPagepay/index')}" checked=""/>
 <div class="bot_div">
 	<ul>
-		<li class="current"><a attr-id="{:U('/Payoff/Alipay/index')}"><img src="__IMG__/zxzf_pic_01.jpg"></a></li>						
+		<li class="current"><a attr-id="{:U('/Payoff/AliPagepay/index')}"><img src="__IMG__/zxzf_pic_01.jpg"></a></li>						
 		 
 	</ul>
 </div>
 <a href="{:U('Home/Index/index')}" class="btn btn-primary">&nbsp;&nbsp;&nbsp;返回首页&nbsp;&nbsp;&nbsp;</a>
 </form>
+
+<form id="thisform" action="#"  method="post"  class="visible-xs">
+订单号：{$data['orderid']}<input type="hidden"  name="orderid" class="form-control" id="orderid" value="{$orderid}"><br><br>
+金额：{$data['pricetotal']} 元<input type="hidden" name="money" class="form-control" id="goodprice" value="50"><br><br>
+支付方式：<br><br>
+<input type="hidden" name="paytype" value="{:U('/Payoff/AliWappay/index')}" checked=""/>
+<div class="bot_div">
+	<ul>
+		<li class="current"><a attr-id="{:U('/Payoff/AliWappay/index')}"><img src="__IMG__/zxzf_pic_01.jpg"></a></li>						
+		 
+	</ul>
+</div>
+<a href="{:U('Home/Index/index')}" class="btn btn-primary">&nbsp;&nbsp;&nbsp;返回首页&nbsp;&nbsp;&nbsp;</a>
+</form>
+
 <script type="text/javascript">
 
 $(function(){

@@ -37,6 +37,7 @@ class WechatAppletController extends ApiController
         "5020"=>"重复提交订单！",
         "5021"=>"订单生成异常！",
         "5022"=>"支付参数异常！",
+        "5023"=>"微信统一下单接口返回异常！",
         "5999"=>"未知错误！"
     );
     
@@ -45,7 +46,8 @@ class WechatAppletController extends ApiController
         "binding"=>"用户绑定成功",
         "info"=>"获取用户信息成功",
         "logout"=>"用户登出成功",
-        "pay"=>"订单生成成功"
+        "order"=>"订单生成成功",
+        "pay"=>"微信预支付成功"
     );
     
     public function _initialize()
@@ -69,10 +71,11 @@ class WechatAppletController extends ApiController
                 
         $wechatInfo = json_decode(file_get_contents($url),true);
         
-        $wechatInfo = Array("session_key" => "o1obcoqHtV74vNXD3Nr8wQ==","openid" => "osRmp5cx-EkToyjWVx6edu0RGLI8");
+        //print_r($wechatInfo);exit;
         
-        //print_r($wechatInfo);
-        
+        /* $wechatInfo = Array("session_key" => "o1obcoqHtV74vNXD3Nr8wQ==","openid" => "osRmp5cx-EkToyjWVx6edu0RGLI8");
+         $wechatInfo = Array("session_key" => "gQa/1ZLZS/3772nUwfOUyg==","openid" => "oiNVd5RxJ-Gaq31z2G2ZnSnZqJs8"); */
+                
         if(!$wechatInfo||!is_array($wechatInfo)||!$wechatInfo["openid"]||!$wechatInfo["session_key"]){
             $this->apiError("5003", $this->errMsg["5003"]);
         }
@@ -81,10 +84,11 @@ class WechatAppletController extends ApiController
         $map['wx_applet_openid'] = $wechatInfo["openid"];
         $member = M("Member")->field('uid,nickname,status,sex,signature,isteacher,wx_applet_openid')->where($map)->select();
         //print_r($member);
-        if($member&&$member[0]&&$member[0]['status']>0){            
+        if($member&&$member[0]&&$member[0]['status']>0){
             session_start();
-            session($wechatInfo["session_key"], $member[0]);
-            $member[0]['wx_applet_session_key'] = $wechatInfo["session_key"];
+            $session_key = str_replace("/", "_", $wechatInfo["session_key"]);
+            session($session_key, $member[0]);
+            $member[0]['wx_applet_session_key'] = $session_key;
             $this->apiSuccess($this->successMsg["login"], null, array('data' => $member[0]));
         }elseif($member&&$member[0]&&$member[0]['status']<=0){
             $this->apiError("5004", $this->errMsg["5004"]);
@@ -304,7 +308,7 @@ class WechatAppletController extends ApiController
         $ret['title'] = $course[0]["title"];
         $ret['imageurl'] = $imageurl;
         
-        $this->apiSuccess($this->successMsg["pay"], null, array('data' => $ret));        
+        $this->apiSuccess($this->successMsg["order"], null, array('data' => $ret));        
     }
     
     public function pay($s='', $o=''){
@@ -338,7 +342,7 @@ class WechatAppletController extends ApiController
         //$input->SetBody($o);
     	//$input->SetAttach("test");
     	$input->SetOut_trade_no($o);
-    	$input->SetTotal_fee($payment["total"]);
+    	$input->SetTotal_fee($payment["total"]*100);
     	$input->SetTime_start(date("YmdHis"));
     	$input->SetTime_expire(date("YmdHis", time() + 600));
     	$input->SetGoods_tag("test");
@@ -347,10 +351,14 @@ class WechatAppletController extends ApiController
     	$input->SetProduct_id("123456789");
     	$input->SetOpenid($openid);
     	$config = new \WxPayConfigXCX();
-    	$order = \WxPayApi::unifiedOrder($config, $input);
-        
     	
-    	print_r($this->GetJsApiParameters($order));
+    	try{
+    	    $order = \WxPayApi::unifiedOrder($config, $input);
+    	    $parameters = $this->GetJsApiParameters($order);
+    	    $this->apiSuccess($this->successMsg["pay"], null, array('data' => json_decode($parameters)));
+    	}catch(Exception $e){
+    	    $this->apiError("5023", $this->errMsg["5023"]);
+    	}
     }
     
     private function ordersn(){
