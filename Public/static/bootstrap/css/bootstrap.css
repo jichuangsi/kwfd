@@ -2458,8 +2458,8 @@ fieldset[disabled] .btn-default.active {
 
 .btn-primary {
 	color: #ffffff;
-	background-color: #3d72fe;
-	border-color: #039574;
+	background-color: #f76b07;
+	border-color: #ffb51a;
 }
 
 .btn-primary:hover,
@@ -2468,8 +2468,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
 	color: #ffffff;
-	background-color: #3d72fe;
-	border-color: #3d72fe;
+	background-color: #ffb51a;
+	border-color: #ffb51a;
 }
 
 .btn-primary:active,
@@ -5039,7 +5039,7 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 .pagination>li>span:hover,
 .pagination>li>a:focus,
 .pagination>li>span:focus {
-	color: #3d72fe;
+	color: #f76b07;
 	background-color: #eeeeee;
 	border-color: #dddddd;
 }
@@ -5052,8 +5052,8 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 .pagination>.active>span:focus {
 	z-index: 2;
 	color: #ffffff;
-	background-color: #3d72fe;
-	border-color: #3d72fe;
+	background-color: #f76b07;
+	border-color: #f76b07;
 	cursor: default;
 }
 
