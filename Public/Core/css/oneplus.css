@@ -4,7 +4,25 @@
 	margin-bottom: 15px;
 	background: transparent;
 	border-radius: 5px;
-	/*border: 1px solid #ccc;*/
+	border: 1px solid #ccc;
+}
+
+.common_block_border1 {
+	margin-bottom: 55px;
+	background: #ffffff00;
+	border-radius: 5px;
+}
+.common_block_title-index {
+    padding: 5px 15px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    color: #f76b07;
+    font-size: 28px;
+    margin: 5px 0 10px 10px;
+    letter-spacing: 2px;
+    font-weight: normal;
 }
 
 .common_block_title {
@@ -14,9 +32,9 @@
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 	color: #f76b07;
-	font-size: 28px;
+	font-size: 16px;
 	margin: 5px 0 10px 10px;
-	/*border-left:5px solid #f76b07;*/
+	border-left:5px solid #f76b07;
 	letter-spacing: 2px;
 	font-weight: normal;
 }
