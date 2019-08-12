@@ -1,0 +1,26 @@
+<view class='top'>
+  <view class='order'>
+    <view class='top_left'>
+    <image  src='{{img}}'/>
+    </view>
+    <view class='top_right'>
+    <view class='text'>{{title}}</view>
+    <view class='price'>
+    <text>￥{{price}}</text>
+    <text>x{{num}}</text>
+    </view>
+    </view>
+  </view>
+</view>
+<view class='center'>
+  <view>
+    <text>商品总额</text>
+    <text>￥{{total}}</text>
+  </view>
+</view>
+<view class='foot'>
+实付金额：<text>￥{{price}}</text>
+</view>
+<button bindtap='payment'>
+  微信支付
+</button>

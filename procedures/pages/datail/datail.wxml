@@ -1,0 +1,15 @@
+
+  <import src="../../wxParse/wxParse.wxml"/>
+  <view>
+      <template is="wxParse" data="{{wxParseData:article.nodes}}"/>
+  </view>
+  <view class='btn_box'>
+  <view class='btn ' bindtap='orderlgo'>
+        立即报名
+  </view>
+  <view class='ipt_box'>
+  <view class='ipt_left' bindtap='reduce'>-</view>
+  <input type='number' value='{{text}}' bindinput='ipt'></input>
+  <view class='ipt_right' bindtap='plus'>+</view>
+  </view>
+  </view>

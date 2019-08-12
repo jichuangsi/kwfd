@@ -1,0 +1,61 @@
+<view class="list">
+    <view class="one" wx:if="{{state == 1}}">
+        <view class="nav_list">
+            <view class="title">
+                科目：
+            </view>
+            <view>
+                <text wx:for="{{navList}}" class="{{index == num?'text':''}}" bindtap="navclick" data-index = '{{index}}' data-id="{{item.id}}">{{item.title}}</text>
+            </view>
+        </view>
+        <view class="nav_list">
+            <view class="title">
+                年级：
+            </view>
+            <view>
+                <text wx:for="{{gradeList}}" class="{{index == gradenum?'text':''}}" bindtap="gradeclick" data-index = '{{index}}' data-id="{{item.id}}">{{item.title}}</text>
+            </view>
+        </view>
+    <view class="curriculum_nav">
+      <view class="nav_box" wx:for="{{curriculum}}" bindtap="datailgo" data-id="{{item.id}}">
+        <view class="nav_top">
+          <image src="{{item.imageurl}}" />
+        </view>
+        <view class="nav_bottom">
+          <view class="text">
+            {{item.title}}
+          </view>
+          <view>
+            <text>￥{{item.price}}</text>
+            <text>{{item.sold}}人付款</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    </view>
+    <view class="two" wx:if="{{state == 2}}">
+        <view class="nav_list">
+            <view class="title">
+                名师：
+            </view>
+            <view>
+                <text wx:for="{{teacherList}}" class="{{index == teachernum?'text':''}}" bindtap="teacherclick" data-index = '{{index}}'>{{item}}</text>
+            </view>
+        </view>
+    <view class="Teacher_nav">
+      <view class="Teacher_box" wx:for="{{teacher}}" data-id="{{item.id}}">
+        <view class="nav_left">
+          <image src="{{item.path}}" />
+        </view>
+        <view class="nav_right">
+          <view class="title">
+            {{item.nickname}}
+          </view>
+          <view>
+          {{item.signature}}
+          </view>
+        </view>
+      </view>
+    </view>
+    </view>
+</view>

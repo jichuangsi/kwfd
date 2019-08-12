@@ -1,0 +1,205 @@
+/**index.wxss**/
+@import "../../wxParse/wxParse.wxss";
+page {
+  background-color: #F4F4F4;
+}
+.top {
+  width: 100%;
+  background-color:#3D72FE;
+  color:#fff;
+}
+.top view {
+  background-color :#3D72FE !important;
+  color: #fff !important;
+  font-size: 28rpx !important; 
+  letter-spacing: 1rpx !important;
+}
+.top image {
+  margin: 20rpx 0; 
+}
+.top .title {
+  text-align: center;
+  padding-top: 54rpx;
+  margin-bottom: 49rpx;
+  font-size: 34rpx;
+}
+.top .text {
+  width: 581rpx;
+  font-size: 28rpx;
+  margin: 0 auto;
+  padding-bottom: 46rpx;
+}
+.curriculum {
+  width: 100%;
+  background-color: #fff;
+  margin: 20rpx 0;
+  padding-bottom: 20rpx;
+}
+h4 {
+  font-size:28rpx;
+  color: #3D72FE;
+  text-align: center;
+  letter-spacing: 2rpx;
+  padding-top: 20rpx;
+  display:block;
+}
+h3 {
+  font-size:38rpx;
+  color: #3D72FE;
+  text-align: center;
+  margin: 10rpx 0;
+  display:block;
+}
+h5 {
+  width: 100rpx;
+  height: 2rpx;
+  background-color: #3D72FE;
+  margin: 0 auto;
+  margin-bottom: 26rpx;
+  display:block;
+}
+.curriculum_nav {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+.curriculum_nav .nav_box {
+  width: 50%;
+  height: 418rpx;
+  padding: 20rpx 10rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.curriculum_nav .nav_box .nav_top {
+  width: 100%;
+  height: 266rpx;
+  box-shadow:0px 1px 5px 0px rgba(0, 0, 0, 0.15);
+}
+.curriculum_nav .nav_box .nav_top image{
+  width: 100%;
+  height: 100%;
+}
+.curriculum_nav .nav_box .nav_bottom {
+  width: 100%;
+  height: 152rpx;
+}
+.curriculum_nav .nav_box .nav_bottom .text {
+  width: 100%;
+  color:#333333;
+  font-size:28rpx;
+  line-height:36rpx;
+  margin-top: 20rpx;
+}
+.curriculum_nav .nav_box .nav_bottom text {
+  width: 50%;
+  color:#3D72FE;
+  font-size:24rpx;
+  display:inline-block;
+}
+.curriculum_nav .nav_box .nav_bottom text:last-child {
+  color:#666666;
+  font-size:24rpx;
+  text-align:right; 
+}
+ .btn{
+  width: 152rpx;
+  height: 46rpx;
+  line-height: 46rpx;
+  font-size: 24rpx;
+  text-align: center;
+  border: 1px solid #3D72FE;
+  color:#3D72FE;
+  margin: 0 auto;
+  border-radius:23px;
+  margin-top: 40rpx;
+}
+.Teacher {
+  width: 100%;
+  background-color: #fff;
+  margin: 20rpx 0;
+  padding-bottom: 20rpx;
+}
+.Teacher_nav {
+  width: 100%
+}
+.Teacher_box {
+  width: 100%;
+  height: 164rpx;
+  display: flex;
+  margin-bottom: 20rpx;
+}
+.Teacher_box .nav_left {
+  width: 146rpx;
+  height: 144rpx;
+  padding: 20rpx 22rpx;
+  box-sizing: border-box;
+}
+.Teacher_box .nav_left image{
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.Teacher_box .nav_right{
+  flex: 1;
+  padding-right: 28rpx;
+  box-sizing: border-box;
+}
+.Teacher_box .nav_right .title {
+  color: #333333;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.Teacher_box .nav_right text {
+  color: #666666;
+  font-size: 24rpx;
+}
+.remind {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  background-color: rgba(0,0,0,0.6);
+  z-index: 10;
+}
+.remind .loginbox {
+  width: 600rpx;
+  background-color: #fff;
+  border-radius: 8rpx;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  box-sizing: border-box;
+  padding: 20rpx 10rpx;
+}
+.remind .loginbox .box {
+  width:80%;
+  margin: 40rpx auto;
+  display:flex;
+  position:relative;
+}
+.remind .loginbox input{
+  flex: 1;
+  display: inline-block;
+  border-bottom: 2rpx solid #03A3FF;
+  text-align:center;
+}
+.remind .loginbox .text {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  text-align: center;
+}
+.remind .loginbox .loginbtn {
+  display:block;
+  width: 150rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  text-align:center;
+  border-radius: 8rpx;
+  background-color: #03A3FF;
+  color: #fff;
+  margin: 20rpx auto;
+  margin-top: 60rpx;
+}

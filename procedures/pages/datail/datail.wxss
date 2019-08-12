@@ -1,0 +1,44 @@
+
+@import "../../wxParse/wxParse.wxss";
+.btn_box{
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+.btn {
+  width: 40%;
+  display: inline-block;
+    background-color: #3D72FE;
+    color:#fff;
+  padding-left:14px;
+  padding-right:14px;
+  box-sizing:border-box;
+  font-size:18px;
+  text-align:center;
+  text-decoration:none;
+  line-height:2.55555556;
+  border-radius:5px;
+}
+.btn:active{
+  background-color: #999;
+}
+.ipt_box {
+  width: 40%;
+  display: flex;
+  align-items: center;
+  border-radius:5px;
+  background-color: rgba(153, 153, 153, 0.377);
+}
+.ipt_left {
+  width: 120rpx;
+  text-align: center;
+  font-size: 60rpx;
+}
+.ipt_box input{
+  text-align: center;
+}
+.ipt_right {
+  width: 120rpx;
+  text-align: center;
+  font-size: 60rpx;
+}

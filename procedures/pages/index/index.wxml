@@ -1,0 +1,81 @@
+<!--index.wxml-->
+<view class="index">
+  <view class="top">
+  <import src="../../wxParse/wxParse.wxml"/>
+    <view class="title">
+    平台简介
+    </view>
+  <view>
+      <template is="wxParse" data="{{wxParseData:article.nodes}}"/>
+  </view>
+  </view>
+    <view class="curriculum">
+      <h4>Latest Courses</h4>
+      <h3>最新课程</h3>
+      <h5></h5>
+    <view class="curriculum_nav">
+      <view class="nav_box" wx:for="{{curriculum}}" wx:if="{{index<2}}" bindtap="datailgo" data-id="{{item.id}}">
+        <view class="nav_top">
+          <image src="{{item.imageurl}}" />
+        </view>
+        <view class="nav_bottom">
+          <view class="text">
+            {{item.title}}
+          </view>
+          <view>
+            <text>￥{{item.price}}</text>
+            <text>{{item.sold}}人付款</text>
+          </view>
+        </view>
+      </view>
+    </view>
+        <view class="btn" bindtap="curriculumgo">
+          查看更多
+        </view>
+    </view>
+    <view class="Teacher">
+      <h4>Famous Teachers'Style</h4>
+      <h3>名师风采</h3>
+      <h5></h5>
+    <view class="Teacher_nav">
+      <view class="Teacher_box" wx:for="{{teacher}}" wx:if="{{index<3}}" data-id="{{item.id}}">
+        <view class="nav_left">
+          <image src="{{item.path}}" />
+        </view>
+        <view class="nav_right">
+          <view class="title">
+            {{item.nickname}}
+          </view>
+          <view>
+          {{item.signature}}
+          </view>
+        </view>
+      </view>
+    </view>
+        <view class="btn" bindtap="Teachergo">
+          查看更多
+        </view>
+    </view>
+    <view class='remind' wx:if="{{loginstate}}">
+        <view class="loginbox">
+          <view class="box">
+            用户名：<input type="text" placeholder="请输入用户名" bindinput="ipt" bindinput ="userNameInput"/>
+          </view>
+          <view class="box" wx-if="{{zcstate}}">
+            邮 箱 ：<input type="text" placeholder="请输入邮箱" bindinput="ipt" bindinput ="emilInput" />
+          </view>
+          <view class="loginbtn" bindtap="bd" wx-if="{{bdstate}}">
+            绑定
+          </view>
+          <view class="loginbtn" bindtap="zc" wx-if="{{zcstate}}">
+            注册
+          </view>
+          <view class="box text" bindtap='zcclick' wx-if="{{zcstate}}">
+            已有账户请点击绑定
+          </view>
+          <view class="box text" bindtap='bdclick' wx-if="{{bdstate}}">
+            请点击进行账户注册
+          </view>
+        </view>
+    </view>
+</view>

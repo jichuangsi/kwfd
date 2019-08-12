@@ -1,0 +1,85 @@
+page {
+  background-color: #f3f3f3;
+}
+.top {
+  padding: 10rpx;
+  padding-bottom: 40rpx;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+.order {
+  width: 100%;
+  padding-bottom: 20rpx;
+  box-sizing: border-box;
+  border-bottom: 2rpx solid #f3f3f3;
+  display: flex;
+}
+.top_left {
+    width: 200rpx;
+    height: 180rpx;
+    background-color: #f3f3f3;
+}
+.top_left image {
+  width: 100%;
+  height: 100%;
+}
+.top_right {
+    flex: 1;
+    font-size: 26rpx;
+    padding-left: 10rpx;
+    box-sizing: border-box;
+}
+.top_right .text{
+  display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+}
+.top_right .price {
+  width: 100%;
+  margin-top: 60rpx;
+  display: flex;
+}
+.top_right .price text {
+  width: 50%;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 33rpx;
+}
+.top_right .price text:last-child {
+  text-align: right;
+  color: #999;
+  font-weight: normal;
+  font-size: 35rpx;
+}
+.center view {
+  background-color: #fff;
+  width: 100%;
+  padding: 20rpx 10rpx;
+  box-sizing: border-box;
+  display: flex;
+}
+.center view text {
+  width: 50%;
+  display: inline-block;
+  font-weight: normal;
+  font-size: 35rpx;
+}
+.center view text:last-child {
+  text-align: right;
+  font-weight: 600;
+  font-size: 33rpx;
+}
+.foot {
+  margin: 20rpx 10rpx;
+  letter-spacing: 1rpx;
+}
+.foot text{
+  color: red;
+  font-weight: 600;
+}
+button {
+  background-color: #3D72FE;
+  color: #fff;
+}
