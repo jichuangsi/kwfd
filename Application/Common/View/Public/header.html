@@ -101,7 +101,7 @@
             <div style="position:absolute;right:10px">
 
                            <ul class="loginregister">
-						   <li style="margin-left:30px"><a href="#" app-data-toggle="popover" title="<b>扫码下载官方APP</b>" data-placement="bottom" data-content=""> <span class="icons icon-app"></span><p>客户端</p></a></li>
+						   <li style="margin-left:30px"><a href="#" app-data-toggle="popover" title="<b>官方二维码</b>" data-placement="bottom" data-content=""> <span class="icons icon-app"></span><p>客户端</p></a></li>
 						   <if condition="is_login()">
 						   		  <li><a href="{:U('Cart/Index/index')}"> <span class="icons icon-cart"></span><p>购物车</p></a></li>
 								  <li><a href="{:U('Home/User/logout')}"> <span class="icons icon-logout"></span><p>退出</p></a></li>						   
@@ -214,14 +214,14 @@
 <div id="app_content_wrapper" style="display:none;">
   <div style="padding:0px 0px 0px 0px">
           <div style="width:150px;float:left;text-align:center;line-height:20px;padding-left:12px">
-		    <div style="text-align:left;line-height:18px;font-size:14px">第一步：扫码下载App</div>
+		    <div style="text-align:left;line-height:18px;font-size:14px">官方小程序</div>
 		    <img src="{:get_cover(modC('APP_DOWNLOAD_QRCODE',1,'Config'),'path')}" style="width:100%;max-width:100%"/>
 			
 		  </div>
 
 	      <div style="width:150px;float:left;text-align:center;line-height:20px;padding-left:12px">
 		    
-			<div style="text-align:left;line-height:18px;font-size:14px">第二步：App打开后扫码绑定网址</div>
+			<div style="text-align:left;line-height:18px;font-size:14px">官方网址</div>
 		    <img src="{:get_cover(modC('WEBSITE_QRCODE',1,'Config'),'path')}" style="width:100%;max-width:100%"/>
 			
 		  </div>
@@ -242,7 +242,7 @@ $(function(){
                  html : true,
 				 trigger: 'hover',
                  content: function() {
-                   //return $('#app_content_wrapper').html();
+                   return $('#app_content_wrapper').html();
                  }
 				 
   }).on("show.bs.popover", function () { $(this).data("bs.popover").tip().css("max-width", "330px"); });;
