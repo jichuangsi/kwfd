@@ -209,7 +209,8 @@ class ConfigController extends AdminController {
         //$builder->keyMultiImage('QRCODE', L('_QR_WEIXIN_'), L('_QR_WEIXIN_VICE_'));
 
 		
-		$builder->keySingleImage('APP_DOWNLOAD_QRCODE', 'App扫码下载地址', '请拷贝地址 '.$http_type . $_SERVER['HTTP_HOST'].U('/').'Home/Index/downloadapp.html 生成二维码然后上传');
+		//$builder->keySingleImage('APP_DOWNLOAD_QRCODE', 'App扫码下载地址', '请拷贝地址 '.$http_type . $_SERVER['HTTP_HOST'].U('/').'Home/Index/downloadapp.html 生成二维码然后上传');
+        $builder->keySingleImage('APP_DOWNLOAD_QRCODE', 'App扫码下载地址', '请上传微信小程序二维码');
 		$builder->keySingleImage('WEBSITE_QRCODE', '网址二维码', '请拷贝地址 '.$http_type . $_SERVER['HTTP_HOST'].' 生成二维码然后上传');
 		
 		//$builder->keySingleImage('APP_ANDROID_QRCODE', '安卓二维码', '安卓app扫码下载');
