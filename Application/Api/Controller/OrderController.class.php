@@ -94,7 +94,7 @@ class OrderController extends ApiController
         
         $totalCount = $this->ordermodel->alias("orders")->where($map)->count();
         
-        $result[data] = $this->fetchOrders($map);
+        $result[data] = $this->fetchOrders($map,$p,$r);
         $result['count'] = $totalCount;
         
         $this->apiSuccess($this->successMsg["query"], null, $result);
@@ -157,7 +157,7 @@ class OrderController extends ApiController
             $this->ordercancelmodel->username=$orderdata[0]["username"];
             $this->ordercancelmodel ->add();
             //设置订单为订单已取消
-            $data = array('status'=>'6','backinfo'=>'订单已关闭');
+            $data = array('status'=>'6','backinfo'=>'订单已关闭','update_time'=>NOW_TIME);
             //更新订单列表订单状态为已取消，清空取消订单操作
             if($this->ordermodel->where("orderid='$o'")->setField($data))
             {
@@ -172,9 +172,9 @@ class OrderController extends ApiController
         }
     }    
     
-    private function fetchOrders($map){
+    private function fetchOrders($map, $p = 1, $r = 20){
         $list = $this->ordermodel->alias("orders")
-                    ->field("orders.id,orders.orderid,orders.pricetotal,orders.create_time,orders.status,orders.uid,orders.username,orders.ispay,orders.total")
+                    ->field("orders.id,orders.orderid,orders.pricetotal,orders.create_time,orders.update_time,orders.status,orders.uid,orders.username,orders.ispay,orders.total")
                     //->join('LEFT JOIN '.C('DB_PREFIX').'orderlist as orderlist on orders.id=orderlist.orderid')
                     ->where($map)->order('id desc')->page($p, $r)->select();
         
