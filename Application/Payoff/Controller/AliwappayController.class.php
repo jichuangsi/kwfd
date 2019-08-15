@@ -186,9 +186,10 @@ class AliwappayController extends Controller
 				//如果有做过处理，不执行商户的业务程序			
 			    //注意：
 			    //付款完成后，支付宝系统发送该交易状态通知
-			    M("pay")->where(array('out_trade_no' => $out_trade_no))->setField('status',2);
-
-			    $data = array('status'=>'2','ispay'=>'2','paymode'=>'Alipay','backinfo'=>'支付完成');//设置订单为已经支付,状态为已提交
+    		    $data = array('status'=>'2','update_time'=>NOW_TIME);
+    		    M("pay")->where(array('out_trade_no' => $out_trade_no))->setField($data);
+    		    unset($data);
+    		    $data = array('status'=>'2','ispay'=>'2','paymode'=>'AliWappay','backinfo'=>'支付完成','update_time'=>NOW_TIME);//设置订单为已经支付,状态为已提交
 		        M('order')->where(array('orderid' => $out_trade_no))->setField($data);
             }
 	        //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
