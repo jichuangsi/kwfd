@@ -525,7 +525,11 @@ class AdminListBuilder extends AdminBuilder
     public function doSetStatus($model, $ids, $status)
     {
 		$ids = is_array($ids) ? $ids : explode(',', $ids);
-        M($model)->where(array('id' => array('in', $ids)))->save(array('status' => $status));
+		if($model=="Live"&&$status==-1){
+		    M($model)->where(array('id' => array('in', $ids)))->save(array('status' => $status,'recommend' => 0));
+		}else{
+		    M($model)->where(array('id' => array('in', $ids)))->save(array('status' => $status));
+		}        
 	 
         $this->success('设置成功', $_SERVER['HTTP_REFERER']);
     }
