@@ -612,7 +612,7 @@
                 console.log(message)
                 var div = document.createElement('div')
                 div.className = 'clearfix'
-                div.innerHTML = '<span class="fr">'+transferName(userId)+'</span><span class="fr">'+message+'<i></i></span>'
+                div.innerHTML = '<span class="fr">'+uname+'</span><span class="fr">'+message+'<i></i></span>'//transferName(userId)
                 $('.message').append(div)
                 $('.allipt').val("")
                 }).catch(error => {
@@ -632,7 +632,7 @@
                 ).then(sendResult => {
                 var div = document.createElement('div')
                 div.className = 'clearfix'
-                div.innerHTML = '<span class="fr">'+transferName(userId)+'</span><span class="fr">'+message+'<i></i></span>'
+                div.innerHTML = '<span class="fr">'+uname+'</span><span class="fr">'+message+'<i></i></span>'//transferName(userId)
                 if(role == '2'){
                     $('.Onemessage').append(div)
                     $('.allipt').val("")
