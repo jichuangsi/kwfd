@@ -273,7 +273,18 @@ class IndexController extends Controller
 	        if (!array_key_exists($k['uid'],$res)){
 	            $res[$k['uid']] = $k['username'];
 	        }
+	    }    	    
+	    
+	    unset($map);
+	    $map['o.id'] = $data[0];
+	    $teacher = $this->datamodel->alias('o')->field('o.teacherid,m.nickname')->join(C('DB_PREFIX').'member m ON m.uid=o.teacherid','LEFT')->where($map)->select();
+	    //echo $this->datamodel->_sql();
+	    foreach($teacher as $v => $k){
+	        if (!array_key_exists($k['teacherid'],$res)){
+	            $res[$k['teacherid']] = $k['nickname'];
+	        }
 	    }
+	    
 	    return $this->ajaxReturn($res);
 	}
 	
