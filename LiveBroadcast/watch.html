@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="assets/style/font_ozia9vubkwb/iconfont.css">
     <link rel="stylesheet" href="assets/style/white-web-sdk.css">
     <script src="AgoraRTCSDK-2.7.0.js"></script>
-    <script src="agora-rtm-sdk-0.9.1.js"></script>
+    <script src="agora-rtm-sdk-1.0.0.js"></script>
     <script src="vendor/jquery.js"></script>
     <script src="vendor/white-web-sdk.js"></script>
     <script src="vendor/index.js"></script>
@@ -42,7 +42,7 @@
                     <div class="title">主播正在路上...</div>
                     <div id="agora_local" style="width:100%;height:100%;display:inline-block;"></div>
                     <div class="UserCount">
-                        在线人数：<span>0</span>人
+                        在线人数(Online)：<span>0</span>人
                         <i></i>
                         <ul>
                             <li></li>
@@ -61,8 +61,8 @@
                 </div>
                 <div class="text">
                     <div class="nav">
-                        <div class="check" onclick = "switchDiv(this)">群聊</div>
-                        <div onclick = "switchDiv(this)">用户列表</div>
+                        <div class="check" onclick = "switchDiv(this)" data-type="g">群聊/Group</div>
+                        <div onclick = "switchDiv(this)" data-type="u">用户列表/Users</div>
                     </div>
                     <div class="userList">
 
@@ -75,7 +75,7 @@
                     </div>
                     <div class="only"></div>
                     <div class="sendbox">
-                        <input type="text" class="allipt" onkeyup = "sendkey(event)"><button onclick="send()">发送</button>
+                        <input type="text" class="allipt" onkeyup = "sendkey(event)"><button onclick="send()">发送/Send</button>
                     </div>
                 </div>
             </div>
@@ -117,6 +117,7 @@
         var client, localStream, camera, microphone;
         var chat,channel_room,userId,studentId;
         var userList = []
+        var joiners = []
         var Camera = 1
         var Microphone = 1
         var rotate = 0
@@ -125,6 +126,7 @@
         var localStreams = [];
         var messagestate = 1
         var blockstate = 0
+        var Again = 0
         var demo
         var audioSelect = sessionStorage.getItem('audioSelect')
         var videoSelect = sessionStorage.getItem('videoSelect')
@@ -134,6 +136,14 @@
         var room = sessionStorage.getItem('room')
         var appid = sessionStorage.getItem('appid')
         var roomstate   
+        var TimeFn = null; 
+        
+        $.post("/index.php?s=/live/index/getjoiners",{room:room},function(result){
+        	if(result!='fail'){
+        		joiners = result;
+        	}
+		});
+        
         if(role == '2'){
             $('.s2').remove()
             $('.s3').remove()
@@ -141,6 +151,8 @@
             $('.s5').remove()
             $('.UserCount').remove()
             $('.nav>div').eq(2).remove()
+            $('.baiban_nav').children().eq(6).remove()
+			$('.tab').remove()
         }else{
             $('.title').remove()
         }
@@ -241,6 +253,9 @@
             if(role == '2'){
                 client.on('stream-subscribed', function (evt) {
                     var stream = evt.stream;
+                    
+                    var h = document.body.clientHeight
+                    var w = document.body.clientWidth
                     console.log("Subscribe remote stream successfully: " + stream.getId());
                     if ($('div#video #agora_remote' + stream.getId()).length === 0) {
                         $('div#video').append('<div id="agora_remote' + stream.getId() +
@@ -254,13 +269,17 @@
                     });
                     sessionStorage.setItem('streamId','agora_remote' + stream.getId())
                     if(shareState == 1){
-                        demo = $('#'+sessionStorage.getItem('streamId')).prev()[0]
-                        demo.style.zIndex = '10'
-                        demo.style.width = '210px'
-                        demo.style.height = '156px'
                         shareState=0
                     }
+                    if(Again > 0){
+                        demo = $('#'+sessionStorage.getItem('streamId'))[0]
+                        demo.style.zIndex = '9999'
+                        demo.style.width = w-320+'px'
+                        demo.style.height = h+'px'
+                        demo.style.right = '100%'
+                    }
                     shareState++
+                    Again++
                     $.post("/index.php?s=/live/index/statistics",{room:room,action:'JOIN',uid:uid,uname:uname,isteacher:0},function(result){
                                     console.log(result);
                     });
@@ -275,12 +294,14 @@
                         if(result){
                         	$('.UserCount').find('span').text(result.total)
                             var num = 0
-                            for(let i = 0; i < result.ids.length; i++) {
-                                num++
-                                var li = document.createElement('li')
-                                li.text = num + result.ids
-                                $('.UserCount').find('ul').append(li)
-                            }
+                            if(result.ids){
+                            	for(let i = 0; i < result.ids.length; i++) {
+                                    num++
+                                    var li = document.createElement('li')
+                                    li.text = num + result.ids
+                                    $('.UserCount').find('ul').append(li)
+                                }
+                            }                            
                         }                        
                 });
                 setInterval(function(){
@@ -289,12 +310,14 @@
                         if(result){
                         	$('.UserCount').find('span').text(result.total)
                             var num = 0;
-                            for(let i = 0;i<result.ids.length;i++){
-                                num++;
-                                var li = document.createElement('li')
-                                li.text = num + result.ids
-                                $('.UserCount').find('ul').append(li)
-                            }
+                        	if(result.ids){
+                        		for(let i = 0;i<result.ids.length;i++){
+                                    num++;
+                                    var li = document.createElement('li')
+                                    li.text = num + result.ids
+                                    $('.UserCount').find('ul').append(li)
+                                }
+                        	}                            
                         }                        
                 });
                 },30000)
@@ -347,7 +370,9 @@
                     $('.userList').children().remove()
                     for(let i = 0;i<arr.length;i++){
                                 var div = document.createElement('div')
-                                div.innerHTML = '<div onclick="Popup(this)">'+arr[i]+'</div>'
+                                //div.innerHTML = '<div onclick="Popup(this)">'+arr[i]+'</div>'
+                                var name = transferName(arr[i]);
+                                div.innerHTML = '<div onclick="Popup(this)" data-id="'+arr[i]+'">'+name+'</div>'
                                 console.log($('.userList'))
                                 $('.userList').append(div)
                                 var div = document.createElement('div')
@@ -369,7 +394,7 @@
                 console.log(text)
                 var div = document.createElement('div')
                 div.className = 'clearfix'
-                div.innerHTML = '<span class="fl" style="margin-left: 10px;">'+senderId+'</span><span class="fl">'+text+'<em></em></span>'
+                div.innerHTML = '<span class="fl" style="margin-left: 10px;">'+transferName(senderId)+'</span><span class="fl">'+text+'<em></em></span>'
                 $('.message').append(div)
             });
             channel_room.on('MemberJoined', memberId => { // memberId 为加入频道的用户 ID
@@ -379,7 +404,9 @@
                 $('.userList').children().remove()
                 for(let i = 0;i<userList.length;i++){
                         var div = document.createElement('div')
-                        div.innerHTML = '<div onclick="Popup(this)">'+userList[i]+'</div>'
+                        //div.innerHTML = '<div onclick="Popup(this)">'+userList[i]+'</div>'
+                        var name = transferName(userList[i]);
+                        div.innerHTML = '<div onclick="Popup(this)" data-id="'+userList[i]+'">'+name+'</div>'
                         $('.userList').append(div)
                     }
                         var div = document.createElement('div')
@@ -389,36 +416,44 @@
                         
             })
             channel_room.on('MemberLeft', memberId => { // memberId 为离开频道的用户 ID
-            console.log(22222222222)
-            /* 收到频道用户离开通知的处理逻辑 */
-            for(let i = 0;i<userList.length;i++){
-                if(userList[i] == memberId){
-                    userList.splice(i,1)
-                }
-            }
-            var arr = userList
-            $('.userList').children().remove()
-            for(let i = 0;i<arr.length;i++){
+            		console.log(22222222222)
+		            /* 收到频道用户离开通知的处理逻辑 */
+		            for(let i = 0;i<userList.length;i++){
+		                if(userList[i] == memberId){
+		                    userList.splice(i,1)
+		                }
+		            }
+		            var arr = userList
+		            $('.userList').children().remove()
+		            for(let i = 0;i<arr.length;i++){
                         var div = document.createElement('div')
-                        div.innerHTML = '<div onclick="Popup(this)">'+arr[i]+'</div>'
+                        //div.innerHTML = '<div onclick="Popup(this)">'+arr[i]+'</div>'
+                        var name = transferName(arr[i]);                        
+                        div.innerHTML = '<div onclick="Popup(this)" data-id="'+arr[i]+'">'+name+'</div>'
                         $('.userList').append(div)
                     }
-            for(var q = 0; q < $('.onlymessage').length;q++){
+            		for(var q = 0; q < $('.onlymessage').length;q++){
                         if($($('.onlymessage')[q]).attr('data-id') == memberId){
                             $($('.onlymessage')[q]).parent().remove()
                         }
                     }
-            for(var e = 0; e < $('.text>.nav>div').length;e++){
-                        if($($('.text>.nav>div')[e]).text() == memberId){
+            		for(var e = 0; e < $('.text>.nav>div').length;e++){
+                        if($($('.text>.nav>div')[e]).attr('data-id') == memberId){
                             $($('.text>.nav>div')[e]).remove()
                         }
-                    }        
+                    }
+            		$('.userList')[0].style.zIndex = '12'            		
+            		$('.nav>div').removeClass('check');
+            		$($('.nav>div')[2]).addClass('check');
             })
             chat.on('MessageFromPeer', ({ text }, peerId) => { // text 为消息文本，peerId 是消息发送方 User ID
             /* 收到点对点消息的处理逻辑 */
+            	if(peerId){
+            		var name = transferName(peerId);
+            	}
                 if(role == '2'){
                     if(messagestate == 1){
-                        var div = '<div onclick = "switchDiv(this)">'+peerId+'<i></i></div>'
+                        var div = '<div onclick = "switchDiv(this)" data-id="'+peerId+'">'+name+'<i></i></div>'
                         $('.text>.nav').append(div)
                         messagestate++
                     }else {
@@ -427,7 +462,7 @@
                     }
                     var div = document.createElement('div')
                     div.className = 'clearfix'
-                    div.innerHTML = '<span class="fl" style="margin-left: 10px;">'+peerId+'</span><span class="fl">'+text+'<em></em></span>'
+                    div.innerHTML = '<span class="fl" style="margin-left: 10px;">'+name+'</span><span class="fl">'+text+'<em></em></span>'
                     $('.Onemessage').append(div)
                 }else{
                     // var num = '.'+peerId
@@ -436,7 +471,7 @@
                     $('.userList>div').eq(userList.indexOf(peerId)).find('div').append(i)
                     var div = document.createElement('div')
                     div.className = 'clearfix'
-                    div.innerHTML = '<span class="fl" style="margin-left: 10px;">'+peerId+'</span><span class="fl">'+text+'<em></em></span>'
+                    div.innerHTML = '<span class="fl" style="margin-left: 10px;">'+name+'</span><span class="fl">'+text+'<em></em></span>'
                     $('.Popupbox').eq(userList.indexOf(peerId)).find('.onlymessage').append(div)
                 }
             });
@@ -569,24 +604,25 @@
          })
          })
         }
-        function send(){
-            var message = $('.allipt').val()
-            if($('.check').text() == '群聊'&&message!=''){
+        function send(){			
+        	var message = $('.allipt').val()
+            if($('.check').attr("data-type") == 'g'&&message!=''){
                 channel_room.sendMessage({ text: message }).then(() => {
                 /* 频道消息发送成功的处理逻辑 */
                 console.log(message)
                 var div = document.createElement('div')
                 div.className = 'clearfix'
-                div.innerHTML = '<span class="fr">'+userId+'</span><span class="fr">'+message+'<i></i></span>'
+                div.innerHTML = '<span class="fr">'+transferName(userId)+'</span><span class="fr">'+message+'<i></i></span>'
                 $('.message').append(div)
                 $('.allipt').val("")
                 }).catch(error => {
                 /* 频道消息发送失败的处理逻辑 */
                 });
-            }else if($('.check').text() != '群聊'&&message!=''){
+            }else if($('.check').attr("data-type") != 'g'&&message!=''){
                 var messageId
                 if(role == '2'){
-                    messageId =  $('.nav>div').eq(2).text()
+                    //messageId =  $('.nav>div').eq(2).text()
+                    messageId =  $('.nav>div').eq(2).attr("data-id")
                 }else{
                     messageId = studentId
                 }
@@ -596,7 +632,7 @@
                 ).then(sendResult => {
                 var div = document.createElement('div')
                 div.className = 'clearfix'
-                div.innerHTML = '<span class="fr">'+userId+'</span><span class="fr">'+message+'<i></i></span>'
+                div.innerHTML = '<span class="fr">'+transferName(userId)+'</span><span class="fr">'+message+'<i></i></span>'
                 if(role == '2'){
                     $('.Onemessage').append(div)
                     $('.allipt').val("")
@@ -620,36 +656,41 @@
             }
         }
         function switchDiv(e){
-            $(e).addClass('check').siblings().removeClass('check')
-            console.log(e)
-            if($(e).text() == '群聊'){
-                $('.message')[0].style.zIndex = '10'
-                $('.userList')[0].style.zIndex = '0'
-                $('.Onemessage')[0].style.zIndex = '0'
-                $('.only')[0].style.zIndex = '0'
-            }else if($(e).text() == '用户列表'){
-                $('.userList')[0].style.zIndex = '12'
-                $('.message')[0].style.zIndex = '0'
-                $('.Onemessage')[0].style.zIndex = '0'
-                $('.only')[0].style.zIndex = '0'
-                $('.nav>div').eq(2).find('i').remove()
-            }else if($(e).text() != '用户列表'&&$(e).text() != '群聊'){
-                if(role == '2'){
-                    $('.Onemessage')[0].style.zIndex = '10'
-                }else{
-                    studentId = $(e).text()
-                    $('.only')[0].style.zIndex = '10'
-                    $('.Popupbox').removeClass('Popup_z')
-                    for(var i = 0; i < $('.onlymessage').length;i++){
-                        if($($('.onlymessage')[i]).attr('data-id') == $(e).text()){
-                            $($('.onlymessage')[i]).parent().addClass('Popup_z')
+        	clearTimeout(TimeFn); 
+        	TimeFn = setTimeout(function(){ 
+        		$(e).addClass('check').siblings().removeClass('check')
+                console.log(e)
+                if($(e).attr("data-type") == 'g'){
+                    $('.message')[0].style.zIndex = '10'
+                    $('.userList')[0].style.zIndex = '0'
+                    $('.Onemessage')[0].style.zIndex = '0'
+                    $('.only')[0].style.zIndex = '0'
+                }else if($(e).attr("data-type") == 'u'){
+                    $('.userList')[0].style.zIndex = '12'
+                    $('.message')[0].style.zIndex = '0'
+                    $('.Onemessage')[0].style.zIndex = '0'
+                    $('.only')[0].style.zIndex = '0'
+                    $('.nav>div').eq(2).find('i').remove()
+                }else if($(e).attr("data-type") != 'u'&&$(e).attr("data-type") != 'g'){
+                    if(role == '2'){
+                        $('.Onemessage')[0].style.zIndex = '10'
+                    }else{
+                        //studentId = $(e).text()
+                        studentId = $(e).attr("data-id");
+                        $('.only')[0].style.zIndex = '10'
+                        $('.Popupbox').removeClass('Popup_z')
+                        for(var i = 0; i < $('.onlymessage').length;i++){
+                            //if($($('.onlymessage')[i]).attr('data-id') == $(e).text()){
+                            if($($('.onlymessage')[i]).attr('data-id') == $(e).attr("data-id")){
+                                $($('.onlymessage')[i]).parent().addClass('Popup_z')
+                            }
                         }
                     }
+                    $('.message')[0].style.zIndex = '0'
+                    $('.userList')[0].style.zIndex = '0'
+                    $('.nav>div').eq(2).find('i').remove()
                 }
-                $('.message')[0].style.zIndex = '0'
-                $('.userList')[0].style.zIndex = '0'
-                $('.nav>div').eq(2).find('i').remove()
-            }
+        	},300); 
         }
         function sendkey(event){
             if(event.keyCode == 13){
@@ -658,27 +699,29 @@
         }
         function Popup(val){
             console.log(studentId)
-            var studentIdnow
-            console.log($('.text>.nav>div').text())
-            console.log($('.text>.nav>div').text().indexOf(studentId)==-1)
-            if(studentId == null){
-                var div = '<div onclick = "switchDiv(this)">'+$(val).text()+'</div>'
+            var studentIdnow;
+            for(var i = 0; i < $('.text>.nav>div').length; i++){
+            	if($($('.text>.nav>div')[i]).attr("data-id")){
+            		if($($('.text>.nav>div')[i]).attr("data-id") == $(val).attr("data-id")){
+                		studentIdnow = $('.text>.nav>div')[i];
+            		}
+                }
+            }          
+            if((studentId == null&&!studentIdnow)||(studentId&&!studentIdnow)){
+                var div = '<div onclick = "switchDiv(this)" ondblclick = "noshow(this)" data-id="'+$(val).attr("data-id")+'">'+$(val).text()+'</div>'
                 $('.text>.nav').append(div)
                 var div = document.createElement('div')
-            }else if(studentId!=studentIdnow){
-                var div = '<div onclick = "switchDiv(this)">'+$(val).text()+'</div>'
-                $('.text>.nav').append(div)
-                var div = document.createElement('div')
+            }else if(studentIdnow){
+            	studentIdnow.hidden = false;
             }
-            if($('.text>.nav>div').text().indexOf(studentId)==-1){
-                console.log(111111111111)
-            }
-            studentId = $(val).text()
-                console.log(2222222222)
+                       
+            //studentId = $(val).text()
+            studentId = $(val).attr("data-id")
             $('.userList')[0].style.zIndex = '0'
             $(val).find('i').remove()
             for(var j = 0; j < $('.text>.nav>div').length;j++){
-                if($($('.text>.nav>div')[j]).text() == studentId){
+                //if($($('.text>.nav>div')[j]).text() == studentId){
+                if($($('.text>.nav>div')[j]).attr("data-id") == studentId){
                     $($('.text>.nav>div')[j]).addClass('check').siblings().removeClass('check')
                 }
             }
@@ -702,7 +745,15 @@
             $('.only')[0].style.width = '0px'
             $('.only')[0].style.height = '0px'
         }
-
+		function noshow(val){
+			clearTimeout(TimeFn); 
+			studentId = null;
+			val.hidden = true;
+			$('.Popupbox').removeClass('Popup_z')
+			$('.userList')[0].style.zIndex = '12'
+			$('.nav>div').removeClass('check');
+			$($('.nav>div')[2]).addClass('check');
+		}
         
         // 
         // $('.text>.nav>div').on('mouseover',function(){
@@ -717,6 +768,14 @@
             // alert(document.body.clientHeight)
             console.log(document.body.clientHeight)
             h = document.body.clientHeight
+            w = document.body.clientWidth
+                if(Again > 0){
+                demo = $('#'+sessionStorage.getItem('streamId'))[0]
+                demo.style.zIndex = '9999'
+                demo.style.width = w-320+'px'
+                demo.style.height = h+'px'
+                demo.style.right = '100%'
+                }
             $('#whiteboard').text(h)
             $('#whiteboard')[0].style.height = h + 'px'
             $('.box')[0].style.height = h + 'px'
@@ -768,7 +827,14 @@
                 blockstate--
             }
         }
-
+		
+        function transferName(uid){
+        	var name = joiners[uid.split('_')[0]];
+            if(!name){
+            	name = '未知用户';
+            }
+            return name;
+        }
 
     </script>
 </body>

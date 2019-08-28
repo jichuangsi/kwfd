@@ -1,13 +1,25 @@
-var sdkToken = "WHITEcGFydG5lcl9pZD0zZHlaZ1BwWUtwWVN2VDVmNGQ4UGI2M2djVGhncENIOXBBeTcmc2lnPTc1MTBkOWEwNzM1ZjA2MDYwMTMzODBkYjVlNTQ2NDA0OTAzOWU2NjE6YWRtaW5JZD0xNTgmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1OTAwNzM1NjEmYWs9M2R5WmdQcFlLcFlTdlQ1ZjRkOFBiNjNnY1RoZ3BDSDlwQXk3JmNyZWF0ZV90aW1lPTE1NTg1MTY2MDkmbm9uY2U9MTU1ODUxNjYwODYxNzAw";
+var role = sessionStorage.getItem('role')
+var uid = sessionStorage.getItem('id')
+var wbtoken = sessionStorage.getItem('wbtoken');
+var wbuuid = sessionStorage.getItem('wbuuid');
+
+if(!wbtoken){
+	alert('Whiteboard is not available');
+}
+
+if(role==='2'&&!wbuuid){
+	alert('Whiteboard is not available now, please retry later.');
+}
+
+//var sdkToken = "WHITEcGFydG5lcl9pZD0zZHlaZ1BwWUtwWVN2VDVmNGQ4UGI2M2djVGhncENIOXBBeTcmc2lnPTc1MTBkOWEwNzM1ZjA2MDYwMTMzODBkYjVlNTQ2NDA0OTAzOWU2NjE6YWRtaW5JZD0xNTgmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1OTAwNzM1NjEmYWs9M2R5WmdQcFlLcFlTdlQ1ZjRkOFBiNjNnY1RoZ3BDSDlwQXk3JmNyZWF0ZV90aW1lPTE1NTg1MTY2MDkmbm9uY2U9MTU1ODUxNjYwODYxNzAw";
+var sdkToken = wbtoken
 var url;
 var requestInit;
-var role = sessionStorage.getItem('role')
-var studentId = sessionStorage.getItem('id')
 var allroom;
 var ys = 1
 var PageNumber = 1
 if(role == '2'){
-    url = `https://cloudcapiv4.herewhite.com/room/join?token=${sdkToken}&uuid=${studentId}`;
+    url = `https://cloudcapiv4.herewhite.com/room/join?token=${sdkToken}&uuid=${wbuuid}`;
     requestInit = {
         method: 'POST',
         headers: {
@@ -61,12 +73,17 @@ function jionRoom (json) {
         urlInterrupter: url => url,
     });
     if(role == '2'){
-        return whiteWebSdk.joinRoom({
-            uuid: studentId,
+    	return whiteWebSdk.joinRoom({
+            uuid: wbuuid,
             roomToken: json.msg.roomToken,
-        });
+        });	        
     }else{
-        return whiteWebSdk.joinRoom({
+    	$.post("/index.php?s=/live/index/setwbuuid",{room:room,uuid:json.msg.room.uuid,isteacher:1},function(result){
+    		if(result!='success'){
+    			alert("在线白板暂不可用！");
+    		}   		    		
+    	});    
+    	return whiteWebSdk.joinRoom({
             // 这里与
             uuid: json.msg.room.uuid,
             roomToken: json.msg.roomToken,

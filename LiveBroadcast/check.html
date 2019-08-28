@@ -14,22 +14,22 @@
 
 <body>
     <div class="logo"><img src="./assets/images/logo.png" alt=""></div>
-    <h3>检测设备</h3>
+    <h3>检测设备/Check Equipment</h3>
     <div id="selectbox">
         <div class="text">
-            课程名称：<div id="title">数学教程</div>
+            <b>课程名称/Course：</b><div id="title">数学教程</div>
         </div>
         <div class="text">
-            基本模式：AL
+            <b>基本模式/Mode：</b>AL
         </div>
         <div class="text">
-            视频配置文件：30TPS/750KBPS
+            <b>视频配置文件/Video：</b>30TPS/750KBPS
         </div>
         <div class="text">
-            转码：VP8
+            <b>转码/Transcode：</b>VP8
         </div>
-        <div class="title">
-                检测视频：在摄像机前移动，检测是否正常工作！
+        <div class="title" style="margin-top: 20px;line-height: 1.5rem;">
+                <b>检测视频/Check Video：</b><br/>在摄像机前移动，检测是否正常工作！<br/>(Move in front of the camera to check if it works properly!)
         </div>
         <div class="select">
             <label for="videoSource"></label><select id="videoSource"></select>
@@ -41,8 +41,8 @@
                 <span></span>
             </div>
         </div>
-        <div class="title">
-            检测音频：发出声音检测麦克风是否正常工作！
+        <div class="title" style="margin-top: 20px;line-height: 1.5rem;">
+            <b>检测音频/Check Audio：</b><br/>发出声音检测麦克风是否正常工作！<br/>(Make a sound to check if the microphone is working properly!)
         </div>
         <div class="select">
             <label for="audioSource"></label><select id="audioSource"></select>
@@ -50,7 +50,7 @@
         <div id="audioSourceNew">
             <div></div>
         </div>
-        <div class="jump" onclick="jump()">快速进入</div>
+        <div class="jump" onclick="jump()">快速进入/Join</div>
     </div>
 
     <script language="javascript">
@@ -62,6 +62,11 @@
     	var room = GetQueryString(param,'room');
     	var title = GetQueryString(param,'title');
     	var appid = GetQueryString(param,'appid');
+    	var wbtoken = GetQueryString(param,'wbtoken');
+    	if(role==='2'){
+    		var wbuuid = GetQueryString(param,'wbuuid');
+    	}    	
+    	
         var JumpStatus = 1
     	
     	if(!room){
@@ -80,6 +85,8 @@
     	sessionStorage.setItem('role',role);
     	sessionStorage.setItem('room',room);
     	sessionStorage.setItem('appid',appid);
+    	sessionStorage.setItem('wbtoken',wbtoken);
+    	sessionStorage.setItem('wbuuid',wbuuid);
         /* select Log type */
         // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
         // AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.ERROR);
