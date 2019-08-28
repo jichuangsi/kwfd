@@ -109,7 +109,16 @@ class IndexController extends Controller
 		
 		//$meetingappid=modC('MEETINGWEB_APP_ID',0,'Config');
 		$meetingappid=C('_CONFIG_MEETINGWEB_APP_ID');
+		$whiteboardtoken=C('_CONFIG_MEETINGWEB_WB_TOKEN');
+		$wbuuid=$this->getwbuuid($room);
 		$parameter="userid=".$uid."&user=".$username."&role=".$role."&room=".$room."&title=".$data["title"]."&appid=".$meetingappid;
+		if(!empty($whiteboardtoken)){
+		    $parameter.="&wbtoken=".$whiteboardtoken;
+		}
+		if($role=="2"&&!empty($wbuuid)){
+		    $parameter.="&wbuuid=".$wbuuid;
+		}
+		//echo $parameter;exit;
 		//echo $parameter;
 		//$parameter="userid=1431958326&user=user1431958326&role=manager&room=7";
 		//$parameter=$this->crypt->encrypt($parameter);
@@ -137,59 +146,152 @@ class IndexController extends Controller
 	        mkdir('lock/Live');
 	    }
 	    
+	    if(strcasecmp($action,'QUERY')==0){
+	        $join_users = F('Live/'.$room);
+	        if($join_users){
+	            return $this->ajaxReturn($join_users);
+	        }
+	    }else{
+	        $fp = fopen('lock/Live/'.$room.'.txt', "w+");
+	        if(flock($fp,LOCK_EX)){
+	            if(!$isteacher){
+	                if(strcasecmp($action,'JOIN')==0){
+	                    $join_users = F('Live/'.$room);
+	                    if($join_users){
+	                        $ids = $join_users['ids'];
+	                        if(!array_key_exists($uid, $ids)){
+	                            $ids[$uid] = $uname;
+	                            $total = count($ids);
+	                            $max = $join_users['max']<$total?$total:$join_users['max'];
+	                            //$join_users = array('ids'=>$ids,'total'=>$total,'max'=>$max);
+	                            $join_users['ids'] = $ids;
+	                            $join_users['total'] = $total;
+	                            $join_users['max'] = $max;
+	                        }
+	                    }else{
+	                        $join_users = array('ids'=>array($uid=>$uname),'total'=>1,'max'=>1);
+	                    }
+	                    F('Live/'.$room,$join_users);
+	                }else if(strcasecmp($action,'LEAVE')==0){
+	                    $join_users = F('Live/'.$room);
+	                    if($join_users){
+	                        $ids = $join_users['ids'];
+	                        if(array_key_exists($uid, $ids)){
+	                            $ids = array_diff_key($ids, [$uid=>$uname]);
+	                            $total = count($ids);
+	                            $max = $join_users['max']<$total?$total:$join_users['max'];
+	                            //$join_users = array('ids'=>$ids,'total'=>$total,'max'=>$max);
+	                            $join_users['ids'] = $ids;
+	                            $join_users['total'] = $total;
+	                            $join_users['max'] = $max;
+	                            F('Live/'.$room,$join_users);
+	                        }
+	                    }
+	                }
+	                //print_r($join_users);
+	            }else{
+	                if(strcasecmp($action,'LEAVE')==0){
+	                    $rid = strtok($room,'-');
+	                    $join_users = F('Live/'.$room);
+	                    
+	                    if($join_users){
+	                        $data['max'] = $join_users['max'];
+	                        $this->datamodel->where('id=' . $rid)->save($data);
+	                        //echo $this->datamodel->_sql();
+	                        F('Live/'.$room,NULL);
+	                    }
+	                }
+	            }
+	            flock($fp,LOCK_UN);
+	        }
+	        fclose($fp);
+	    }
+	}
+	
+	public function setwbuuid(){
+	    $room = $_POST['room'];
+	    $uuid = $_POST['uuid'];
+	    $isteacher = $_POST['isteacher'];
+	    
+	    if(empty($room)||empty($uuid)||empty($isteacher)){
+	        return $this->ajaxReturn('fail');
+	    }
+	    
+	    if(!is_dir('lock')){
+	        mkdir('lock');
+	    }
+	    if(!is_dir('lock/Live')){
+	        mkdir('lock/Live');
+	    }
+	    
 	    $fp = fopen('lock/Live/'.$room.'.txt', "w+");
 	    if(flock($fp,LOCK_EX)){
-	        if(!$isteacher){
-	            if(strcasecmp($action,'JOIN')==0){
-	                $join_users = F('Live/'.$room);
-	                if($join_users){
-	                    $ids = $join_users['ids'];
-	                    if(!array_key_exists($uid, $ids)){
-	                        $ids[$uid] = $uname;
-	                        $total = count($ids);
-	                        $max = $join_users['max']<$total?$total:$join_users['max'];
-	                        $join_users = array('ids'=>$ids,'total'=>$total,'max'=>$max);
-	                    }
-	                }else{
-	                    $join_users = array('ids'=>array($uid=>$uname),'total'=>1,'max'=>1);
-	                }
-	                F('Live/'.$room,$join_users);
-	            }else if(strcasecmp($action,'LEAVE')==0){
-	                $join_users = F('Live/'.$room);
-	                if($join_users){
-	                    $ids = $join_users['ids'];
-	                    if(array_key_exists($uid, $ids)){
-	                        $ids = array_diff_key($ids, [$uid=>$uname]);
-	                        $total = count($ids);
-	                        $max = $join_users['max']<$total?$total:$join_users['max'];
-	                        $join_users = array('ids'=>$ids,'total'=>$total,'max'=>$max);
-	                        F('Live/'.$room,$join_users);
-	                    }
-	                }
+	        if($isteacher==1){
+	            $join_users = F('Live/'.$room);
+	            if($join_users){
+	                $join_users['wb_uuid'] = $uuid;
+	            }else{
+	                $join_users = array('wb_uuid'=>$uuid);
 	            }
-	            //print_r($join_users);
-	        }else{
-	            if(strcasecmp($action,'QUERY')==0){
-	                $join_users = F('Live/'.$room);
-	                if($join_users){
-	                    return $this->ajaxReturn($join_users);
-	                }
-	            }else if(strcasecmp($action,'LEAVE')==0){
-	                $rid = strtok($room,'-');
-	                $join_users = F('Live/'.$room);
-	                
-	                if($join_users){
-	                    $data['max'] = $join_users['max'];
-	                    $this->datamodel->where('id=' . $rid)->save($data);
-	                    //echo $this->datamodel->_sql();
-	                    F('Live/'.$room,NULL);
-	                }
-	            }
+	            F('Live/'.$room,$join_users);
+	            return $this->ajaxReturn('success');
 	        }
 	        flock($fp,LOCK_UN);
 	    }
 	    fclose($fp);
 	}
+	
+	private function getwbuuid($room){
+	    
+	    if(empty($room)||!is_dir('lock')||!is_dir('lock/Live')){
+	        return null;
+	    }
+	    
+	    $join_users = F('Live/'.$room);
+	    if($join_users){
+	        return $join_users['wb_uuid'];
+	    }else{
+	        return null;
+	    }
+	}
+	
+	public function getjoiners(){
+	    $room = $_POST['room'];
+	    
+	    if(empty($room)){
+	        return $this->ajaxReturn('fail');
+	    }
+	    
+	    $data = explode("-",$room);
+	    
+	    if(!$data||!$data[0]||empty($data[0])){
+	        return $this->ajaxReturn('fail');
+	    }
+	    
+	    $map['o.goodid'] = $data[0];
+	    $map['o.MODULE_NAME']=MODULE_NAME;
+	    $orderlist = M("Orderlist")->alias("o")->field('o.uid,o.username')->where($map)->select();
+	    
+	    $res = array();
+	    foreach($orderlist as $v => $k){
+	        if (!array_key_exists($k['uid'],$res)){
+	            $res[$k['uid']] = $k['username'];
+	        }
+	    }
+	    
+	    unset($map);
+	    $map['o.id'] = $data[0];
+	    $teacher = $this->datamodel->alias('o')->field('o.teacherid,m.nickname')->join(C('DB_PREFIX').'member m ON m.uid=o.teacherid','LEFT')->where($map)->select();
+	    //echo $this->datamodel->_sql();
+	    foreach($teacher as $v => $k){
+	        if (!array_key_exists($k['teacherid'],$res)){
+	            $res[$k['teacherid']] = $k['nickname'];
+	        }
+	    }
+	    
+	    return $this->ajaxReturn($res);
+	}
+	
 	
     /*
      * 首页
