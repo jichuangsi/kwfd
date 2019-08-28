@@ -1,0 +1,1 @@
+INSERT INTO `onethink_config` (`name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES ( 'LX_SITE_URL', 1, '乐享平台地址', 1, '', '乐享平台地址', 1378898976, 1532097941, 1, 'www.jichuangsi.com/index.php/hy', 0);
