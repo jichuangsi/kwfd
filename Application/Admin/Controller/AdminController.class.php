@@ -33,6 +33,13 @@ class AdminController extends Controller {
             S('DB_CONFIG_DATA',$config);
         }
         C($config); //添加配置
+        
+        /* 读取平台活动配置*/
+        $activity =   S('MASTER_CONFIG_ACTIVITY');
+        if(!$activity){
+            $activity =   api('Activity/lists',array($config['MASTER_API_ACTIVITY']));
+            S('MASTER_CONFIG_ACTIVITY',$activity);
+        }
 
         // 是否是超级管理员
         define('IS_ROOT',   is_administrator());

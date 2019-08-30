@@ -1,7 +1,11 @@
-<php> $config = api('Config/lists');
-    C($config); //添加配置
-    $icp=C('WEB_SITE_ICP');
-    $count_code=C('COUNT_CODE');
+<php>$config =   S('DB_CONFIG_DATA');
+        if(!$config){
+            $config =   api('Config/lists');
+            S('DB_CONFIG_DATA',$config);
+        }
+        C($config); //添加配置
+	    $icp=C('WEB_SITE_ICP');
+	    $count_code=C('COUNT_CODE');
 </php>
 <script type="text/javascript">
     var ThinkPHP = window.Think = {
