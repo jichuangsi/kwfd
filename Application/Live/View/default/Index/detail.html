@@ -167,12 +167,12 @@ function hide(){
                           <div class="whole">
 							<div class="whole-left">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 							
-							<div class="whole-right" style="margin-top:30px">
-							<a href="{:U('Cart',array('id'=>$data["id"],'suid'=>$suid))}" class="btn btn-primary">&nbsp;&nbsp;立即报名&nbsp;&nbsp;</a>&nbsp;&nbsp;
-							<a href="/index.php?s=/feedback/index/index.html" class="btn btn-primary">&nbsp;&nbsp;联系我们&nbsp;&nbsp;</a>&nbsp;&nbsp;
+							<div class="whole-right" style="margin-top:30px">							
 							<if condition="is_login()">
 								<a onclick="qrcodes('{$qrCodeUrl}')"  class="btn btn-primary">&nbsp;&nbsp;享客码&nbsp;&nbsp;</a>
-							</if>							
+							</if>&nbsp;&nbsp;
+							<a href="/index.php?s=/feedback/index/index.html" class="btn btn-primary">&nbsp;&nbsp;联系我们&nbsp;&nbsp;</a>&nbsp;&nbsp;	
+							<a href="{:U('Cart',array('id'=>$data["id"],'suid'=>$suid))}" class="btn btn-primary">&nbsp;&nbsp;立即报名&nbsp;&nbsp;</a>					
 							</div>
 						  </div>
 					  </div>
