@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2019 �?06 �?20 �?10:54
+-- 生成日期: 2019 �?06 �?20 �?10:54
 -- 服务器版本: 5.5.53
 -- PHP 版本: 5.5.38
 
@@ -17,10 +17,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- 数据库: `jcszaixian`
+-- 数据库: `jcszx_3x`
 --
-CREATE database IF NOT EXISTS `jcszaixian`;
-use `jcszaixian`;
+CREATE database IF NOT EXISTS `jcszx_3x`;
+use `jcszx_3x`;
 -- --------------------------------------------------------
 
 --
@@ -5536,8 +5536,8 @@ CREATE TABLE IF NOT EXISTS `onethink_member` (
 -- 转存表中的数据 `onethink_member`
 --
 
-INSERT INTO `onethink_member` (`uid`, `nickname`, `sex`, `birthday`, `qq`, `score`, `login`, `reg_ip`, `reg_time`, `last_login_ip`, `last_login_time`, `status`, `companyid`, `signature`, `tox_money`, `pos_province`, `pos_city`, `pos_district`, `pos_community`, `isteacher`) VALUES
-(1, 'admin', 0, '0000-00-00', '', 930, 350, 0, 1417682189, 0, 1561020044, 1, 0, '都到我碗里来', 0, 0, 0, 0, 0, 0, ''),
+INSERT INTO `onethink_member` (`uid`, `nickname`, `sex`, `birthday`, `qq`, `score`, `login`, `reg_ip`, `reg_time`, `last_login_ip`, `last_login_time`, `status`, `companyid`, `signature`, `tox_money`, `pos_province`, `pos_city`, `pos_district`, `pos_community`, `isteacher`,`wx_applet_openid`) VALUES
+(36, 'admin', 0, '0000-00-00', '', 930, 350, 0, 1417682189, 0, 1561020044, 1, 0, '都到我碗里来', 0, 0, 0, 0, 0, 0, ''),
 (2, '韩老师', 1, '0000-00-00', '', 270, 158, 2130706433, 1262285313, 0, 1560996878, 1, 0, '做最好的老师', 0, 440000, 440300, 440303, 0, 1, ''),
 (3, '黄老师', 0, '0000-00-00', '', 20, 2, 0, 0, 1032670198, 1535199122, 1, 0, '一切为了学生', 0, 0, 0, 0, 0, 1, ''),
 (4, '王老师', 0, '0000-00-00', '', 60, 12, 0, 0, 1901732268, 1534175196, 1, 0, '老师好 好老师', 0, 110000, 0, 0, 0, 1, ''),

@@ -14,11 +14,7 @@ class WxpayController extends Controller
     public function _initialize()
     {
         $this->orderModel = D('Cart/Order');
-        $config =   S('DB_CONFIG_DATA');
-        if(!$config){
-            $config =   api('Config/lists');
-            S('DB_CONFIG_DATA',$config);
-        }
+        $config = api('Config/lists');
         C($config); //添加配置
     }
  
@@ -127,7 +123,7 @@ class WxpayController extends Controller
 			       M("pay")->where(array('out_trade_no' => $out_trade_no))->setField($data);
 			       unset($data);
 			       $data = array('status'=>'2','ispay'=>'2','paymode'=>'Wxpay','backinfo'=>'支付完成','update_time'=>NOW_TIME);//设置订单为已经支付,状态为已提交
-		           M('order')->where(array('orderid' => $out_trade_no))->setField($data);
+			       M('order')->where(array('orderid' => $out_trade_no))->setField($data);
 			   }
 		   }
         } 

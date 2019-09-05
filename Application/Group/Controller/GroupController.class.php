@@ -24,11 +24,7 @@ class GroupController extends Controller
         $this->assign('sub_menu', $sub_menu);
         $this->assign('current', 'home');
         /* 读取站点配置 */
-        $config =   S('DB_CONFIG_DATA');
-        if(!$config){
-            $config =   api('Config/lists');
-            S('DB_CONFIG_DATA',$config);
-        }
+        $config = api('Config/lists');
         C($config); //添加配置
 
     }

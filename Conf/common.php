@@ -27,7 +27,7 @@ return array(
 
 /* 用户相关设置 */
 'USER_MAX_CACHE'     => 1000, //最大缓存用户数
-'USER_ADMINISTRATOR' => array(11), //管理员用户ID
+'USER_ADMINISTRATOR' => array(36), //管理员用户ID
 'RECOMMEND_MAX_NUM'     => 3, //最大推荐课堂数
 
 /* URL配置 */
@@ -43,7 +43,7 @@ return array(
 /* 数据库配置 */
 'DB_TYPE'   => 'mysqli', // 数据库类型
 'DB_HOST'   => '127.0.0.1', // 服务器地址
-'DB_NAME'   => 'jcszaixian', // 数据库名
+'DB_NAME'   => 'jcszx_3x', // 数据库名
 'DB_USER'   => 'root', // 用户名
 'DB_PWD'    => 'root',  // 密码
 'DB_PORT'   => '3306', // 端口

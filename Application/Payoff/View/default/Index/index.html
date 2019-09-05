@@ -13,7 +13,7 @@
 			$('.bot_div ul li').click(function(e) {
 				$(this).addClass('current').siblings().removeClass('current');
 				var id=$(this).find("a").attr("attr-id")
-				$("input[name='paytype']").val(id);
+				 $("input[name='paytype']").val(id);
 				if($("form:eq(0)").is(':visible')){
 					$("form:eq(0)").attr("action",id);
 				}else if($("form:eq(1)").is(':visible')){

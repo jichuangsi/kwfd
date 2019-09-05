@@ -13,12 +13,9 @@ class IndexController extends Controller
     public function _initialize()
     {
       /* 读取站点配置 */
-        $config =   S('DB_CONFIG_DATA');
-        if(!$config){
-            $config =   api('Config/lists');
-            S('DB_CONFIG_DATA',$config);
-        }
-        C($config); //添加配置
+       $config = api('Config/lists');
+       //dump($config);die();
+       C($config); //添加配置
     }
  
     public function index() 

@@ -14,12 +14,8 @@ class AliwappayController extends Controller
     public function _initialize()
     {
         $this->orderModel = D('Cart/Order');
-        $config =   S('DB_CONFIG_DATA');
-        if(!$config){
-            $config =   api('Config/lists');
-            S('DB_CONFIG_DATA',$config);
-        }
-        C($config); //添加配置
+        $c = api('Config/lists');
+        C($c); //添加配置
     }
  
     public function index() 
@@ -194,7 +190,7 @@ class AliwappayController extends Controller
     		    M("pay")->where(array('out_trade_no' => $out_trade_no))->setField($data);
     		    unset($data);
     		    $data = array('status'=>'2','ispay'=>'2','paymode'=>'AliWappay','backinfo'=>'支付完成','update_time'=>NOW_TIME);//设置订单为已经支付,状态为已提交
-		        M('order')->where(array('orderid' => $out_trade_no))->setField($data);
+    		    M('order')->where(array('orderid' => $out_trade_no))->setField($data);
             }
 	        //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
 	        echo "success";	//请不要修改或删除

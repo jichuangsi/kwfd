@@ -194,7 +194,7 @@ class LiveController extends AdminController
 	 */
 	public function add(
 	    $id = 0, $title = '', $image = '', $content = '', $categoryid = array(), $price=0,$status = '',$recommend = 0,
-	    $starttime=0,$endtime=0,$pid=0,$teacherid=0,$commission=0,$online=0,$activityId=0)
+	    $starttime=0,$endtime=0,$pid=0,$teacherid=0,$commission=0,$online=0)
     {
 	   $isEdit = $id ? 1 : 0;
 	   if (IS_POST) 
@@ -221,27 +221,6 @@ class LiveController extends AdminController
 			        $this->error('已推荐三个课程。');
 			    }			    
 			}
-			
-			if(IS_ROOT){
-			    if($activityId>0){
-			        $activitylist = S('MASTER_CONFIG_ACTIVITY');
-			        $data['activityId'] = $activityId;
-			        foreach($activitylist as $k => $v){
-			            if($v['id']==$activityId){
-			                $data['activityName'] = $v['name'];
-			                $rule = $v['rule'];
-			                break;
-			            }
-			        }
-			        if($rule&&!empty($rule)){
-			            $this->adjustPrice($price, $rule);
-			        }
-			    }else if($activityId==0){
-			        $data['activityName'] = '';
-			        $data['activityId'] = $activityId;
-			    }			    
-			}
-			
             $data['title'] = $title;
 			$data['categoryid'] = implode(",",$categoryid);
             $data['image'] = $image;
@@ -310,16 +289,7 @@ class LiveController extends AdminController
 			$tree = $this->categorymodel->getTree(0, 'id,title,sort,pid,status');
 			//var_dump($tree);
 			//->keyTime('content', '开始时间')->keyTime('content', '结束时间')
-			
-			$activitylist = S('MASTER_CONFIG_ACTIVITY');
-			$activityoptions = array(0=>'');
-			foreach($activitylist as $k => $v){
-			    if(!array_key_exists($v['id'], $activityoptions)){
-			        $activityoptions[$v['id']] = $v['name'];
-			    }
-			}
-			
-			if(IS_ROOT){
+			if(IS_ROOT)
 			 $builder->keyId()->keyText('title', $this->_modelname.'名称')->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
                 ->keyText('price', '价格','')
                 ->keyText('commission', '分润','请填0~100')
@@ -330,10 +300,7 @@ class LiveController extends AdminController
 				->keyStatus('status', '状态')
 				->keyRecommend('recommend', '推荐', '最多推荐三个课程')
 				->keyRadio("online","是否线上","",$onlineoptions);
-				if($activityoptions&&count($activityoptions)>1){
-				    $builder->keySelect("activityId", '平台活动', '每个课程只能参见一个平台活动', $activityoptions);
-				}				
-			}else{
+			else 
 			 $builder->keyId()->keyText('title', $this->_modelname.'名称')->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
 			    ->keyText('price', '价格','')
 			    ->keyTime('starttime', '开始时间','')->keyTime('endtime', '结束时间','')
@@ -342,7 +309,7 @@ class LiveController extends AdminController
 			    ->keyHidden('pid')
 			    ->keyStatus('status', '状态')
 			    ->keyRadio("online","是否线上","",$onlineoptions);
-			}
+			
             if ($isEdit) {
                 $data = $this->datamodel->where('id=' . $id)->find();
                 $builder->data($data);
@@ -635,28 +602,4 @@ class LiveController extends AdminController
             ->display();
     }
 	
-    private function adjustPrice(&$price, $rule = ''){
-        if(!$rule && empty($rule)) return;
-        $rules = explode(";",strtolower($rule));
-        foreach($rules as $k => $rule){
-            $items = explode(":",strtolower($rule));
-            if(!is_array($items) || count($items) <= 1) return;
-            switch($items[0]){
-                case "p" : {
-                    if(is_numeric($items[1]) && $items[1] >= 0){
-                        $price = $items[1];                        
-                    }
-                    break;
-                }
-                case "d" : {
-                    if(is_numeric($items[1]) && $items[1] >= 0){
-                        $price = $price * $items[1];
-                    }
-                    break;
-                }
-                default : break;
-            }            
-        }
-    }
-    
 }

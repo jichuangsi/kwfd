@@ -534,6 +534,7 @@ h6,
 
 p {
 	margin: 0 0 10px;
+	background-color: transparent !important;
 }
 
 .lead {
@@ -579,7 +580,7 @@ cite {
 }
 
 .text-primary {
-	color: #7097fe;
+	color: #f76b07;
 }
 
 a.text-primary:hover {
@@ -2409,9 +2410,10 @@ fieldset[disabled] .btn {
 }
 
 .btn-default {
-	color: #333333;
+	color: #FFD900;
 	background-color: #ffffff;
-	border-color: #cccccc;
+	border-color: #FFD900;
+	border-radius: 25px;
 }
 
 .btn-default:hover,
@@ -2419,8 +2421,8 @@ fieldset[disabled] .btn {
 .btn-default:active,
 .btn-default.active,
 .open .dropdown-toggle.btn-default {
-	color: #333333;
-	background-color: #ffffff;
+	color: #FFF;
+	background-color: #FFD900;
 	border-color: #d1d1d1;
 }
 
@@ -2456,8 +2458,8 @@ fieldset[disabled] .btn-default.active {
 
 .btn-primary {
 	color: #ffffff;
-	background-color: #3d72fe;
-	border-color: #039574;
+	background-color: #FFD900;
+	border-color: #ffb51a;
 }
 
 .btn-primary:hover,
@@ -2466,8 +2468,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
 	color: #ffffff;
-	background-color: #3d72fe;
-	border-color: #3d72fe;
+	background-color: #ffb51a;
+	border-color: #ffb51a;
 }
 
 .btn-primary:active,
@@ -5037,7 +5039,7 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 .pagination>li>span:hover,
 .pagination>li>a:focus,
 .pagination>li>span:focus {
-	color: #3d72fe;
+	color: #FFD900;
 	background-color: #eeeeee;
 	border-color: #dddddd;
 }
@@ -5050,8 +5052,8 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 .pagination>.active>span:focus {
 	z-index: 2;
 	color: #ffffff;
-	background-color: #3d72fe;
-	border-color: #3d72fe;
+	background-color: #FFD900;
+	border-color: #FFD900;
 	cursor: default;
 }
 

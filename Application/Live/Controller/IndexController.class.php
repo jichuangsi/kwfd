@@ -48,11 +48,7 @@ class IndexController extends Controller
         $this->assign('menu_list', $menu_list);
         
         /* 读取站点配置 */
-        $config =   S('DB_CONFIG_DATA');
-        if(!$config){
-            $config =   api('Config/lists');
-            S('DB_CONFIG_DATA',$config);
-        }
+        $config = api('Config/lists');
         C($config); //添加配置
 		
 		//$http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
@@ -120,6 +116,7 @@ class IndexController extends Controller
 		    $parameter.="&wbuuid=".$wbuuid;
 		}
 		//echo $parameter;exit;
+		//echo $parameter;
 		//$parameter="userid=1431958326&user=user1431958326&role=manager&room=7";
 		//$parameter=$this->crypt->encrypt($parameter);
 		$parameter=urlencode(base64_encode($parameter));
@@ -136,15 +133,15 @@ class IndexController extends Controller
 	    $room = $_POST['room'];
 	    $uid = $_POST['uid']?$_POST['uid']:get_uid();
 	    $uname = $_POST['uname']?$_POST['uname']:session('user_auth')['username'];
-	    $isteacher = $_POST['isteacher']?$_POST['isteacher']:session('user_auth')['isteacher'];	    
-	    //echo 'room:'.$room.';uid:'.$uid.';uname:'.$uname.';isteacher:'.$isteacher;	    
+	    $isteacher = $_POST['isteacher']?$_POST['isteacher']:session('user_auth')['isteacher'];
+	    //echo 'room:'.$room.';uid:'.$uid.';uname:'.$uname.';isteacher:'.$isteacher;
 	    
 	    if(!is_dir('lock')){
 	        mkdir('lock');
 	    }
-	    if(!is_dir('lock/Live')){	        
+	    if(!is_dir('lock/Live')){
 	        mkdir('lock/Live');
-	    }	        
+	    }
 	    
 	    if(strcasecmp($action,'QUERY')==0){
 	        $join_users = F('Live/'.$room);
@@ -205,7 +202,7 @@ class IndexController extends Controller
 	            flock($fp,LOCK_UN);
 	        }
 	        fclose($fp);
-	    }	    
+	    }
 	}
 	
 	public function setwbuuid(){
@@ -222,7 +219,7 @@ class IndexController extends Controller
 	    }
 	    if(!is_dir('lock/Live')){
 	        mkdir('lock/Live');
-	    }	
+	    }
 	    
 	    $fp = fopen('lock/Live/'.$room.'.txt', "w+");
 	    if(flock($fp,LOCK_EX)){
@@ -241,7 +238,7 @@ class IndexController extends Controller
 	    fclose($fp);
 	}
 	
-	private function getwbuuid($room){	    
+	private function getwbuuid($room){
 	    
 	    if(empty($room)||!is_dir('lock')||!is_dir('lock/Live')){
 	        return null;
@@ -277,7 +274,7 @@ class IndexController extends Controller
 	        if (!array_key_exists($k['uid'],$res)){
 	            $res[$k['uid']] = $k['username'];
 	        }
-	    }    	    
+	    }
 	    
 	    unset($map);
 	    $map['o.id'] = $data[0];
@@ -291,7 +288,7 @@ class IndexController extends Controller
 	    
 	    return $this->ajaxReturn($res);
 	}
-	
+		
     /*
      * 首页
      */
@@ -375,11 +372,6 @@ class IndexController extends Controller
         //dump($orderlist); 
 		$this->assign('orderlist', $orderlist);
 		 
-		if(is_login()){
-		    $qrCodeUrl = str_ireplace('__org__',C('ORG_ID'),str_ireplace('__user__',get_uid(),str_ireplace('__course__',$id,C('_CONFIG_LX_QRCODE_URL'))));
-		    //dump($qrCodeUrl);
-		    $this->assign('qrCodeUrl', $qrCodeUrl);
-		}
 		
 		$this->display();
     }

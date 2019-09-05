@@ -529,8 +529,8 @@ class AdminListBuilder extends AdminBuilder
 		    M($model)->where(array('id' => array('in', $ids)))->save(array('status' => $status,'recommend' => 0));
 		}else{
 		    M($model)->where(array('id' => array('in', $ids)))->save(array('status' => $status));
-		}        
-	 
+		}
+		
         $this->success('设置成功', $_SERVER['HTTP_REFERER']);
     }
     

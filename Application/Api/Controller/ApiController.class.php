@@ -24,13 +24,8 @@ abstract class ApiController extends Controller {
 
     public function _initialize() {
         //读取站点信息
-        $config =   S('DB_CONFIG_DATA');
-        if(!$config){
-            $config =   api('Config/lists');
-            S('DB_CONFIG_DATA',$config);
-        }
+        $config = api('Config/lists');
         C($config); //添加配置
-        
         //站点关闭，显示关闭消息
         if(!C('WEB_SITE_CLOSE')){
             $this->apiError(403, '站点已经关闭，请稍后访问~');
