@@ -281,8 +281,8 @@ ul {
 	transition: left .2s ease, border .5s, z-index .5s;
 	padding-bottom: 15px;
 	top: 1px;
-	background-color: #FFE6D4;
-	/*border: 1px solid #cccccc;*/
+	background-color: #ffffff;
+	border: 1px solid #000000;
 	padding-top: 0;
 	min-height: 190px;
 }
@@ -303,7 +303,7 @@ ul {
 	text-align: center;
 	height: 150px;
 	border-bottom: solid #cccccc 0px;
-	background: #FFE6D4;
+	background: #ffffff;
 	overflow: hidden;
 }
 
@@ -338,7 +338,7 @@ ul {
 	text-align: center;
 	height: 150px;
 	border-bottom: solid #cccccc 0px;
-	background: #FFE6D4;
+	background: #ffffff;
 	overflow: hidden;
 }
 
