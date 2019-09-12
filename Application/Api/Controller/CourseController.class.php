@@ -40,9 +40,13 @@ class CourseController extends ApiController
         parent::_initialize();
     }
     
-    public function activityCheck($i = 0){
+    public function activityCheck($i = 0, $o = ''){
         
         $map['activityId']=$i;
+        $majorOrg = C('MAJOR_ORG');
+        if($majorOrg&&$o){
+            $map['orgId']=$o;
+        }
         $activitycount = $this->datamodel->where($map)->count();        
         
         $this->apiSuccess($this->successMsg["check"], null, array('count'=>$activitycount));
@@ -63,7 +67,7 @@ class CourseController extends ApiController
      * @param string $y
      *            //课堂分类
      */
-    public function courseQuery($p = 1, $r = 20, $t = '', $c = '', $y = '')
+    public function courseQuery($p = 1, $r = 20, $t = '', $c = '', $y = '', $o = '')
     {
         // echo I('title').'==='.$content;
         /*
@@ -73,7 +77,7 @@ class CourseController extends ApiController
          *
          * }
          */
-        $this->query($p, $r, $t, $c, $y, $this->successMsg['query']);
+        $this->query($p, $r, $t, $c, $y, $o, $this->successMsg['query']);
     }
 
     /**
@@ -81,27 +85,27 @@ class CourseController extends ApiController
      */
     public function categoryQuery($id=0)
     {
-        $tree = $this->categorymodel->getTree($id);
+        $tree = $this->categorymodel->getTree($id, true, 0);
         $this->apiSuccess($this->successMsg['category'], null, array('data' => $tree));
     }
     
     /**
      * 返回当前机构推荐課堂列表API
      */
-    public function recommendQuery($p = 1, $r = 20, $t = '', $c = '', $y = '')
+    public function recommendQuery($p = 1, $r = 20, $t = '', $c = '', $y = '', $o = '')
     {
         $option['recommend'] = true;
-        $this->query($p, $r, $t, $c, $y, $this->successMsg['recommend'], $option);
+        $this->query($p, $r, $t, $c, $y, $o, $this->successMsg['recommend'], $option);
     }
     
     /**
      * 返回当前机构参与指定活动課堂列表API
      */
-    public function activiryQuery($i = 0, $p = 1, $r = 20, $t = '', $c = '', $y = '')
+    public function activiryQuery($i = 0, $p = 1, $r = 20, $t = '', $c = '', $y = '', $o = '')
     {
         $option['activity'] = true;
         $option['activityId'] = $i;
-        $this->query($p, $r, $t, $c, $y, $this->successMsg['activity'], $option);
+        $this->query($p, $r, $t, $c, $y, $o, $this->successMsg['activity'], $option);
     }
     
     public function detailQuery($id = 0)
@@ -118,7 +122,7 @@ class CourseController extends ApiController
         //dump($data);
         if($data['content']&&!empty($data['content'])){
             $data['content'] = $this->replace_img($data['content']);
-        }        
+        }
         
         /* 更新浏览数 */
         $map = array('id' => $id);
@@ -169,9 +173,14 @@ class CourseController extends ApiController
         $this->apiSuccess($this->successMsg['detail'], null, array('data'=>$data));
     }
     
-    private function query($page = 1, $row = 20, $title = '', $content = '', $category = '', $message = 'sucess', $option = array()){        
+    private function query($page = 1, $row = 20, $title = '', $content = '', $category = '', $orgId = '', $message = 'sucess', $option = array()){        
         
         $order = $option['recommend']?'recommend desc,createtime desc,view desc':'createtime desc,view desc';
+        
+        $majorOrg = C('MAJOR_ORG');
+        if($majorOrg&&$orgId){
+            $map['orgId']=$orgId;
+        }
         
         $map['status'] = array(
             'egt',

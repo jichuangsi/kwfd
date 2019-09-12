@@ -42,6 +42,7 @@ class LiveController extends AdminController
      */
 	public function lists($page = 1, $r = 20)
     {
+        $majorOrg = C('MAJOR_ORG');
 		$map['status'] = array('egt', 0);
         
 		//dump($data);
@@ -73,7 +74,13 @@ class LiveController extends AdminController
         {
 			$map["userId"]=array('eq',UID);
 		}		
-        $data = $this->datamodel->where($map)->order('recommend desc, createtime desc, view desc')->page($page, $r)->select();
+		
+		$orderBy = 'recommend desc, createtime desc, view desc';
+		if($majorOrg){
+		    $orderBy = 'id desc, orgId asc, ' . $orderBy;
+		}
+		
+		$data = $this->datamodel->where($map)->order($orderBy)->page($page, $r)->select();
         //echo $this->datamodel->_sql();
 		$totalCount = $this->datamodel->where($map)->count();
 		
@@ -96,13 +103,17 @@ class LiveController extends AdminController
 		//->buttonDelete(U('setStatus'))->setStatusUrl(U('setStatus'));
 
 		if(IS_ROOT){
-		    $builder->keyId()->keyText('title', $this->_modelname.'名称')->keyUpdateTime('changetime', '更新时间')->keyCreateTime('createtime', '创建时间')->keyHtml('gotomeeting', '进入课堂')
-		    ->keyOnline()
-		    ->keyStatus()
-		    ->keyRecommend()->setRecommendUrl(U('setRecommend'))
-		    ->keyDoAction('chapters?courseid=###','章节管理','操作')
-		    ->keyDoActionEdit($this->_model.'/add?id=###')
-		    ->keyDoAction($this->_model.'/setstatus?status=-1&ids=###','删除','操作',array('class'=>'confirm ajax-get'));
+		    $builder->keyId()->keyText('title', $this->_modelname.'名称');
+		    if($majorOrg){
+		        $builder->keyText('orgName', '所属机构');
+		    }
+		    $builder->keyUpdateTime('changetime', '更新时间')->keyCreateTime('createtime', '创建时间')->keyHtml('gotomeeting', '进入课堂')
+    		    ->keyOnline()
+    		    ->keyStatus()
+    		    ->keyRecommend()->setRecommendUrl(U('setRecommend'))
+    		    ->keyDoAction('chapters?courseid=###','章节管理','操作')
+    		    ->keyDoActionEdit($this->_model.'/add?id=###')
+    		    ->keyDoAction($this->_model.'/setstatus?status=-1&ids=###','删除','操作',array('class'=>'confirm ajax-get'));
 		}else{
 		    $builder->keyId()->keyText('title', $this->_modelname.'名称')->keyUpdateTime('changetime', '更新时间')->keyCreateTime('createtime', '创建时间')->keyHtml('gotomeeting', '进入课堂')
 		    ->keyOnline()
@@ -194,8 +205,9 @@ class LiveController extends AdminController
 	 */
 	public function add(
 	    $id = 0, $title = '', $image = '', $content = '', $categoryid = array(), $price=0,$status = '',$recommend = 0,
-	    $starttime=0,$endtime=0,$pid=0,$teacherid=0,$commission=0,$online=0,$activityId=0)
-    {
+	    $starttime=0,$endtime=0,$pid=0,$teacherid=0,$commission=0,$online=0,$activityId=0,$activityName='',$activityRule='',$orgCatId=0,$orgId=0,$orgName='')
+	{
+	   $majorOrg = C('MAJOR_ORG');
 	   $isEdit = $id ? 1 : 0;
 	   if (IS_POST) 
 	   {
@@ -205,41 +217,83 @@ class LiveController extends AdminController
             if (!is_numeric($price)||$price<0)	
             {
 				$this->error('请输入正确的价格。');
-			}	
-			if (IS_ROOT&&(!is_numeric($commission)||$commission<0))
-			{
-			    $this->error('请输入正确的分润。');
-			}
-			if (IS_ROOT&&$recommend>0)
-			{
-			    $rs = $this->datamodel->field('id')->where('recommend=' . $recommend)->select();
-			    $ret = array();
-			    foreach($rs as $k=>$v){
-			        array_push($ret,$v['id']);
-			    }
-			    if(!in_array($id, $ret)&&count($ret)>=C('RECOMMEND_MAX_NUM')){
-			        $this->error('已推荐三个课程。');
-			    }			    
-			}
+			}						
 			
 			if(IS_ROOT){
-			    if($activityId>0){
-			        $activitylist = S('MASTER_CONFIG_ACTIVITY');
-			        $data['activityId'] = $activityId;
-			        foreach($activitylist as $k => $v){
-			            if($v['id']==$activityId){
-			                $data['activityName'] = $v['name'];
-			                $rule = $v['rule'];
-			                break;
-			            }
+			    if (!is_numeric($commission)||$commission<0)
+			    {
+			        $this->error('请输入正确的分润。');
+			    }	
+			    
+			    if ($recommend>0)
+			    {
+			        unset($map);
+			        $map['recommend'] = $recommend;
+			        if($majorOrg&&$orgId){
+			            $map['orgId'] = $orgId;
+			            $tip = '该机构';
 			        }
-			        if($rule&&!empty($rule)){
-			            $this->adjustPrice($price, $rule);
+			        $rs = $this->datamodel->field('id')->where($map)->select();
+			        $ret = array();
+			        foreach($rs as $k=>$v){
+			            array_push($ret,$v['id']);
+			        }
+			        if(!in_array($id, $ret)&&count($ret)>=C('RECOMMEND_MAX_NUM')){
+			            $this->error($tip.'已推荐三个课程。');
+			        }
+			    }
+			    
+			    if($activityId>0){
+			        
+			        $rs = 0;
+			        if ($isEdit) {
+    			        unset($map);
+    			        $map['id'] = $id;
+    			        $map['activityId'] = $activityId;
+    			        $map['price'] = $price;
+    			        $rs = $this->datamodel->where($map)->count();
+			        }
+			        
+			        if(!$isEdit||($isEdit&&!$rs)){
+			            if(!$majorOrg){
+			                $activitylist = S('MASTER_CONFIG_ACTIVITY');
+			                $data['activityId'] = $activityId;
+			                foreach($activitylist as $k => $v){
+			                    if($v['id']==$activityId){
+			                        $data['activityName'] = $v['name'];
+			                        $rule = $v['activityrule'];
+			                        break;
+			                    }
+			                }
+			            }else{
+			                $data['activityId'] = $activityId;
+			                $data['activityName'] = $activityName;
+			                $rule = $activityRule;
+			            }
+			            
+			            if($rule&&!empty($rule)){
+			                $this->adjustPrice($price, $rule);
+			            }
 			        }
 			    }else if($activityId==0){
 			        $data['activityName'] = '';
 			        $data['activityId'] = $activityId;
-			    }			    
+			    }
+			    
+			    if($majorOrg){
+			        if($orgCatId&&empty($orgId)){
+			            $this->error('请选择分类下机构。');
+			        }
+			        if($orgCatId&&$orgId&&$orgName){
+			            $data['orgCatId'] = $orgCatId;
+			            $data['orgId'] = $orgId;
+			            $data['orgName'] = $orgName;
+			        }else if(!$orgCatId){
+			            $data['orgCatId'] = 0;
+			            $data['orgId'] = 0;
+			            $data['orgName'] = '';
+			        }
+			    }
 			}
 			
             $data['title'] = $title;
@@ -267,6 +321,7 @@ class LiveController extends AdminController
                 $rs = $this->datamodel->where('id=' . $id)->save($data);
             } else {
                 //商品名存在验证
+                unset($map);
                 $map['status'] = array('egt', 0);
                 $map['title'] = $title;
 				/*
@@ -312,15 +367,34 @@ class LiveController extends AdminController
 			//->keyTime('content', '开始时间')->keyTime('content', '结束时间')
 			
 			$activitylist = S('MASTER_CONFIG_ACTIVITY');
-			$activityoptions = array(0=>'');
+			$activityoptions = array(0=>'请选择');
 			foreach($activitylist as $k => $v){
 			    if(!array_key_exists($v['id'], $activityoptions)){
 			        $activityoptions[$v['id']] = $v['name'];
 			    }
 			}
 			
+			if($majorOrg){
+			    $orgCategories = S('MASTER_CONFIG_ORG_CATEGORY');
+			    $orgCategoryOptions = array(0=>'请选择');
+			    foreach($orgCategories as $k => $v){
+			        if(!array_key_exists($v['id'], $orgCategoryOptions)){
+			            $orgCategoryOptions[$v['id']] = $v['name'];
+			        }
+			    }
+			}
+			
 			if(IS_ROOT){
-			 $builder->keyId()->keyText('title', $this->_modelname.'名称')->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
+			 $builder->keyId()->keyText('title', $this->_modelname.'名称');
+			 if($majorOrg&&$orgCategoryOptions&&count($orgCategoryOptions)>1){
+			     $builder->keyOrgCategory("orgCatId", '平台机构', '每个课程只能属于一个平台机构', $orgCategoryOptions);
+			 }		
+			 if(!$majorOrg&&$activityoptions&&count($activityoptions)>1){
+			     $builder->keySelect("activityId", '平台活动', '每个课程只能参加一个平台活动', $activityoptions);
+			 }else if($majorOrg){
+			     $builder->keySelect("activityId", '平台活动', '每个课程只能参加一个平台活动', $activityoptions)->keyHidden('activityName')->keyHidden('activityRule');
+			 }
+			 $builder->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
                 ->keyText('price', '价格','')
                 ->keyText('commission', '分润','请填0~100')
 				->keyTime('starttime', '开始时间','')->keyTime('endtime', '结束时间','')
@@ -329,10 +403,7 @@ class LiveController extends AdminController
 				->keyHidden('pid')
 				->keyStatus('status', '状态')
 				->keyRecommend('recommend', '推荐', '最多推荐三个课程')
-				->keyRadio("online","是否线上","",$onlineoptions);
-				if($activityoptions&&count($activityoptions)>1){
-				    $builder->keySelect("activityId", '平台活动', '每个课程只能参见一个平台活动', $activityoptions);
-				}				
+				->keyRadio("online","是否线上","",$onlineoptions);				
 			}else{
 			 $builder->keyId()->keyText('title', $this->_modelname.'名称')->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
 			    ->keyText('price', '价格','')
@@ -346,6 +417,13 @@ class LiveController extends AdminController
             if ($isEdit) {
                 $data = $this->datamodel->where('id=' . $id)->find();
                 $builder->data($data);
+                if($majorOrg){
+                    if($data['orgId'])
+                        $this->assign('orgIdSelected', $data['orgId']);
+                    if($data['activityId'])
+                        $this->assign('activityIdSelected', $data['activityId']);
+                        
+                }
                 $builder->buttonSubmit(U($this->_model.'/add'));
                 $builder->buttonBack();
                 $builder->display();
@@ -354,6 +432,7 @@ class LiveController extends AdminController
                 $data['status'] = 1;
                 $data['recommend'] = 0;
                 $data['online'] = 0;
+                $data['commission'] = 0;
 				$data['pid'] = $pid;
 				if(count($teachersoptions)>0)
 				{
@@ -465,13 +544,13 @@ class LiveController extends AdminController
 		$builder = new AdminListBuilder();
         $builder->doSetStatus($this->_model.'', $ids, $status);
     }
-    public function setRecommend($ids= '', $recommend)
+    public function setRecommend($ids= '', $recommend, $orgId='')
     {
         if ($ids=='') {
             $this->error('请选择数据。');
         }
         $builder = new AdminListBuilder();
-        $builder->doSetRecommend($this->_model.'', $ids, $recommend);
+        $builder->doSetRecommend($this->_model.'', $ids, $recommend, $orgId);
     }
 	/**商品回收站
      * @param int $page

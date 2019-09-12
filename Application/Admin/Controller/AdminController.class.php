@@ -34,12 +34,25 @@ class AdminController extends Controller {
         }
         C($config); //添加配置
         
+        $majorOrg = C('MAJOR_ORG');
+        
         /* 读取平台活动配置*/
-        $activity =   S('MASTER_CONFIG_ACTIVITY');
-        if(!$activity){
-            $activity =   api('Activity/lists',array($config['MASTER_API_ACTIVITY']));
-            S('MASTER_CONFIG_ACTIVITY',$activity);
+        if(!$majorOrg){
+            $activity =   S('MASTER_CONFIG_ACTIVITY');
+            if(!$activity){
+                $activity =   api('Activity/lists',array($config['MASTER_API_ACTIVITY'], $config['ORG_ID']));
+                S('MASTER_CONFIG_ACTIVITY',$activity);
+            }
         }
+        
+        /* 读取平台机构分类*/        
+        if($majorOrg){
+            $orgCategory = S('MASTER_CONFIG_ORG_CATEGORY');
+            if(!$orgCategory){
+                $orgCategory =   api('Organs/categoryLists',array($config['MASTER_API_ORG_CATEGORY']));
+                S('MASTER_CONFIG_ORG_CATEGORY',$orgCategory);
+            }
+        }        
 
         // 是否是超级管理员
         define('IS_ROOT',   is_administrator());

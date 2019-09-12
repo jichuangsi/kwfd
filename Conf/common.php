@@ -29,6 +29,7 @@ return array(
 'USER_MAX_CACHE'     => 1000, //最大缓存用户数
 'USER_ADMINISTRATOR' => array(11), //管理员用户ID
 'RECOMMEND_MAX_NUM'     => 3, //最大推荐课堂数
+'MAJOR_ORG' =>  1,//小b机构的课堂中心
 
 /* URL配置 */
 'URL_CASE_INSENSITIVE' => true, //默认false 表示URL区分大小写 true则表示不区分大小写
