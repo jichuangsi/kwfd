@@ -201,6 +201,11 @@ class AdminConfigBuilder extends AdminBuilder
     {
         return $this->key($name, $title, $subtitle, 'Category',$opt);
     }
+    public function keyOrgCategory($name, $title, $subtitle, $options)
+    {
+        return $this->key($name, $title, $subtitle, 'OrgCategory', $options);
+    }
+    
     public function button($title, $attr = array())
     {
         $this->_buttonList[] = array('title' => $title, 'attr' => $attr);

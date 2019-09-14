@@ -11,7 +11,21 @@ header('Access-Control-Allow-Origin:*');
 
 class CourseController extends ApiController
 {
-
+    
+    protected $errMsg = array(
+        "7001"=>"该记录不存在！",
+        "7002"=>"机构活动查询缺少活动信息参数！"
+    );
+    
+    protected $successMsg = array(
+        "query"=>"'获取课程列表成功'",
+        "category"=>"获取分类列表成功",
+        "recommend"=>"获取推荐课程列表成功",
+        "detail"=>"获取课堂详情成功",
+        "check"=>"机构活动检查成功",
+        "activity"=>"获取制定活动课程列表成功"
+    );
+    
     protected $datamodel;
     protected $categorymodel;
     protected $orderlistmodel;
@@ -24,6 +38,19 @@ class CourseController extends ApiController
         $this->orderlistmodel = D('Cart/Orderlist');
         $this->chaptersmodel = D('Live/LiveChapters');
         parent::_initialize();
+    }
+    
+    public function activityCheck($i = 0, $o = ''){
+        
+        $map['activityId']=$i;
+        $majorOrg = C('MAJOR_ORG');
+        if($majorOrg&&$o){
+            $map['orgId']=$o;
+        }
+        $activitycount = $this->datamodel->where($map)->count();
+        
+        $this->apiSuccess($this->successMsg["check"], null, array('count'=>$activitycount));
+        
     }
     
     /**
@@ -40,7 +67,7 @@ class CourseController extends ApiController
      * @param string $y
      *            //课堂分类
      */
-    public function courseQuery($p = 1, $r = 20, $t = '', $c = '', $y = '')
+    public function courseQuery($p = 1, $r = 20, $t = '', $c = '', $y = '', $o = '')
     {
         // echo I('title').'==='.$content;
         /*
@@ -50,7 +77,7 @@ class CourseController extends ApiController
          *
          * }
          */
-        $this->query($p, $r, $t, $c, $y, '获取课程列表成功');
+        $this->query($p, $r, $t, $c, $y, $o, $this->successMsg['query']);
     }
 
     /**
@@ -58,33 +85,44 @@ class CourseController extends ApiController
      */
     public function categoryQuery($id=0)
     {
-        $tree = $this->categorymodel->getTree($id);
-        $this->apiSuccess("获取分类列表成功", null, array('data' => $tree));
+        $tree = $this->categorymodel->getTree($id, true, 0);
+        $this->apiSuccess($this->successMsg['category'], null, array('data' => $tree));
     }
     
     /**
      * 返回当前机构推荐課堂列表API
      */
-    public function recommendQuery($p = 1, $r = 20, $t = '', $c = '', $y = '')
+    public function recommendQuery($p = 1, $r = 20, $t = '', $c = '', $y = '', $o = '')
     {
-        $this->query($p, $r, $t, $c, $y, '获取推荐课程列表成功', true);
+        $option['recommend'] = true;
+        $this->query($p, $r, $t, $c, $y, $o, $this->successMsg['recommend'], $option);
+    }
+    
+    /**
+     * 返回当前机构参与指定活动課堂列表API
+     */
+    public function activiryQuery($i = 0, $p = 1, $r = 20, $t = '', $c = '', $y = '', $o = '')
+    {
+        $option['activity'] = true;
+        $option['activityId'] = $i;
+        $this->query($p, $r, $t, $c, $y, $o, $this->successMsg['activity'], $option);
     }
     
     public function detailQuery($id = 0)
     {
         if(empty($id)||$id===0){
-            $this->apiError('404', '该记录不存在！');
+            $this->apiError('7001', $this->errMsg['7001']);
         }
         
         $data = $this->datamodel->field('id,title,image,categoryid,content,view,price,starttime,endtime,teacherid,online')->find($id);
         if (!$data) {
-            $this->apiError('404', '该记录不存在！');
+            $this->apiError('7001', $this->errMsg['7001']);
         }
         
         //dump($data);
         if($data['content']&&!empty($data['content'])){
             $data['content'] = $this->replace_img($data['content']);
-        }        
+        }
         
         /* 更新浏览数 */
         $map = array('id' => $id);
@@ -132,23 +170,35 @@ class CourseController extends ApiController
             $data['imageurl'] = $this->protocol . get_cover($data['image'], 'path');
         }
         
-        $this->apiSuccess('获取课堂详情成功', null, array('data'=>$data));
+        $this->apiSuccess($this->successMsg['detail'], null, array('data'=>$data));
     }
     
-    private function query($page = 1, $row = 20, $title = '', $content = '', $category = '', $message = 'sucess', $recommend = false){        
+    private function query($page = 1, $row = 20, $title = '', $content = '', $category = '', $orgId = '', $message = 'sucess', $option = array()){        
         
-        $order = $recommend?'recommend desc,createtime desc,view desc':'createtime desc,view desc';
+        $order = $option['recommend']?'recommend desc,createtime desc,view desc':'createtime desc,view desc';
         
+        $majorOrg = C('MAJOR_ORG');
+        if($majorOrg&&$orgId){
+            $map['orgId']=$orgId;
+        }
+                
         $map['status'] = array(
             'egt',
             0
         );
-        if($recommend){
+        if($option['recommend']){
             $map['recommend'] = array(
                 'eq',
                 1
             );
-        }        
+        }
+        
+        if($option['activity']){
+            $map['activityId'] = array(
+                'eq',
+                $option['activityId']
+            );
+        }
         
         $search_title = $title;
         if (! empty($search_title)) {

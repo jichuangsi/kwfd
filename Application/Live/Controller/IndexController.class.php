@@ -48,7 +48,11 @@ class IndexController extends Controller
         $this->assign('menu_list', $menu_list);
         
         /* 读取站点配置 */
-        $config = api('Config/lists');
+        $config =   S('DB_CONFIG_DATA');
+        if(!$config){
+            $config =   api('Config/lists');
+            S('DB_CONFIG_DATA',$config);
+        }
         C($config); //添加配置
 		
 		//$http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
@@ -372,6 +376,11 @@ class IndexController extends Controller
         //dump($orderlist); 
 		$this->assign('orderlist', $orderlist);
 		 
+		if(is_login()){
+		    $qrCodeUrl = str_ireplace('__org__',C('ORG_ID'),str_ireplace('__user__',get_uid(),str_ireplace('__course__',$id,C('_CONFIG_LX_QRCODE_URL'))));
+		    //dump($qrCodeUrl);
+		    $this->assign('qrCodeUrl', $qrCodeUrl);
+		}
 		
 		$this->display();
     }

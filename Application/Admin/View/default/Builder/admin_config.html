@@ -748,6 +748,22 @@
 						}
 						</php>
                     </case>
+                    <case value="OrgCategory">
+                        	<label>分类：</label>
+                        	<select name="{$field.name}" onchange="orgCategoryChange(this)">
+	                            <volist name="field.opt" id="option">
+	                                <php>
+	                                    $selected = $field['value']==$key ? 'selected' : '';
+	                                </php>
+	                                <option value="{$key}" {$selected}>{$option|htmlspecialchars}</option>
+	                            </volist>
+	                        </select>
+                        	<label>名称：</label>
+                        	<select name="orgId" id="orgId">
+                        		<option selected value='0'>请选择</option>
+                        	</select>
+                        	<input type="hidden" name="orgName" id="orgName" value=""/>                        
+                    </case>
                     <default/>
                     <span style="color: #f00;">错误：未知字段类型 {$field.type}</span>
                     <input type="hidden" name="{$field.name}" value="{$field.value|htmlspecialchars}"/>
@@ -765,6 +781,124 @@
 </block>
 
 <block name="script">
+	<php>if(C('MAJOR_ORG')){</php>
+						<script type="text/javascript">
+	                    	var orgIdSelected = '{$orgIdSelected}';
+	                    	var activityIdSelected = '{$activityIdSelected}';	                    	
+                        	queryOrgans($("select[name='orgCatId']").val());
+                        	queryActivitys(orgIdSelected);
+                        	
+                        	function queryOrgans(val){
+                        		if(!val|| val==0) return;
+                        		var url = "{:C('MASTER_API_ORGANIZATION')}"+val;
+                        		//console.log(url);
+                        		var ajaxTimeOut=$.ajax({        
+                        			type:"get",        
+                        			url:url,        
+                        			dataType:"json",        
+                        			async:true,        
+                        			cache:false,//不缓存        
+                        			timeout:5000,        
+                        			success:function(data){                        				
+                        				if(data&&data['errorCode']==="1"&&data['data']&&data['data'].length>0){
+                                    		$("#orgId").empty();
+                        					$("#orgId").append("<option "+ ((!orgIdSelected)?"":"selected") +" value='0'>请选择</option>");
+                        					for(var i=0;i<data['data'].length;i++){
+                        						$("#orgId").append("<option value='"+data['data'][i].id+"' "+ (orgIdSelected&&orgIdSelected===data['data'][i].id?"selected":"") +">"+data['data'][i].title+"</option>");
+                        						if(orgIdSelected&&orgIdSelected===data['data'][i].id){
+                        							$("#orgName").val(data['data'][i].title); 
+                        						}
+                        					
+                        					} 
+                        				}else{
+                        					//alert("获取机构列表失败！请稍后再试！");
+                        				}
+                        			},
+                        			error:function (){            
+                        				//mock();
+                        				alert("获取机构列表失败！请稍后再试！");     
+                        			},
+                        			complete:function (XMLHttpRequest,status){            
+                        				if(status=='timeout'){
+                        					alert("获取机构列表请求超时！请稍后再试！");    
+                        					ajaxTimeOut.abort();
+                        				}        
+                        			}
+                        		}); 
+                        	}
+                        	function queryActivitys(val){
+                        		if(!val|| val==0) return;
+                        		var url = "{:C('MASTER_API_ACTIVITY')}"+val;
+                        		console.log(url);
+                        		var ajaxTimeOut=$.ajax({        
+                        			type:"get",        
+                        			url:url,        
+                        			dataType:"json",        
+                        			async:true,        
+                        			cache:false,//不缓存        
+                        			timeout:5000,        
+                        			success:function(data){                        				
+                        				if(data&&data['errorCode']==="1"&&data['data']){
+                        						$("select[name='activityId']").empty();
+                        						$("select[name='activityId']").prepend("<option "+ ((!activityIdSelected)?"":"selected") +" value='0'>请选择</option>");
+                            					for(var i=0;i<data['data'].length;i++){
+                            						$("select[name='activityId']").append("<option value='"+data['data'][i].id+"' "+ (activityIdSelected&&activityIdSelected===data['data'][i].id?"selected":"") +" data-rule='"+data['data'][i].activityrule+"'>"+data['data'][i].name+"</option>");
+                            						if(activityIdSelected&&activityIdSelected===data['data'][i].id){
+                            							if($("input[name='activityName']"))	
+                                        					$("input[name='activityName']").val(data['data'][i].name);
+                                        				if($("input[name='activityRule']")) 
+                                        					$("input[name='activityRule']").val(data['data'][i].activityrule);
+                            						}
+                            					}                					 
+                        				}else{
+                        					//alert("获取活动列表失败！请稍后再试！");
+                        				}
+                        			},
+                        			error:function (){
+                        				alert("获取活动列表失败！请稍后再试！");     
+                        			},
+                        			complete:function (XMLHttpRequest,status){            
+                        				if(status=='timeout'){
+                        					alert("获取活动列表请求超时！请稍后再试！");    
+                        					ajaxTimeOut.abort();
+                        				}        
+                        			}
+                        		}); 
+                        	}
+                        	$("#orgId").change(function(){   
+                        		$("#orgName").val($(this).children('option:selected').text());                        		
+                        		
+                        		queryActivitys($(this).val());
+                        	});
+                        	
+							$("select[name='activityId']").change(function(){
+                    			if($("input[name='activityName']"))	
+                    				$("input[name='activityName']").val($(this).children('option:selected').text());
+                    			if($("input[name='activityRule']")) 
+                    				$("input[name='activityRule']").val($(this).children('option:selected').attr('data-rule'));
+                    		});                   	
+                        	
+                        	function orgCategoryChange(val){    
+                        		orgIdSelected = '';
+                        		queryOrgans($(val).val());                        		                   		
+                        	}
+                        	function mock(){
+                        		var data = new Array();
+                        		data[0] = {"orgId":"1","orgName":"测试机构名称1"};
+                				data[1] = {"orgId":"2","orgName":"测试机构名称2"};
+                				data[2] = {"orgId":"3","orgName":"测试机构名称3"};
+                				$("#orgId").empty();
+                				$("#orgId").append("<option "+ ((!orgIdSelected)?"":"selected") +" value='0'>请选择</option>");
+                				for(var i=0;i<data.length;i++){
+            						$("#orgId").append("<option value='"+data[i].orgId+"' "+ (orgIdSelected&&orgIdSelected===data[i].orgId?"selected":"") +">"+data[i].orgName+"</option>");
+            						if(orgIdSelected&&orgIdSelected===data[i].orgId){
+            							$("#orgName").val(data[i].orgName); 
+            						}
+            					} 
+                        	}
+                        </script>
+	<php>}</php>
+	
     <if condition="$importDatetimePicker">
         <link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
         <php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>

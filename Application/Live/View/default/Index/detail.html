@@ -1,6 +1,7 @@
 <extend name="./Application/Common/View/base/common.html" />
 
 <block name="body">
+<script src="__STATIC__/qrcode.min.js"></script>
 <style>
        .nav-tabs > li > a {
          padding:8px 20px;
@@ -53,9 +54,32 @@ font{
 	font-size:20px;line-height:33px;font-weight:bold;color:#f76b07
 }
 .kejscontent img{max-width: 100%;}
-
+		.mask {
+		    width: 100%;
+		    height: 100%;
+		    padding: 0 0.2rem;
+		    background-color: rgba(0, 0, 0, 0.3);
+		    position: fixed;
+		    top: 0px;
+		    left: 0px;
+		    display: none;
+		    text-align: center;
+		    z-index: 999;
+		}
+		.mask .img {
+		    /* width: 100%; */
+		    position: absolute;
+		    left: 50%;
+		    top: 50%;
+		    transform: translate(-50%,-50%);
+		}
+		.mask .img div {
+		    width: 100%;
+		    height: auto;
+		}
 </style>
 <script>
+
 $(function(){
 
 $('#myModal').on('shown.bs.modal', function (e) {
@@ -83,6 +107,23 @@ $('#myModal').on('shown.bs.modal', function (e) {
  })
  
 })
+function qrcodes(url){
+	//console.log(url);
+	$('.mask').css('display','block'); 
+	
+	$("#qrcodeImg").empty();
+	var qrcode = new QRCode(document.getElementById("qrcodeImg"), {
+		width : 300,
+		height : 300,
+		colorDark : "#000000",
+	    colorLight : "#ffffff",
+	    correctLevel : QRCode.CorrectLevel.H
+	});
+	qrcode.makeCode(url);
+}
+function hide(){
+    $('.mask').css('display','none');
+}
 </script> 
     <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
     <div class="container" style="min-height: 400px">
@@ -127,8 +168,13 @@ $('#myModal').on('shown.bs.modal', function (e) {
                           <div class="whole">
 							<div class="whole-left">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 							
-							<div class="whole-right" style="margin-top:30px"><a href="{:U('Cart',array('id'=>$data["id"],'suid'=>$suid))}" class="btn btn-primary">&nbsp;&nbsp;立即报名&nbsp;&nbsp;</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<a href="/index.php?s=/feedback/index/index.html" class="btn btn-primary">&nbsp;&nbsp;联系我们&nbsp;&nbsp;</a></div>
+							<div class="whole-right" style="margin-top:30px">							
+							<if condition="is_login()">
+								<a onclick="qrcodes('{$qrCodeUrl}')"  class="btn btn-primary">&nbsp;&nbsp;享客码&nbsp;&nbsp;</a>
+							</if>&nbsp;&nbsp;
+							<a href="/index.php?s=/feedback/index/index.html" class="btn btn-primary">&nbsp;&nbsp;联系我们&nbsp;&nbsp;</a>&nbsp;&nbsp;	
+							<a href="{:U('Cart',array('id'=>$data["id"],'suid'=>$suid))}" class="btn btn-primary">&nbsp;&nbsp;立即报名&nbsp;&nbsp;</a>					
+							</div>
 						  </div>
 					  </div>
 					 </div>
@@ -265,6 +311,11 @@ $('#myModal').on('shown.bs.modal', function (e) {
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 	
-	
+	<!-- 二维码展示区 -->
+		<div class="mask" onclick="hide()">
+	        <div class="img">
+	            <div id="qrcodeImg"></div>  
+	        </div>
+	    </div>
 	
 </block>
