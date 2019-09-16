@@ -87,6 +87,9 @@ class ConfigApi {
                     if($v['merchant_key']){//微信小程序secret
                         $config['WECHAT_APPLET_KEY'] = $v['merchant_key'];
                     }
+                    if($v['id']){//机构所在中台id
+                        $config['ORG_ID'] = $v['id'];
+                    }
                 }
             }
             

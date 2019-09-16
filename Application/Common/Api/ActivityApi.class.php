@@ -12,27 +12,27 @@
 namespace Common\Api;
 class ActivityApi {
     
-    public static function lists($url){
+    public static function lists($url, $orgId){
         
-        $activity = self::getActivityFromMaster($url);
+        $activity = self::getActivityFromMaster($url, $orgId);
         
         return $activity;
     }
 
-    private static function getActivityFromMaster($url){
-        if(empty($url)) return NULL;
+    private static function getActivityFromMaster($url, $orgId){
+        if(empty($url)||empty($orgId)) return NULL;
         
-        $arr = json_decode(file_get_contents($url.$_SERVER['HTTP_HOST']),true);
+        $arr = json_decode(file_get_contents($url.$orgId),true);
         
         /* if(!$arr){
-            $arr["errorCode"] = "1";
-            $arr["data"][0] = array("id"=>1,"name"=>"测试活动1","rule"=>"p:1;d:0.3");
-            $arr["data"][1] = array("id"=>2,"name"=>"测试活动2","rule"=>"d:0.3");                
-        } */
+         $arr["errorCode"] = "1";
+         $arr["data"][0] = array("id"=>1,"name"=>"测试活动1","activityrule"=>"p:1;d:0.3","description"=>"");
+         $arr["data"][1] = array("id"=>2,"name"=>"测试活动2","activityrule"=>"d:0.3","description"=>"");
+         } */
         
         if($arr['data']&&is_array($arr['data'])&&count($arr['data'])>0){
             return $arr['data'];
-        }        
+        }
         
         return NULL;
     }

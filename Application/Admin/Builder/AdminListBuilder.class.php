@@ -485,7 +485,12 @@ class AdminListBuilder extends AdminBuilder
                 
             //返回带链接的文字
             $switchRecommend = $value == 1 ? 0 : 1;
-            $url = $that->addUrlParam($setRecommendUrl, array('recommend' => $switchRecommend, 'ids' => $item['id']));
+            $params = array('recommend' => $switchRecommend, 'ids' => $item['id']);
+            $majorOrg = C('MAJOR_ORG');
+            if($majorOrg){
+                $params['orgId'] = $item['orgId'];
+            }
+            $url = $that->addUrlParam($setRecommendUrl, $params);
             return "<a href=\"{$url}\" class=\"ajax-get\">$text</a>";
         });
 
@@ -534,15 +539,22 @@ class AdminListBuilder extends AdminBuilder
         $this->success('设置成功', $_SERVER['HTTP_REFERER']);
     }
     
-    public function doSetRecommend($model, $ids, $recommend)
+    public function doSetRecommend($model, $ids, $recommend, $orgId)
     {
         if ($model != '')
         {
             if($recommend>0){
-                $rt = M($model)->where('recommend='.$recommend)->count();            
+                unset($map);
+                $map[recommend] = $recommend;
+                $majorOrg = C('MAJOR_ORG');
+                if($majorOrg){
+                    $map['orgId'] = $orgId;
+                    $tip = '该机构';
+                }
+                $rt = M($model)->where($map)->count();
                 if($rt>=C('RECOMMEND_MAX_NUM')){
-                    $this->error('推荐个数已到上限。');
-                }                            
+                    $this->error($tip.'推荐课程个数已到上限。');
+                } 
             }        
             $ids = is_array($ids) ? $ids : explode(',', $ids);
             M($model)->where(array('id' => array('in', $ids)))->save(array('recommend' => $recommend));
