@@ -14,7 +14,11 @@ class WxpayController extends Controller
     public function _initialize()
     {
         $this->orderModel = D('Cart/Order');        
-        $config = api('Config/lists');
+        $config =   S('DB_CONFIG_DATA');
+        if(!$config){
+            $config =   api('Config/lists');
+            S('DB_CONFIG_DATA',$config);
+        }
         C($config); //添加配置
     }
  
