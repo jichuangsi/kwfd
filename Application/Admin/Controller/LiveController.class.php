@@ -312,7 +312,7 @@ class LiveController extends AdminController
 			    $data['recommend'] = $recommend;
 			}else
 			    $data['teacherid'] = UID;
-			
+			    
 			if ($isEdit) {
 			    if(IS_ROOT){
 			        $data['userId'] = $teacherid;
@@ -337,6 +337,24 @@ class LiveController extends AdminController
                 $rs = $this->datamodel->add($data);
             }
             if ($rs) {
+                
+                if(IS_ROOT){
+                    if($majorOrg){
+                        $gid = $data['orgId'];
+                    }else{
+                        $gid = C('ORG_ID');
+                    }
+                    $aid = $data['activityId'];
+                    $kid = $isEdit?$id:$rs;
+                    
+                    if($gid&&$aid!=null&&$kid){
+                        $arr = file_get_contents(str_replace('__K__', $kid, str_replace('__A__', $aid, str_replace('__G__', $gid, C('MASTER_API_ACTIVITY_CALLBACK')))),true);
+                        //dump($arr);
+                    }else{
+                        //echo $gid . '---' . $aid . '---' . $kid;
+                    }
+                }
+                
                 $this->success($isEdit ? '编辑成功' : '添加成功', U($this->_model.'/lists'));
             } else {
                 $this->error($isEdit ? '编辑失败' : '添加失败');
