@@ -5,14 +5,64 @@ body {
 .logo {
     position: absolute;
     left: 39px;
-    top: 26px;
+    top: 5px;
+}
+.url {
+    position: absolute;
+    left: 300px;
+    top: 20px;
+    width: 400px;
+    height: 30px;
+    line-height: 30px;
+    display: flex;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.url input {
+    flex: 1;
+    outline: none;
+    height: 30px;
+    border: none;
+    padding: 0px 10px;
+}
+.url div {
+    width: 100px;
+    height: 30px;
+    text-align: center;
+    color: #fff;
+    background-color: #0094ff;
+    cursor: pointer;
+}
+.iframe_box {
+    width: 60%;
+    height: 80%;
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    z-index: 9999;
+    background-color: #fff;
+    border: 1px solid #333;
+    display: none;
+}
+.iframe_box .iframe_none {
+    float: right;
+    font-size: 28px;
+    padding: 5px 20px;
+    cursor: pointer;
+}
+.iframe_box iframe {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 38px;
+    border-top: 1px solid #333;
 }
 .box {
     width: 100%;
     height: 100%;
-    margin-top: 100px;
+    margin-top: 70px;
     background-color: black;
     position: relative;
+    overflow: hidden;
 }
 .left_box {
     width: 100%;
@@ -21,18 +71,33 @@ body {
 }
 .right_box {
     width: 320px;
-    height: 100%;
     position: absolute;
     right: 0px;
     top: 0px;
+    z-index: 9999;
 }
 .text {
     width: 320px;
-    height: 395px;
+    height: 100%;
     background-color: #fff;
     position: absolute;
     bottom: 0px;
-    z-index: 10;
+    z-index: 9999;
+    transition: transform 0.5s linear;
+    transform: translateX(-110%);
+}
+.text .text_none {
+    width: 30px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+    background-color: #fff;
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translate(100%,-50%);
+    z-index: 9999;
+    cursor: pointer;
 }
 .text .nav {
     width: 100%;
@@ -76,13 +141,13 @@ body {
 }
 .text .userList {
     width: 100%;
-    height: 360px;
+    height: 100%;
     overflow: auto;
     position: absolute;
     left: 0px;
     top: 36px;
     background-color: #fff;
-    padding: 0px 10px
+    padding: 36px 10px
 }
 .text .userList div {
     margin: 10px 0px;
@@ -127,12 +192,13 @@ body {
 }
 .text .message,.text .Onemessage{
     width: 100%;
-    height: 408px;
+    height: 100%;
     overflow: auto;
     position: absolute;
     left: 0px;
     top: 36px;
     background-color: #fff;
+    padding: 36px 0px;
 }
 .text .message {
     z-index: 1;
@@ -203,12 +269,13 @@ body {
 }
 .only {
     width: 100%;
-    height: 408px;
+    height: 100%;
     overflow: auto;
     position: absolute;
     left: 0px;
     top: 36px;
     background-color: #fff;
+    padding: 36px 0px;
 }
 .only .Popupbox {
     width: 100%;
@@ -222,7 +289,7 @@ body {
 }
 .only .onlymessage {
     width: 100%;
-    height: 408px;
+    height: 100%;
     overflow: auto;
     position: absolute;
     left: 0px;
@@ -275,7 +342,7 @@ body {
 }
 #video {
     width: 320px;
-    height:240px;
+    height:480px;
     position: relative;
     /* overflow: hidden; */
     background-color: red;
@@ -356,6 +423,7 @@ body {
     cursor: pointer;
 }
 .baiban_nav div{
+    width: 40px;
     margin-top: 20px;
     margin-left: 5px;
 }
@@ -367,6 +435,7 @@ body {
     left: 50%;
     bottom: 50px;
     transform: translateX(-50%);
+    z-index: 999;
     /* background-color: red; */
 }
 .tab .button {
@@ -390,9 +459,4 @@ body {
 .tab .ys .tab_check{
     background-color: #0094ff;
     color: #fff;
-}
-.text_small {
-    display: none;
-    transform: translateX(-125%);
-    z-index: 10000;
 }

@@ -145,6 +145,32 @@ function check(val){
             break;
     } 
 }
+
+function dadada(e){
+    f=document.getElementById('file').files[0]
+    console.log(f)
+    let reads = new FileReader()
+    reads.readAsDataURL(f)
+    reads.onload = function(e) {
+        //这里上传接口·····
+        let image = new Image();
+        image.src = e.target.result;
+        image.onload = function() {
+            allroom.insertImage({
+                uuid: uuid, 
+                //图片中心在白板内部坐标的
+                centerX: 0, 
+                centerY: 0, 
+                //图片在白板中显示的大小
+                width: this.width, 
+                height: this.height
+            });
+            // room.disableOperations = false;
+            //返回路径---
+            allroom.completeImageUpload(uuid, "http://127.0.0.1:5501/Capture001.png")
+        }
+    }
+}
 function tab_check(val){
     switch(val) {
         case '左':
