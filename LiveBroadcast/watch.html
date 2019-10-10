@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="assets/style/white-web-sdk.css">
     <script src="AgoraRTCSDK-2.7.0.js"></script>
     <script src="agora-rtm-sdk-1.0.0.js"></script>
-    <script src="vendor/jquery.js"></script>
+    <!-- <script src="vendor/jquery.js"></script> -->
+    <script src="vendor/jquery-3.4.1.min.js"></script>
+    <script src="vendor/jquery.ajaxFileUpload.js"></script>
     <script src="vendor/white-web-sdk.js"></script>
     <script src="vendor/index.js"></script>
 </head>
@@ -94,7 +96,8 @@
                 <div onclick="check('文字')"><span class="iconfont icon-wenzi"></span></div>
                 <div onclick="check('添加')"><span class="iconfont icon-tianjia"></span></div>
                 <div onclick="block()"><span class="iconfont icon-xinxihuihuaxiaoxi"></span></div>
-                <div><input type="file" id="file" onchange="dadada()"></div>
+                <!-- <div onclick="removeImage(186)"><span class="iconfont icon-xinxihuihuaxiaoxi"></span></div> -->
+                <div><input type="file" multiple name="file[]" id="file" onchange="dadada()"></div>
             </div>
             <div class="tab">
                 <div class="button" onclick="tab_check('左')"><span class="iconfont icon-zuo"></span></div>
@@ -281,6 +284,19 @@
                         });
                         sessionStorage.setItem('streamId','agora_remote' + stream.getId())
                         Again++
+                        
+                        $.post("/index.php?s=/live/index/getshareuuid",{room:room},function(result){	
+                        	console.log(result+"==="+stream.getId());
+                        	if(result===String(stream.getId())){
+                        		demo = $('#'+sessionStorage.getItem('streamId'))[0]
+                                demo.style.top = '0px'
+                                demo.style.zIndex = '9999'
+                                demo.style.width = w-320+'px'
+                                demo.style.height = h+'px'
+                                demo.style.right = '100%'
+          		    		} 		    		
+          		    	});                        
+                        
                         //判断是否共享----接口
                         // if(Again > 1){
                         //     demo = $('#'+sessionStorage.getItem('streamId'))[0]
@@ -561,6 +577,11 @@
               localStreams.push(uid);
               console.log(111111)
               console.log(uid)
+              $.post("/index.php?s=/live/index/setshareuuid",{room:room,uuid:uid,isteacher:1},function(result){				
+            	  if(result!='success'){
+		    			alert("共享屏幕暂不可用！");
+		    		}   		    		
+		    	});
               // 创建屏幕共享流
               /* Number.tem = ua.match(/(Chrome(?=\/))\/?(\d+)/i);
               if(parseInt(tem[2]) >= 72  && navigator.mediaDevices.getDisplayMedia ) {

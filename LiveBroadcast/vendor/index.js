@@ -1,7 +1,9 @@
 var role = sessionStorage.getItem('role')
 var uid = sessionStorage.getItem('id')
+var roomid = sessionStorage.getItem('room')
 var wbtoken = sessionStorage.getItem('wbtoken');
 var wbuuid = sessionStorage.getItem('wbuuid');
+var images = [];
 
 if(!wbtoken){
 	alert('Whiteboard is not available');
@@ -55,6 +57,8 @@ fetch(url, requestInit).then(function(response) {
     allroom = room
     // Step3: 加入成功后想白板绑定到指定的 dom 中
     bind(room);
+}).then(function(){
+	loadImages();
 }).catch(function(err) {
     console.log(err);
 });
@@ -147,29 +151,139 @@ function check(val){
 }
 
 function dadada(e){
-    f=document.getElementById('file').files[0]
-    console.log(f)
-    let reads = new FileReader()
-    reads.readAsDataURL(f)
-    reads.onload = function(e) {
-        //这里上传接口·····
-        let image = new Image();
-        image.src = e.target.result;
-        image.onload = function() {
-            allroom.insertImage({
-                uuid: uuid, 
-                //图片中心在白板内部坐标的
-                centerX: 0, 
-                centerY: 0, 
-                //图片在白板中显示的大小
-                width: this.width, 
-                height: this.height
-            });
-            // room.disableOperations = false;
-            //返回路径---
-            allroom.completeImageUpload(uuid, "http://127.0.0.1:5501/Capture001.png")
+    f=document.getElementById('file').files
+    console.log(f)    
+
+    var data = { "room": roomid};
+    // 开始上传
+    $.ajaxFileUpload({
+        secureuri: false,// 是否启用安全提交，默认为 false
+        type: "POST",
+        url: "/index.php?s=/live/index/uploadPictures",
+        fileElementId: "file",// input[type=file] 的 id
+        dataType: "json",// 返回值类型，一般位 `json` 或者 `text`
+        data: data,// 添加参数，无参数时注释掉
+        success: function (ret, status) {
+            // 成功
+        	console.log(ret);
+        	
+        	if(ret&&ret['status']===1&&ret['data']&&ret['data'].length>0){
+            	
+            	if(images.length>0){        		
+            		clearImage();
+            	}
+        		
+        		images = ret['data'];        	
+    	       	
+            	for (let a in ret['data']) {            		
+            		if(a==0){
+            			loadImage(a)
+            		}else{
+            			ys++
+            			allroom.putScenes("/", [{name: "init"+ys}])
+            			var div = '<div onclick="tab_switch(this)">'+ys+'</div>'
+            			$('.ys').append(div)
+            		}        		
+            	}
+        	}        	
+        },
+        error: function (data, status, e) {
+            // 失败
+        	console.log(e);
         }
-    }
+    });
+    
+    /*for(var i=0;i<f.length;i++){
+
+	    let reads = new FileReader()
+	    reads.readAsDataURL(f[i])
+	    reads.onload = function(e) {
+	        //这里上传接口·····
+	        let image = new Image();
+	        image.src = e.target.result;
+	        image.onload = function() {
+	        	var uuid = Math.floor(Math.random()*100+1)+'f';
+	            allroom.insertImage({
+	                uuid: uuid, 
+	                //图片中心在白板内部坐标的
+	                centerX: 0, 
+	                centerY: 0, 
+	                //图片在白板中显示的大小
+	                width: this.width, 
+	                height: this.height
+	            });
+	            // room.disableOperations = false;
+	            //返回路径---
+	            allroom.completeImageUpload(uuid, "http://127.0.0.1:5501/Capture001.png")
+	        }
+	    }
+    }*/
+}
+function loadImages(){
+	if(role == '4'){
+		$.post("/index.php?s=/live/index/getPictures",{room:room},function(ret){
+			console.log(ret);  
+			if(ret&&ret['status']===1&&ret['data']&&ret['data'].length>0){
+				images = ret['data'];
+				for (let a in ret['data']) {            		
+            		if(a==0){
+            			loadImage(a)
+            		}else{
+            			ys++
+            			allroom.putScenes("/", [{name: "init"+ys}])
+            			var div = '<div onclick="tab_switch(this)">'+ys+'</div>'
+            			$('.ys').append(div)
+            		}        		
+            	}
+			}
+		});
+	}	
+}
+function loadImage(index){
+	if(images.length==0) return;
+	var uuid = Math.floor(Math.random()*100+index)+'f';
+	allroom.insertImage({
+        uuid: uuid, 
+        //图片中心在白板内部坐标的
+        centerX: 0, 
+        centerY: 0, 
+        //图片在白板中显示的大小
+        width: this.width, 
+        height: this.height
+    });
+	allroom.completeImageUpload(uuid, images[index]['path'])
+}
+function clearImage(){
+	for(let i = 1; i <= ys; i++){
+		allroom.removeScenes("/init" + i);
+	} 
+	ys = 1
+	$('.ys').empty();            	
+	allroom.putScenes("/", [{name: "init"+ys}])
+    allroom.setScenePath('/init'+ys)
+    var div = '<div class="tab_check" onclick="tab_switch(this)">'+ys+'</div>'
+	$('.ys').append(div)
+}
+function removeImage(ids){
+	$.post("/index.php?s=/live/index/removePictures",{room:room,imageId:ids},function(ret){
+		console.log(ret); 
+		if(ret&&ret['status']===1&&ret['data']&&ret['data'].length>=0){
+			if(images.length>0){        		
+        		clearImage();
+        	}
+			images = ret['data'];
+			for (let a in ret['data']) {            		
+        		if(a==0){
+        			loadImage(a)
+        		}else{
+        			ys++
+        			allroom.putScenes("/", [{name: "init"+ys}])
+        			var div = '<div onclick="tab_switch(this)">'+ys+'</div>'
+        			$('.ys').append(div)
+        		}        		
+        	}
+		}
+	});
 }
 function tab_check(val){
     switch(val) {
@@ -192,10 +306,12 @@ function tab_check(val){
             }
             break;
     } 
+    loadImage(PageNumber-1)
 }
 function tab_switch(e){
     allroom.setScenePath('/init'+$(e).text())
     PageNumber = $(e).text()
     $('.ys>div').eq(PageNumber-1).addClass('tab_check').siblings().removeClass('tab_check')
+    loadImage(PageNumber-1)
 }
 
