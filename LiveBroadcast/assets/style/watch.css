@@ -203,16 +203,16 @@ body {
 .text .message {
     z-index: 1;
 }
-.message::-webkit-scrollbar,.userList::-webkit-scrollbar,.Onemessage::-webkit-scrollbar,.onlymessage::-webkit-scrollbar {/*滚动条整体样式*/
+.message::-webkit-scrollbar,.userList::-webkit-scrollbar,.Onemessage::-webkit-scrollbar,.onlymessage::-webkit-scrollbar,.img_box .img_list::-webkit-scrollbar {/*滚动条整体样式*/
     width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
     height: 1px;
 }
-.message::-webkit-scrollbar-thumb,.userList::-webkit-scrollbar-thumb,.Onemessage::-webkit-scrollbar-thumb,.onlymessage::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+.message::-webkit-scrollbar-thumb,.userList::-webkit-scrollbar-thumb,.Onemessage::-webkit-scrollbar-thumb,.onlymessage::-webkit-scrollbar-thumb,.img_box .img_list::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
     border-radius: 10px;
      -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     background: #535353;
 }
-.message::-webkit-scrollbar-track,.userList::-webkit-scrollbar-track,.Onemessage::-webkit-scrollbar-track,.onlymessage::-webkit-scrollbar-track {/*滚动条里面轨道*/
+.message::-webkit-scrollbar-track,.userList::-webkit-scrollbar-track,.Onemessage::-webkit-scrollbar-track,.onlymessage::-webkit-scrollbar-track,.img_box .img_list::-webkit-scrollbar-track {/*滚动条里面轨道*/
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     border-radius: 10px;
     background: #EDEDED;
@@ -413,6 +413,9 @@ body {
 #video .nav .s6 {
     background-position: -31px -425px;
 }
+.s7 img {
+    width: 90%;
+}
 
 .baiban_nav {
     position: absolute;
@@ -429,6 +432,9 @@ body {
 }
 .baiban_nav .iconfont {
     font-size: 30px !important;
+}
+.baiban_nav img {
+    width: 100%;
 }
 .tab{
     position: absolute;
@@ -459,4 +465,124 @@ body {
 .tab .ys .tab_check{
     background-color: #0094ff;
     color: #fff;
+}
+
+.img_box {
+    width: 320px;
+    height: 100%;
+    background-color: #fff;
+    position: absolute;
+    bottom: 0px;
+    z-index: 9999;
+    transition: transform 0.5s linear;
+    transform: translateX(-110%);
+}
+.img_box .img_box_none {
+    width: 30px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+    background-color: #fff;
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translate(100%,-50%);
+    z-index: 9999;
+    cursor: pointer;
+}
+.img_box .img_list {
+    width: 300px;
+    height: 80%;
+    margin: 10px auto;
+    overflow-y: auto;
+}
+.img_box .img_list .img {
+    width: 45%;
+    height: 100px;
+    display: inline-block;
+    position: relative;
+    margin-bottom: 10px;
+}
+.img_box .img_list .img:nth-child(2n){
+    float: right;
+}
+.img_box .img_list .img img {
+    width: 100%;
+    height: 100%;
+}
+.img_box .img_list .img .img_del {
+    width: 100%;
+    height: 20px;
+    background-color: crimson;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    display: none;
+}
+.img_box .img_list .img .img_del img {
+    width: 16%;
+    display: block;
+    margin: 0 auto;
+}
+.img_box .img_list .img .img_check {
+    width: 100%;
+    height: 20px;
+    background-color: rgb(0, 255, 21);
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    display: none;
+}
+.img_box .img_list .img .img_check img {
+    width: 16%;
+    display: block;
+    margin: 0 auto;
+}
+.img_box .add_img {
+    width: 100%;
+    height: 40px;
+    background-color: #0094ff;
+    position: absolute;
+    bottom: 80px;
+    left: 0px;
+    text-align: center;
+    cursor: pointer;
+    line-height: 40px;
+    border: 1px solid #ddd
+}
+.img_box .add_img input {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+.img_box .edit_img {
+    width: 100%;
+    height: 40px;
+    background-color: aqua;
+    position: absolute;
+    bottom: 40px;
+    left: 0px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+    border: 1px solid #ddd
+}
+.img_box .qx_edit{
+    background-color: red;
+    display: none;
+}
+.img_box .btn_img {
+    width: 100%;
+    height: 40px;
+    background-color: aqua;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+    border: 1px solid #ddd
 }

@@ -4,6 +4,40 @@ var roomid = sessionStorage.getItem('room')
 var wbtoken = sessionStorage.getItem('wbtoken');
 var wbuuid = sessionStorage.getItem('wbuuid');
 var images = [];
+var editState = 0
+var img_list = [
+    {id:1,path:'../assets/images/1.jpg'},
+    {id:2,path:'../assets/images/2.jpg'},
+    {id:3,path:'../assets/images/3.jpg'},
+    {id:4,path:'../assets/images/4.jpg'},
+    {id:5,path:'../assets/images/5.jpg'},
+    {id:6,path:'../assets/images/6.jpg'},
+    {id:7,path:'../assets/images/7.jpg'},
+    {id:1,path:'../assets/images/1.jpg'},
+    {id:2,path:'../assets/images/2.jpg'},
+    {id:3,path:'../assets/images/3.jpg'},
+    {id:4,path:'../assets/images/4.jpg'},
+    {id:5,path:'../assets/images/5.jpg'},
+    {id:6,path:'../assets/images/6.jpg'},
+    {id:7,path:'../assets/images/7.jpg'},
+]
+$(function(){
+    var html = ""
+    for(let a in img_list){
+        html += '<div class="img" data-id="'+img_list[a]['id']+'" onclick="img_check(this)">'
+        html += '<img src="'+img_list[a]['path']+'" alt=""></img>'
+        html += '<div class="img_del">'
+        html += '<img src="./assets/images/错.png" alt="">'
+        html += '</div>'
+        html += '<div class="img_check">'
+        html += '<img src="./assets/images/打勾.png" alt="">'
+        html += '</div>'
+        html += '</div>'
+    }
+    $('.img_list').append(html)
+})
+
+
 
 if(!wbtoken){
 	alert('Whiteboard is not available');
@@ -13,7 +47,7 @@ if(role==='2'&&!wbuuid){
 	alert('Whiteboard is not available now, please retry later.');
 }
 
-//var sdkToken = "WHITEcGFydG5lcl9pZD0zZHlaZ1BwWUtwWVN2VDVmNGQ4UGI2M2djVGhncENIOXBBeTcmc2lnPTc1MTBkOWEwNzM1ZjA2MDYwMTMzODBkYjVlNTQ2NDA0OTAzOWU2NjE6YWRtaW5JZD0xNTgmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1OTAwNzM1NjEmYWs9M2R5WmdQcFlLcFlTdlQ1ZjRkOFBiNjNnY1RoZ3BDSDlwQXk3JmNyZWF0ZV90aW1lPTE1NTg1MTY2MDkmbm9uY2U9MTU1ODUxNjYwODYxNzAw";
+// var sdkToken = "WHITEcGFydG5lcl9pZD0zZHlaZ1BwWUtwWVN2VDVmNGQ4UGI2M2djVGhncENIOXBBeTcmc2lnPTc1MTBkOWEwNzM1ZjA2MDYwMTMzODBkYjVlNTQ2NDA0OTAzOWU2NjE6YWRtaW5JZD0xNTgmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1OTAwNzM1NjEmYWs9M2R5WmdQcFlLcFlTdlQ1ZjRkOFBiNjNnY1RoZ3BDSDlwQXk3JmNyZWF0ZV90aW1lPTE1NTg1MTY2MDkmbm9uY2U9MTU1ODUxNjYwODYxNzAw";
 var sdkToken = wbtoken
 var url;
 var requestInit;
@@ -165,26 +199,39 @@ function dadada(e){
         data: data,// 添加参数，无参数时注释掉
         success: function (ret, status) {
             // 成功
-        	console.log(ret);
+            console.log(ret);
+            // 触发展示图片
         	
         	if(ret&&ret['status']===1&&ret['data']&&ret['data'].length>0){
-            	
-            	if(images.length>0){        		
-            		clearImage();
-            	}
+                var html = ""
+                for(let a in ret['data']){
+                    html += '<div class="img" data-id="'+ret['data'][a]['id']+'" onclick="img_check(this)">'
+                    html += '<img src="'+ret['data'][a]['path']+'" alt=""></img>'
+                    html += '<div class="img_del">'
+                    html += '<img src="./assets/images/错.png" alt="">'
+                    html += '</div>'
+                    html += '<div class="img_check">'
+                    html += '<img src="./assets/images/打勾.png" alt="">'
+                    html += '</div>'
+                    html += '</div>'
+                }
+                $('.img_list').append(html)
+            // 	if(images.length>0){        		
+            // 		clearImage();
+            // 	}
         		
-        		images = ret['data'];        	
+        	// 	images = ret['data'];        	
     	       	
-            	for (let a in ret['data']) {            		
-            		if(a==0){
-            			loadImage(a)
-            		}else{
-            			ys++
-            			allroom.putScenes("/", [{name: "init"+ys}])
-            			var div = '<div onclick="tab_switch(this)">'+ys+'</div>'
-            			$('.ys').append(div)
-            		}        		
-            	}
+            // 	for (let a in ret['data']) {            		
+            // 		if(a==0){
+            // 			loadImage(a)
+            // 		}else{
+            // 			ys++
+            // 			allroom.putScenes("/", [{name: "init"+ys}])
+            // 			var div = '<div onclick="tab_switch(this)">'+ys+'</div>'
+            // 			$('.ys').append(div)
+            // 		}        		
+            // 	}
         	}        	
         },
         error: function (data, status, e) {
@@ -224,17 +271,30 @@ function loadImages(){
 		$.post("/index.php?s=/live/index/getPictures",{room:room},function(ret){
 			console.log(ret);  
 			if(ret&&ret['status']===1&&ret['data']&&ret['data'].length>0){
-				images = ret['data'];
-				for (let a in ret['data']) {            		
-            		if(a==0){
-            			loadImage(a)
-            		}else{
-            			ys++
-            			allroom.putScenes("/", [{name: "init"+ys}])
-            			var div = '<div onclick="tab_switch(this)">'+ys+'</div>'
-            			$('.ys').append(div)
-            		}        		
-            	}
+			// 	images = ret['data'];
+			// 	for (let a in ret['data']) {            		
+            // 		if(a==0){
+            // 			loadImage(a)
+            // 		}else{
+            // 			ys++
+            // 			allroom.putScenes("/", [{name: "init"+ys}])
+            // 			var div = '<div onclick="tab_switch(this)">'+ys+'</div>'
+            // 			$('.ys').append(div)
+            // 		}        		
+            // 	}
+                var html = ""
+                for(let a in ret['data']){
+                    html += '<div class="img" data-id="'+ret['data'][a]['id']+'" onclick="img_check(this)">'
+                    html += '<img src="'+ret['data'][a]['path']+'" alt=""></img>'
+                    html += '<div class="img_del">'
+                    html += '<img src="./assets/images/错.png" alt="">'
+                    html += '</div>'
+                    html += '<div class="img_check">'
+                    html += '<img src="./assets/images/打勾.png" alt="">'
+                    html += '</div>'
+                    html += '</div>'
+                }
+                $('.img_list').append(html)
 			}
 		});
 	}	
@@ -268,21 +328,36 @@ function removeImage(ids){
 	$.post("/index.php?s=/live/index/removePictures",{room:room,imageId:ids},function(ret){
 		console.log(ret); 
 		if(ret&&ret['status']===1&&ret['data']&&ret['data'].length>=0){
-			if(images.length>0){        		
-        		clearImage();
-        	}
-			images = ret['data'];
-			for (let a in ret['data']) {            		
-        		if(a==0){
-        			loadImage(a)
-        		}else{
-        			ys++
-        			allroom.putScenes("/", [{name: "init"+ys}])
-        			var div = '<div onclick="tab_switch(this)">'+ys+'</div>'
-        			$('.ys').append(div)
-        		}        		
-        	}
-		}
+		// 	if(images.length>0){        		
+        // 		clearImage();
+        // 	}
+		// 	images = ret['data'];
+		// 	for (let a in ret['data']) {            		
+        // 		if(a==0){
+        // 			loadImage(a)
+        // 		}else{
+        // 			ys++
+        // 			allroom.putScenes("/", [{name: "init"+ys}])
+        // 			var div = '<div onclick="tab_switch(this)">'+ys+'</div>'
+        // 			$('.ys').append(div)
+        // 		}        		
+        // 	}
+        // }
+        var html = ""
+        for(let a in ret['data']){
+            html += '<div class="img" data-id="'+ret['data'][a]['id']+'" onclick="img_check(this)">'
+            html += '<img src="'+ret['data'][a]['path']+'" alt=""></img>'
+            html += '<div class="img_del">'
+            html += '<img src="./assets/images/错.png" alt="">'
+            html += '</div>'
+            html += '<div class="img_check">'
+            html += '<img src="./assets/images/打勾.png" alt="">'
+            html += '</div>'
+            html += '</div>'
+        }
+        $('.img_list').children().remove()
+        $('.img_list').append(html)
+    }
 	});
 }
 function tab_check(val){
@@ -313,5 +388,90 @@ function tab_switch(e){
     PageNumber = $(e).text()
     $('.ys>div').eq(PageNumber-1).addClass('tab_check').siblings().removeClass('tab_check')
     loadImage(PageNumber-1)
+}
+function img_check(val){
+    if(editState == 0){
+        if($(val).find('.img_check').css('display')=='none'){
+            $(val).find('.img_check').css('display','block')
+        }else{
+            $(val).find('.img_check').css('display','none')
+        }
+    }else{
+        if($(val).find('.img_del').css('display')=='none'){
+            $(val).find('.img_del').css('display','block')
+        }else{
+            $(val).find('.img_del').css('display','none')
+        }
+    }
+}
+function edit_btn(){
+    editState = 1
+    $('.edit_btn').css('display','none')
+    $('.qx_edit').css('display','block')
+    $('.img').find('img').siblings().css('display','none')
+}
+function qx_edit(){
+    editState = 0
+    $('.edit_btn').css('display','block')
+    $('.qx_edit').css('display','none')
+    $('.img').find('img').siblings().css('display','none')
+}
+function img_none(){
+    editState = 0
+    $('.img_box')[0].style.transform = "translateX(-110%)"
+    $('.edit_btn').css('display','block')
+    $('.qx_edit').css('display','none')
+    $('.img').find('img').siblings().css('display','none')
+}
+function img_btn(){
+    var arr = []
+    var del = ''
+    if(editState == 0){
+        var arr_check = $('.img_check')
+        for (let i = 0;i<arr_check.length;i++){
+            if($(arr_check[i]).css('display') == 'block'){
+                arr.push({id:$(arr_check[i]).parents().attr('data-id'),path:$(arr_check[i]).parents().find('img').attr('src')})
+            }
+        }
+        // 创建新的白板页面or嵌图片
+        if(images.length>0){ 
+            clearImage();
+        }
+        images = arr;
+        for (let a in arr) {            		
+            if(a==0){
+                loadImage(a)
+            }else{
+                ys++
+                allroom.putScenes("/", [{name: "init"+ys}])
+                var div = '<div onclick="tab_switch(this)">'+ys+'</div>'
+                $('.ys').append(div)
+            }        		
+        }
+    }else{
+        var arr_del = $('.img_del')
+        for (let a = 0;a<arr_check.length;a++){
+            if($(arr_del[a]).css('display') == 'block'){
+                arr.push({id:$(arr_check[a]).parents().attr('data-id'),path:$(arr_check[a]).parents().find('img').attr('src')})
+            }
+        }
+        editState = 0
+        // 删除所选中的图片id、路径；
+        if(arr.length == 1){
+            del = arr[0].id
+        }else if(arr.length > 1){
+            for(let j = 0; j < arr.length; j++){
+                if(arr.length == 1){
+                    del = arr[j].id
+                }else{
+                    del += arr[j].id + ','
+                }
+            }
+        }
+        removeImage(del)
+    }
+    console.log(arr)
+    
+    $('.img').find('img').siblings().css('display','none')
 }
 
