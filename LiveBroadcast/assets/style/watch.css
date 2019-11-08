@@ -34,7 +34,7 @@ body {
     cursor: pointer;
 }
 .iframe_box {
-    width: 60%;
+    width: 70%;
     height: 80%;
     position: absolute;
     left: 100px;
@@ -371,7 +371,7 @@ body {
     width: 100% !important;
     height: 60px !important;
     position: absolute;
-    bottom: 0px;
+    bottom: -60px;
     left: 0px;
     background-color: rgba(0,0,0,0.4);
     display: flex;
@@ -412,6 +412,9 @@ body {
 }
 #video .nav .s6 {
     background-position: -31px -425px;
+}
+#video .nav .s7 {
+background: none;
 }
 .s7 img {
     width: 90%;
@@ -476,6 +479,10 @@ body {
     z-index: 9999;
     transition: transform 0.5s linear;
     transform: translateX(-110%);
+}
+.img_box .qk_btn {
+	background-color: red;
+	display: none;
 }
 .img_box .img_box_none {
     width: 30px;

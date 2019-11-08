@@ -44,7 +44,7 @@
 
             </div>
             <div class="right_box">
-                <div id="video" onmousemove="videofocus()" onmouseout="videoblur()">
+                <div id="video"> <!-- onmousemove="videofocus()" onmouseout="videoblur()" -->
                     <div class="title">主播正在路上...</div>
                     <div id="agora_local" style="width:100%;height:240px;display:inline-block;"></div>
                     <div class="UserCount">
@@ -98,6 +98,7 @@
                 <div onclick="check('添加')"><span class="iconfont icon-tianjia"></span></div>
                 <div onclick="block()"><span class="iconfont icon-xinxihuihuaxiaoxi"></span></div>
                 <div onclick="img_box()"><img src="./assets/images/图片.png" alt=""></div>
+                <div onclick="replay()"><img src="./assets/images/replay.png" alt="回放"></div>
                 <!-- <div onclick="removeImage(186)"><span class="iconfont icon-xinxihuihuaxiaoxi"></span></div> -->
                 <!-- <div><input type="file" multiple name="file[]" id="file" onchange="dadada()"></div> -->
             </div>
@@ -109,6 +110,7 @@
                 <div class="edit_img" onclick="edit_btn()">编辑图片</div>
                 <div class="edit_img qx_edit" onclick="qx_edit()">取消编辑</div>
                 <div class="btn_img" onclick="img_btn()">确定</div>
+                <div class="btn_img qk_btn" onclick="qk_btn()">清空</div>
             </div>
             <div class="tab">
                 <div class="button" onclick="tab_check('左')"><span class="iconfont icon-zuo"></span></div>
@@ -183,6 +185,7 @@
             }else{
                 $('.title').remove()
                 $('.s6').remove()
+                $('.baiban_nav').children().eq(9).remove()
             }
             function join() {
                 var channel_key = null;
@@ -276,7 +279,7 @@
                         client.subscribe(stream, function (err) {
                             console.log("Subscribe stream failed", err);
                         });
-                        $('.title')[0].style.display = 'none'
+                        if(role == '2') $('.title')[0].style.display = 'none'
                 });
     
                 // if(role == '2'){
@@ -821,7 +824,10 @@
             //     $(this).find('span').remove()
             // })
             onresize = function () {
-                // console.log(111)
+
+            	w = document.body.clientWidth
+            	$('.iframe_box').css('width',(w-420)+'px')
+            	// console.log(111)
                 // // alert(document.body.clientHeight)
                 // h = document.body.clientHeight
                 // w = document.body.clientWidth
@@ -887,6 +893,8 @@
             }
             function img_box(){
                 $('.img_box')[0].style.transform = "translateX(0%)"
+                $('.btn_img').css('display','none')
+                $('.qk_btn').css('display','block')
             }
             
             function transferName(uid){
@@ -900,11 +908,21 @@
             $('.text')[0].style.transform = "translateX(-110%)"
         }
         function iframe_click(){
-            if($('.url>input').val()!=""){
-                $('iframe').attr('src',$('.url>input').val())
-                $('.iframe_box')[0].style.display = 'block'
-                $('.url>input').val("")
-            }
+        	if($('.url>input').val()!=""){
+        		if($('.url>input').val().indexOf('http://') != -1){
+        			alert('需要https才可以正常显示')
+        		}else{
+        			if($('.url>input').val().indexOf('https://') != -1){
+        				$('iframe').attr('src',$('.url>input').val())
+        				$('.iframe_box')[0].style.display = 'block'
+        				$('.url>input').val("")
+        			}else{
+        				$('iframe').attr('src','https://'+$('.url>input').val())
+        				$('.iframe_box')[0].style.display = 'block'
+        				$('.url>input').val("")
+        			}
+        		}
+        	}
         }
         function iframe_none(){
                 $('.iframe_box')[0].style.display = 'none'
@@ -921,10 +939,12 @@
                 demo.style.width = w-320+'px'
                 demo.style.height = h+'px'
                 demo.style.right = '100%'
+                $('.s7').find('img').attr('src','./assets/images/缩小 退出全屏 收回.png');
             }else{
                 demo.style.zIndex = '1'
                 demo.style.width = '100%'
                 demo.style.right = '0%'
+                $('.s7').find('img').attr('src','./assets/images/扩大 (1).png');
                 if(role == '2'){
                     demo.style.height = '100%'
                     demo.style.top = '0px'
@@ -934,6 +954,11 @@
                 }
             }
         }
+        
+        $(function(){
+        	w = document.body.clientWidth
+        	$('.iframe_box').css('width',(w-420)+'px')
+        })
 
     </script>
 </body>

@@ -5,38 +5,7 @@ var wbtoken = sessionStorage.getItem('wbtoken');
 var wbuuid = sessionStorage.getItem('wbuuid');
 var images = [];
 var editState = 0
-var img_list = [
-    {id:1,path:'../assets/images/1.jpg'},
-    {id:2,path:'../assets/images/2.jpg'},
-    {id:3,path:'../assets/images/3.jpg'},
-    {id:4,path:'../assets/images/4.jpg'},
-    {id:5,path:'../assets/images/5.jpg'},
-    {id:6,path:'../assets/images/6.jpg'},
-    {id:7,path:'../assets/images/7.jpg'},
-    {id:1,path:'../assets/images/1.jpg'},
-    {id:2,path:'../assets/images/2.jpg'},
-    {id:3,path:'../assets/images/3.jpg'},
-    {id:4,path:'../assets/images/4.jpg'},
-    {id:5,path:'../assets/images/5.jpg'},
-    {id:6,path:'../assets/images/6.jpg'},
-    {id:7,path:'../assets/images/7.jpg'},
-]
-$(function(){
-    var html = ""
-    for(let a in img_list){
-        html += '<div class="img" data-id="'+img_list[a]['id']+'" onclick="img_check(this)">'
-        html += '<img src="'+img_list[a]['path']+'" alt=""></img>'
-        html += '<div class="img_del">'
-        html += '<img src="./assets/images/错.png" alt="">'
-        html += '</div>'
-        html += '<div class="img_check">'
-        html += '<img src="./assets/images/打勾.png" alt="">'
-        html += '</div>'
-        html += '</div>'
-    }
-    $('.img_list').append(html)
-})
-
+var img_list = []
 
 
 if(!wbtoken){
@@ -54,6 +23,11 @@ var requestInit;
 var allroom;
 var ys = 1
 var PageNumber = 1
+var whiteWebSdk = null
+var roomToken = null
+//var mode = 'transitory'; // 临时房间模式
+//var mode = 'persistent'; // 持久化房间模式
+var mode = 'historied'; // 可回放房间模式
 if(role == '2'){
     url = `https://cloudcapiv4.herewhite.com/room/join?token=${sdkToken}&uuid=${wbuuid}`;
     requestInit = {
@@ -70,9 +44,10 @@ if(role == '2'){
             "content-type": "application/json",
         },
         body: JSON.stringify({
-            name: '我的第一个 White 房间',
+            name: roomid,//'我的第一个 White 房间',
             limit: 100, // 房间人数限制
-            room:10
+            room:10,
+            mode: mode, // 房间模式在这里体现
         }),
     };
 }
@@ -92,6 +67,13 @@ fetch(url, requestInit).then(function(response) {
     // Step3: 加入成功后想白板绑定到指定的 dom 中
     bind(room);
 }).then(function(){
+	if(role=='4'&&allroom){
+		allroom.setViewMode("broadcaster");
+		allroom.setViewMode("freedom");
+		allroom.setViewMode("follower");
+	}else{
+		allroom.disableCameraTransform = true;
+	}
 	loadImages();
 }).catch(function(err) {
     console.log(err);
@@ -100,7 +82,7 @@ fetch(url, requestInit).then(function(response) {
 // 加入房间
 function jionRoom (json) {
     // 初始化 SDK，初始化 SDK 的参数，仅对本地用户有效，默认可以不传
-    var whiteWebSdk = new WhiteWebSdk({
+    whiteWebSdk = new WhiteWebSdk({
         // 用户手动进行缩放操作时的上下限，默认 为 0.1~10。
         // 缩放 API 不受影响
         zoomMaxScale: 3, 
@@ -109,13 +91,14 @@ function jionRoom (json) {
         // 如果没有需要，请不要传入，可以减少前端资源开销s
         // 使用该 API 后，服务器截屏时，会使用原始图片地址
         urlInterrupter: url => url,
-    });
+    });    
     if(role == '2'){
+    	roomToken = json.msg.roomToken;
     	return whiteWebSdk.joinRoom({
             uuid: wbuuid,
             roomToken: json.msg.roomToken,
         });	        
-    }else{
+    }else{    	
     	$.post("/index.php?s=/live/index/setwbuuid",{room:room,uuid:json.msg.room.uuid,isteacher:1},function(result){
     		if(result!='success'){
     			alert("在线白板暂不可用！");
@@ -215,6 +198,7 @@ function dadada(e){
                     html += '</div>'
                     html += '</div>'
                 }
+                $('.img_list').children().remove()
                 $('.img_list').append(html)
             // 	if(images.length>0){        		
             // 		clearImage();
@@ -267,7 +251,7 @@ function dadada(e){
     }*/
 }
 function loadImages(){
-	if(role == '4'){
+	if(role == '4'){		
 		$.post("/index.php?s=/live/index/getPictures",{room:room},function(ret){
 			console.log(ret);  
 			if(ret&&ret['status']===1&&ret['data']&&ret['data'].length>0){
@@ -302,16 +286,21 @@ function loadImages(){
 function loadImage(index){
 	if(images.length==0) return;
 	var uuid = Math.floor(Math.random()*100+index)+'f';
-	allroom.insertImage({
-        uuid: uuid, 
-        //图片中心在白板内部坐标的
-        centerX: 0, 
-        centerY: 0, 
-        //图片在白板中显示的大小
-        width: this.width, 
-        height: this.height
-    });
+	
+	let image = new Image();
+	image.src = images[index]['path'];
+	image.onload = function() {
+		allroom.insertImage({
+		uuid: uuid, 
+		//图片中心在白板内部坐标的
+		centerX: 0, 
+		centerY: 0, 
+		//图片在白板中显示的大小
+		width: this.width, 
+		height: this.height
+		});
 	allroom.completeImageUpload(uuid, images[index]['path'])
+	}
 }
 function clearImage(){
 	for(let i = 1; i <= ys; i++){
@@ -403,6 +392,22 @@ function img_check(val){
             $(val).find('.img_del').css('display','none')
         }
     }
+    let checklist = $('.img_check')
+    checklist.push($('.img_del'))
+    for(let i = 0; i<checklist.length;i++){
+    	if($(checklist[i]).css('display') == 'block'){
+		    $('.btn_img').css('display','block')
+		    $('.qk_btn').css('display','none')
+		    return
+	    }else{
+		    $('.btn_img').css('display','none')
+		    $('.qk_btn').css('display','block')
+	    }
+    }
+}
+function qk_btn() {
+	clearImage()
+	img_none()
 }
 function edit_btn(){
     editState = 1
@@ -429,12 +434,12 @@ function img_btn(){
     if(editState == 0){
         var arr_check = $('.img_check')
         for (let i = 0;i<arr_check.length;i++){
-            if($(arr_check[i]).css('display') == 'block'){
-                arr.push({id:$(arr_check[i]).parents().attr('data-id'),path:$(arr_check[i]).parents().find('img').attr('src')})
-            }
+        	if($(arr_check[i]).css('display') == 'block'){
+        	arr.push({id:$(arr_check[i]).parent().attr('data-id'),path:$(arr_check[i]).parent().find('img').attr('src')})
+        	}
         }
         // 创建新的白板页面or嵌图片
-        if(images.length>0){ 
+        if(images.length>0&&arr.length!=0){ 
             clearImage();
         }
         images = arr;
@@ -450,10 +455,10 @@ function img_btn(){
         }
     }else{
         var arr_del = $('.img_del')
-        for (let a = 0;a<arr_check.length;a++){
-            if($(arr_del[a]).css('display') == 'block'){
-                arr.push({id:$(arr_check[a]).parents().attr('data-id'),path:$(arr_check[a]).parents().find('img').attr('src')})
-            }
+        for (let a = 0;a<arr_del.length;a++){
+        	if($(arr_del[a]).css('display') == 'block'){
+        		arr.push({id:$(arr_del[a]).parents().attr('data-id'),path:$(arr_del[a]).parent().find('img').attr('src')})
+        	}
         }
         editState = 0
         // 删除所选中的图片id、路径；
@@ -468,10 +473,29 @@ function img_btn(){
                 }
             }
         }
+        $('.edit_btn').css('display','block')
+        $('.qx_edit').css('display','none')
         removeImage(del)
     }
     console.log(arr)
-    
+    img_none()
     $('.img').find('img').siblings().css('display','none')
+}
+
+function replay(){
+	whiteWebSdk.replayRoom({
+	    room: wbuuid,
+	    roomToken: roomToken,
+	    //beginTimestamp: beginTimestamp,
+	    //mediaURL: mediaURL,
+	    //duration: duration,
+	}).then(function(player) {
+	    // 获取到 player 实例
+	    // 与 room 调用类似，与获取到 player 实例后，你需要将 player 绑定到 HTML 的 div 上。
+	    player.bindHtmlElement(document.getElementById('whiteboard'));
+	    //player.setObserverMode("directory");
+	    player.play();
+	})
+	
 }
 
