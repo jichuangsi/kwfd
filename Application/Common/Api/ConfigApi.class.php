@@ -90,6 +90,9 @@ class ConfigApi {
                     if($v['id']){//机构所在中台id
                         $config['ORG_ID'] = $v['id'];
                     }
+                    if($v['title']){//机构所在中台名字
+                        $config['ORG_NAME'] = $v['title'];
+                    }
                 }
             }
             

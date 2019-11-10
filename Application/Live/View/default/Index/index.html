@@ -183,7 +183,12 @@ ul{list-style-type:none;margin:0px 10px;padding:0px}
 									</a>													 
 					      </div>  
 								<div class="rmb-product-desc">
-									<div class="rmb-product-explain"><a href="{:U('Detail',array('id'=>$vo["id"]))}" target="_blank">{$vo.title}</a></div>
+									<div class="rmb-product-explain"><a href="{:U('Detail',array('id'=>$vo["id"]))}" target="_blank">课程：{$vo.title}</a></div>
+									<if condition="C('MAJOR_ORG') eq '1'">
+									<div class="rmb-product-explain">
+									机构：<if condition="$vo.orgName neq null">{$vo.orgName}<else/>-</if>
+									</div>
+									</if>
 									<div class="rmb-product-explain">时间：{$vo.starttime|date='Y-m-d H:i',###}~{$vo.endtime|date='H:i',###}</div>
 									<div class="rmb-product-price">
 									    <span>&yen;<bb>&nbsp;{$vo.price}</bb></span>
@@ -209,4 +214,15 @@ ul{list-style-type:none;margin:0px 10px;padding:0px}
         </div>
 
     </div>
+    <script>
+    var major = "{:C('MAJOR_ORG')}";
+    if(major==="1") {
+    	var p = window.screen.width;
+    	if(p<=600){
+    		$(".rmb-box").css("min-height", "210px");
+    	}else{
+    		$(".rmb-box").css("min-height", "260px");
+    	}
+    }
+    </script>
 </block>

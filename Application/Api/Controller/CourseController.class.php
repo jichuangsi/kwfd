@@ -108,7 +108,7 @@ class CourseController extends ApiController
         $this->query($p, $r, $t, $c, $y, $o, $this->successMsg['activity'], $option);
     }
     
-    public function detailQuery($id = 0)
+    public function detailQuery($id = 0, $v = true)
     {
         if(empty($id)||$id===0){
             $this->apiError('7001', $this->errMsg['7001']);
@@ -125,8 +125,10 @@ class CourseController extends ApiController
         }
         
         /* 更新浏览数 */
-        $map = array('id' => $id);
-        $this->datamodel->where($map)->setInc('view');
+        if($v){
+            $map = array('id' => $id);
+            $this->datamodel->where($map)->setInc('view');
+        }
                 
         //查看最多
         /* $hotmap['status'] = 1;
@@ -172,6 +174,38 @@ class CourseController extends ApiController
         
         $this->apiSuccess($this->successMsg['detail'], null, array('data'=>$data));
     }
+    
+    public function detailsQuery(){
+        $postdata = json_decode($_POST['p'],true);
+        
+        if(!$postdata||count($postdata)===0||!$postdata['goodid']||count($postdata['goodid'])===0){
+            $this->apiError('7001', $this->errMsg['7001']);
+        }
+        
+        unset($map);
+        $map['id'] = array('in', $postdata['goodid']);
+        $map['updateFlag'] = array('gt', $postdata['updateFlag']);
+        $majorOrg = C('MAJOR_ORG');
+        if($majorOrg){
+            $map['orgId'] = $postdata['orgid'];
+        }
+        $data = $this->datamodel->field('id,title,image,categoryid,view,price,starttime,endtime,teacherid,online,updateFlag,orgId,status,online')->where($map)->select();
+        //$data = $this->datamodel->_sql();
+        if (!$data) {
+            $this->apiError('7001', $this->errMsg['7001']);
+        }
+        
+        foreach($data as $k => &$v){
+            if (!empty($v['image'])) {
+                $v['imageurl'] = $this->protocol . get_cover($v['image'], 'path');
+            }
+        }
+       
+        $result['data'] = $data; 
+        
+        $this->apiSuccess($this->successMsg["create"], null, $result);
+    }
+    
     
     private function query($page = 1, $row = 20, $title = '', $content = '', $category = '', $orgId = '', $message = 'sucess', $option = array()){        
         

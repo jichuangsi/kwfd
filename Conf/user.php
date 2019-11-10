@@ -20,12 +20,16 @@ define('UC_DB_DSN', 'mysqli://root:root@127.0.0.1:3306/jcszaixian'); // 数据�
 define('UC_TABLE_PREFIX', 'onethink_'); // 数据表前缀，使用Model方式调用API必须配置此项
 //远程ucenter
 define('UC_REMOTE', true); // 设置远程地址调用ucenter
-/* define('UC_API', 'http://192.168.31.108:96');
+/* define('UC_API', 'http://192.168.31.123:84');
 define('UC_KEY', 'a922twFcYQFzURPysChok6puc/DaDuMoeAwhP/g');
-define('UC_APPID', '1'); */
-define('UC_API', 'http://ucenter.jichuangsi.com');
+define('UC_APPID', '4'); */
+//define('UC_API', 'http://192.168.100.34:96');
+define('UC_API', 'http://192.168.31.108:96');
+define('UC_KEY', 'a922twFcYQFzURPysChok6puc/DaDuMoeAwhP/g');
+define('UC_APPID', '1');
+/* define('UC_API', 'http://ucenter.jichuangsi.com');
 define('UC_KEY', '437azmaCOegEtHieExs6AwFb/Bd6X2lrwdeSD7I');
-define('UC_APPID', '3');
+define('UC_APPID', '3'); */
 define('UC_IP', ''); // 远程地址调用ucenter
 define('UC_CHARSET', 'utf-8');
 define('UC_PPP', '20');

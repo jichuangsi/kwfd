@@ -210,7 +210,7 @@ class WechatAppletController extends ApiController
         $model = new Model();
         //$order=M("order");
         $order = $model->table(C(DB_PREFIX)."order");
-        $tag = $this->ordersn();
+        $tag = ordersn();
         unset($map);
         $map['tag'] = $tag;
         $value=$order->where($map)->getField('id');
@@ -363,11 +363,11 @@ class WechatAppletController extends ApiController
     	
     }
     
-    private function ordersn(){
+    /* private function ordersn(){
         $yCode = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J');
         $orderSn = $yCode[intval(date('Y')) - 2011] . strtoupper(dechex(date('m'))) . date('d') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('%04d%02d', rand(1000, 9999),rand(0,99));
         return $orderSn;
-    }
+    } */
     
     private function GetJsApiParameters($UnifiedOrderResult)
     {

@@ -530,14 +530,15 @@
             }
     
             function leave() {  
-                if(leaveState == 0){
+            	debugger;
+            	if(leaveState == 0){
                     if(role == '2'){
                         $.post("/index.php?s=/live/index/statistics",{room:room,action:'LEAVE',uid:uid,uname:uname,isteacher:0},function(result){
                                         console.log(result);
                         });
                     }else{
                         $.post("/index.php?s=/live/index/statistics",{room:room,action:'LEAVE',uid:uid,uname:uname,isteacher:1},function(result){
-                                        console.log(result);
+                            console.log(result);
                         });
                     }
                     client.leave(function () {

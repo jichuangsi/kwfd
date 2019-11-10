@@ -51,8 +51,18 @@
 		   <table>
 		     <tr>
 			   <td width="100%"><a href="{$orderlist.url}" target="_blank" style="word-break:break-all">
-			   {$orderlist.title}<br>
-			   <img src="{$orderlist['image']|get_cover='path'}" width=100 height=100 align="absmiddle"/></a></td>
+			   {$orderlist.title}
+			   						<if condition="C('MAJOR_ORG') eq '1'">									
+									<if condition="$orderlist.orgName neq null">
+									({$orderlist.orgName})
+									<else/>
+									(-)
+									</if>
+									</if>
+			   <br>
+			   <!-- <img src="{$orderlist['image']|get_cover='path'}" width=100 height=100 align="absmiddle"/> -->
+			   <img src="{$orderlist.image}" width=100 height=100 align="absmiddle"/>
+			   </a></td>
 			   <td width="10"></td>
 			 </tr>
 		   </table>
@@ -62,7 +72,9 @@
 		     <tr>
 			   <td width="100%"><a href="{$orderlist.url}" target="_blank" style="word-break:break-all">
 			   {$orderlist.title}<br>
-			   <img src="{$orderlist['image']|get_cover='path'}" width=100 height=100 align="absmiddle"/></a></td>
+			   <!-- <img src="{$orderlist['image']|get_cover='path'}" width=100 height=100 align="absmiddle"/> -->
+			   <img src="{$orderlist.image}" width=100 height=100 align="absmiddle"/>
+			   </a></td>
 			   <td width="10"></td>
 			 </tr>
 		   </table>

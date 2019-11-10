@@ -88,10 +88,18 @@ class LiveController extends AdminController
 		    if($val['endtime']<time()){
 		        $val['gotomeeting'] = '<div class="btn" style="background-color:#ec2b2b">课堂已结束</div>';
 		    }else{
-		        if($val['online']){
-		            $val['gotomeeting'] = '<a href="'.U('Live/index/gotomeeting?id='.$val["id"]).'" target="_blank" class="btn">进入课堂</a>';
+		        if($val['status']==='1'){
+		            if($val['online']){
+		                $val['gotomeeting'] = '<a href="'.U('Live/index/gotomeeting?id='.$val["id"].'&orgId='.$val["orgId"]).'" target="_blank" class="btn">进入课堂</a>';
+		            }else{
+		                $val['gotomeeting'] = '<div onclick="alert(\'该课程不提供直播功能。\')"  class="btn">进入课堂</div>';
+		            }
+		        }else if($val['status']==='3'){
+		            $val['gotomeeting'] = '<a href="'.U($this->_model.'/endCourse?id='.$val["id"].'&orgId='.$val["orgId"]).'" class="btn confirm ajax-get">结束课堂</a>';
+		        }else if($val['status']==='4'){
+		            $val['gotomeeting'] = '<div class="btn" style="background-color:#ec2b2b">课堂已结束</div>';
 		        }else{
-		            $val['gotomeeting'] = '<div onclick="alert(\'该课程不提供直播功能。\')"  class="btn">进入课堂</div>';
+		            $val['gotomeeting'] = '<div class="btn">课堂暂不可用</div>';
 		        }
 		    }                
         }
@@ -115,12 +123,18 @@ class LiveController extends AdminController
     		    ->keyDoActionEdit($this->_model.'/add?id=###')
     		    ->keyDoAction($this->_model.'/setstatus?status=-1&ids=###','删除','操作',array('class'=>'confirm ajax-get'));
 		}else{
-		    $builder->keyId()->keyText('title', $this->_modelname.'名称')->keyUpdateTime('changetime', '更新时间')->keyCreateTime('createtime', '创建时间')->keyHtml('gotomeeting', '进入课堂')
-		    ->keyOnline()
-		    ->keyStatus()
-		    ->keyDoAction('chapters?courseid=###','章节管理','操作')
-		    ->keyDoActionEdit($this->_model.'/add?id=###')
-		    ->keyDoAction($this->_model.'/setstatus?status=-1&ids=###','删除','操作',array('class'=>'confirm ajax-get'));
+		    $builder->keyId()->keyText('title', $this->_modelname.'名称');
+		    if($majorOrg){
+		        $builder->keyText('orgName', '所属机构');
+		    }
+		    $builder->keyUpdateTime('changetime', '更新时间')
+    		    ->keyCreateTime('createtime', '创建时间')
+    		    ->keyHtml('gotomeeting', '进入课堂')
+    		    ->keyOnline()
+    		    ->keyStatus()
+    		    ->keyDoAction('chapters?courseid=###','章节管理','操作')
+    		    ->keyDoActionEdit($this->_model.'/add?id=###')
+    		    ->keyDoAction($this->_model.'/setstatus?status=-1&ids=###','删除','操作',array('class'=>'confirm ajax-get'));
 		}		
 
         //$builder->search('内容', 'name');
@@ -293,6 +307,12 @@ class LiveController extends AdminController
 			            $data['orgId'] = 0;
 			            $data['orgName'] = '';
 			        }
+			    }else{
+			        if(C('ORG_ID')&&C('ORG_NAME')){
+			            $data['orgCatId'] = 0;
+			            $data['orgId'] = C('ORG_ID');
+			            $data['orgName'] = C('ORG_NAME');
+			        }			        
 			    }
 			}
 			
@@ -318,7 +338,8 @@ class LiveController extends AdminController
 			    if(IS_ROOT){
 			        $data['userId'] = $teacherid;
 			    }
-                $rs = $this->datamodel->where('id=' . $id)->save($data);
+			    $rs = $this->datamodel->where('id=' . $id)->save($data);
+			    if($rs) $this->datamodel->where('id=' . $id)->setInc('updateFlag');
             } else {
                 //商品名存在验证
                 unset($map);
@@ -569,6 +590,19 @@ class LiveController extends AdminController
         }
         $builder = new AdminListBuilder();
         $builder->doSetRecommend($this->_model.'', $ids, $recommend, $orgId);
+    }
+    public function endCourse($id=0, $orgId){
+        unset($map);
+        $map['id'] = $id;
+        $map['orgId'] = $orgId;
+        
+        $rs = $this->datamodel->where($map)->where(['status'=>3])->setField(['status'=>4]); //老师上课
+        if($rs) $rs=$this->datamodel->where($map)->setInc('updateFlag');
+        
+        if($rs)
+            $this->success('设置成功', $_SERVER['HTTP_REFERER']); 
+        else 
+            $this->success('设置失败', $_SERVER['HTTP_REFERER']); 
     }
 	/**商品回收站
      * @param int $page

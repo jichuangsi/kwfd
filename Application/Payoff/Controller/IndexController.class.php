@@ -20,9 +20,9 @@ class IndexController extends Controller
         }
         C($config); //添加配置
     }
- 
+    
     public function index() 
-	{ 
+    { 
 
 		if (IS_POST) {
             //页面上通过表单选择在线支付类型，支付宝为alipay 财付通为tenpay
@@ -74,7 +74,10 @@ class IndexController extends Controller
 		   $this->assign('orderid',$id);
 	
 	       $data=$order->where("orderid='$id'")->find();
-		  
+	       //聚合码url
+	       $juhepayurl=str_replace("__orderid__", $id, C('MAJOR_JUHEPAY_QRCODE_URL'));
+	       //dump($juhepayurl);
+	       $this->assign('juhepayurl',$juhepayurl);
 	       $this->assign('data',$data);
            $this->display();
         }

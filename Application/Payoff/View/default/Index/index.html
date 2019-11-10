@@ -1,6 +1,7 @@
 <extend name="./Application/Common/View/base/common.html" />
 
 <block name="body">
+<script src="__STATIC__/qrcode.min.js"></script>
 <style>
 .bot_div ul{overflow:hidden; padding:0px 0 30px 0px;list-style:none}
 .bot_div ul li{float:left; width:182px; height:72px; border:1px solid #e6e6e6; border-radius:5px; margin:0 22px 0 0;}
@@ -20,7 +21,32 @@
 					$("form:eq(1)").attr("action",id);
 				}				 
 			});
+			qrcodes('{$juhepayurl}');
 		})
+		function qrcodes(url){
+			//console.log(url);
+			//$('.mask').css('display','block'); 
+			
+			$("#qrcodeImg1").empty();
+			var qrcode1 = new QRCode(document.getElementById("qrcodeImg1"), {
+				width : 300,
+				height : 300,
+				colorDark : "#000000",
+			    colorLight : "#ffffff",
+			    correctLevel : QRCode.CorrectLevel.H
+			});
+			qrcode1.makeCode(url);
+			
+			$("#qrcodeImg2").empty();
+			var qrcode2 = new QRCode(document.getElementById("qrcodeImg2"), {
+				width : 300,
+				height : 300,
+				colorDark : "#000000",
+			    colorLight : "#ffffff",
+			    correctLevel : QRCode.CorrectLevel.H
+			});
+			qrcode2.makeCode(url);
+		}
 	</script>
 <div class="container" style="margin-top:0px;min-height: 400px">
 <div class="panel panel-cart">
@@ -35,7 +61,7 @@
 <form id="thisform" action="{:U('/Payoff/Alipagepay/index')}"  method="post" class="hidden-xs">
 订单号：{$data['orderid']}<input type="hidden"  name="orderid" class="form-control" id="orderid" value="{$orderid}"><br><br>
 金额：{$data['pricetotal']} 元<input type="hidden" name="money" class="form-control" id="goodprice" value="50"><br><br>
-请选择支付方式：<br><br>
+<!-- 请选择支付方式：<br><br>
 <input type="hidden" name="paytype" value="{:U('/Payoff/Alipagepay/index')}" checked=""/>
 <div class="bot_div">
 	<ul>
@@ -47,13 +73,17 @@
 		</if>
 	</ul>
 </div>
-<button type="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;确&nbsp;定&nbsp;&nbsp;&nbsp;</button><br><br>
+<button type="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;确&nbsp;定&nbsp;&nbsp;&nbsp;</button><br><br> -->
+			请扫码支付：<br><br>
+			<div class="img">
+	            <div id="qrcodeImg1"></div>  
+	        </div>
 </form>
 
 <form id="thisform" action="{:U('/Payoff/Aliwappay/index')}"  method="post"  class="visible-xs">
 订单号：{$data['orderid']}<input type="hidden"  name="orderid" class="form-control" id="orderid" value="{$orderid}"><br><br>
 金额：{$data['pricetotal']} 元<input type="hidden" name="money" class="form-control" id="goodprice" value="50"><br><br>
-请选择支付方式：<br><br>
+<!-- 请选择支付方式：<br><br>
 <input type="hidden" name="paytype" value="{:U('/Payoff/Aliwappay/index')}" checked=""/>
 <div class="bot_div">
 	<ul>
@@ -65,7 +95,11 @@
 		</if>
 	</ul>
 </div>
-<button type="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;确&nbsp;定&nbsp;&nbsp;&nbsp;</button><br><br>
+<button type="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;确&nbsp;定&nbsp;&nbsp;&nbsp;</button><br><br> -->
+			请扫码支付：<br><br>
+			<div class="img">
+	            <div id="qrcodeImg2"></div>  
+	        </div>
 </form>
 
 <script type="text/javascript">

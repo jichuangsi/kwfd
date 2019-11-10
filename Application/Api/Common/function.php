@@ -36,3 +36,9 @@ function saveMobileInSession($mobile) {
 function getMobileFromSession() {
     return session('send_sms.mobile');
 }
+
+function ordersn(){
+    $yCode = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J');
+    $orderSn = $yCode[((intval(date('Y')) - 2011)%10)] . strtoupper(dechex(date('m'))) . date('d') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('%04d%02d', rand(1000, 9999),rand(0,99));
+    return $orderSn;
+}

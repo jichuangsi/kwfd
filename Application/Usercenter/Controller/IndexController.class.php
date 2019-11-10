@@ -16,6 +16,7 @@ class IndexController extends Controller
 	protected $remote;
     public function _initialize()
     { 
+        parent::_initialize();
 		$this->remote=new RemoteApi();
 		/*
 		echo "<br><br><br><br>";

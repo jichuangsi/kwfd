@@ -20,7 +20,7 @@ ul{list-style-type:none;margin:0px 0px;padding:10px 15px 0px 15px}
 	float: left;
 	margin: 0px 0px 10px 0px;
 	margin-right:2%;
-	width:32%;
+	width:30%;
 	position: relative;
 	padding: 5px 0;
 	transition: left .2s ease,border .5s,z-index .5s;
@@ -29,7 +29,7 @@ ul{list-style-type:none;margin:0px 0px;padding:10px 15px 0px 15px}
 	background-color: #fff;   
 	border: 1px solid #cccccc;
 	padding-top: 0;
-	min-height: 250px;
+	min-height: 270px;
 }
 .rmb-box:nth-child(3n){margin-right: 0;}
 .rmb-box:hover{
@@ -99,7 +99,7 @@ ul{list-style-type:none;margin:0px 0px;padding:10px 15px 0px 15px}
 	background-color: #fff;   
 	border: 1px solid #cccccc;
 	padding-top: 0;
-	min-height: 200px;
+	min-height: 220px;
  }
  .rmb-box:nth-child(n){margin-right: 5px;}
  .rmb-box:hover{
@@ -171,28 +171,49 @@ ul{list-style-type:none;margin:0px 0px;padding:10px 15px 0px 15px}
 					  <li class="rmb-box">
                     
 					      <div class="rmb-product-detail">
-									<a href="{:U('/Live/Index/Detail',array('id'=>$vo["id"]))}" target="_blank">
-										<img src="{$vo['image']|get_cover='path'}" data-echo="{$vo['image']|get_cover='path'}">	
+									<!-- <a href="{:U('/Live/Index/Detail',array('id'=>$vo["id"]))}" target="_blank"> -->
+									<a href="{$vo['url']}" target="_blank">
+										<!-- <img src="{$vo['image']|get_cover='path'}" data-echo="{$vo['image']|get_cover='path'}"> -->	
+										<img src="{$vo['image']}" data-echo="{$vo['image']}">
 									</a>													 
 					      </div>  
 								<div class="rmb-product-desc">
-									<div class="rmb-product-explain"><a href="{:U('/Live/Index/Detail',array('id'=>$vo["id"]))}" target="_blank">{$vo.title}</a></div>
-									<div class="rmb-product-explain">时间：{$vo.starttime|date='Y-m-d H:i',###}~{$vo.endtime|date='H:i',###}</div>
+									<div class="rmb-product-explain">
+									<!-- <a href="{:U('/Live/Index/Detail',array('id'=>$vo["id"]))}" target="_blank"> -->
+									<a href="{$vo['url']}" target="_blank">
+									{$vo.title}
+									<if condition="C('MAJOR_ORG') eq '1'">									
+									<if condition="$vo.orgName neq null">
+									({$vo.orgName})
+									<else/>
+									(-)
+									</if>
+									</if>
+									</a></div>
+									<div class="rmb-product-explain">开始时间：{$vo.starttime|date='Y-m-d H:i',###}</div>
+									<div class="rmb-product-explain">结束时间：{$vo.endtime|date='Y-m-d H:i',###}</div>
 									<div class="rmb-product-price">
-									    <if condition="$vo.ispay eq '2'">
-									    	<if condition="$vo.endtime lt time()">
+										<if condition="$vo.ispay eq '2'">
+									    	<if condition="$vo.endtime lt time()||$vo.courseStatus eq '4'">
 									    		<span><a class="btn btn-primary btn-sm" >&nbsp;&nbsp;课堂已结束&nbsp;&nbsp;</a></span>
-										    <else/>
+										    <elseif condition="$vo.courseStatus eq '3'"/>
 										    	<if condition="$vo.online eq 1">
-											    	<span class="visible-xs"><a href="javascript:gotomeeting({$vo["id"]})" class="btn btn-primary btn-sm" target="_blank">&nbsp;&nbsp;进入课堂 >&nbsp;&nbsp;</a></span>
-											        <span class="hidden-xs"><a href="{:U('/Live/Index/gotomeeting',array('id'=>$vo["id"]))}" class="btn btn-primary btn-sm" target="_blank">&nbsp;&nbsp;进入课堂 >&nbsp;&nbsp;</a></span>
+											    	<span class="visible-xs"><a href="#" onclick="javascript:gotomeeting({$vo['goodid']},{$vo['orgId']})" class="btn btn-primary btn-sm" target="_blank">&nbsp;&nbsp;进入课堂 >&nbsp;&nbsp;</a></span>
+											        <span class="hidden-xs"><a href="{:U('/Live/Index/gotomeeting',array('id'=>$vo['goodid'],'orgId'=>$vo['orgId']))}" class="btn btn-primary btn-sm" target="_blank">&nbsp;&nbsp;进入课堂 >&nbsp;&nbsp;</a></span>
 										    	<else/>
 										    		<span><a class="btn btn-primary btn-sm" onclick='alert("该课程不提供直播功能。")'>&nbsp;&nbsp;进入课堂 >&nbsp;&nbsp;</a></span>											        
 										    	</if>
+										    <else/>
+										    		<span><a class="btn btn-primary btn-sm">&nbsp;&nbsp;未开始。。。&nbsp;&nbsp;</a></span>
 											 </if>
 										<else/>
 										    <span><a href="{:U('/Payoff/Index/index',array('orderid'=>$vo['orderid']))}" class="btn btn-default btn-sm">&nbsp;&nbsp;前去支付 >&nbsp;&nbsp;</a></span>
-										</if>
+										</if>									
+									<!-- <if condition="$vo.courseStatus eq '1'">
+									    
+									<else/>
+										<span><a class="btn btn-primary btn-sm" >&nbsp;&nbsp;课堂已下架&nbsp;&nbsp;</a></span>
+									</if> -->
 									</div>
 						       </div>
 
@@ -218,7 +239,7 @@ ul{list-style-type:none;margin:0px 0px;padding:10px 15px 0px 15px}
     return (isCef) ? webViewANE : window.webkit.messageHandlers.webViewANE;
   } 
   */
-  function gotomeeting(room)
+  function gotomeeting(room,orgId)
   {
      var userid='<php> echo session("user_auth")["uid"];</php>';
 	 var username='<php> echo session("user_auth")["username"];</php>';
@@ -254,8 +275,8 @@ ul{list-style-type:none;margin:0px 0px;padding:10px 15px 0px 15px}
      //StageWebViewBridge.call('fnCalledFromJS',null,JSON.stringify(messageToPost));
 	 //var url="{:U('gotomeeting',array('jscallas'=>'_args_','success'=>'1'))}";
 	 //url=url.replace('_args_',Base64.encode(JSON.stringify(messageToPost)));
-	 var url = "{:U('/Live/Index/gotomeeting',array('id'=>'_args_'))}";
-	 url=url.replace('_args_',room);
+	 var url = "{:U('/Live/Index/gotomeeting',array('id'=>'_args1_','orgId'=>'_args2_'))}";
+	 url=url.replace('_args1_',room).replace('_args2_',orgId);
 	 //alert(url);
 	 window.location.href=url;
   }

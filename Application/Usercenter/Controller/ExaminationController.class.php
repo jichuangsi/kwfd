@@ -20,9 +20,10 @@ class ExaminationController extends BaseController
 	protected $_model="Examination";
 	public function _initialize()
     {
-        if (!is_login()) {
+        parent::_initialize();
+        /* if (!is_login()) {
             $this->error('请登陆后再访问本页面。');
-        }
+        } */
         $this->TestpaperModel = D('Examination/Testpaper');
 		$this->TestpaperItemModel = D('Examination/TestpaperItem');
 		

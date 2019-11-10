@@ -16,9 +16,9 @@ class ConfigController extends BaseController
     public function _initialize()
     {
         parent::_initialize();
-        if (!is_login()) {
+        /* if (!is_login()) {
             $this->error('请登陆后再访问本页面。');
-        }
+        } */
         $this->setTitle('编辑资料');
 
     }

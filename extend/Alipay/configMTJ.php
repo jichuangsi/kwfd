@@ -1,16 +1,16 @@
 <?php
 $config = array (	
 		//应用ID,您的APPID。
-		'app_id' => "2018081461016340",
+		'app_id' => "2016100100639850",
 
 		//商户私钥
-		'merchant_private_key' => "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCK4ShH42HS4kKz3LOg4pGCST79O6cHQydtX7I/cVganaTycntYZ/S6kFxlwpP+udq2VlBI4Qd6SS9XCC4DYqm4udiJSiae9Kj8VXQrS/f7am22WTqCq4nwF4OsEgGVD6HuXFBQoHjftWeDgt2wBXvE1kZJN0N38iD52eA6DROOtWQY1Qz+P+S9dXAydHOtoMa9jU49APahz1LbkBssdHjv886uBtLjVPUFmPntQuCXvzVmAEedr5+gk9rWC97vaHKERobu9PjSNBbsl6hzuHNE95irSaT41D+nETk85j8yAzWq9NmlCJuK6uZiaBG1c2YN8C0ESp9GrDTHOKqBntN9AgMBAAECggEAHcrdZEaQFrg5DPKcijfwdR2XaKWiWDl8vMbZqyh6eQM2flg2w6lRY7BSUfYi33MpSxJLGMdFXmNSx33WuR0yQZGEtTb2AAWGNtNyH1OluAaF0KdlmOCJr7qroX8fXcXDvCmLhTBXnc4BjcHGItuaSIia/VvgmluT3WVy56Ekf+lyup9gtL7TNi97gigBF5wekshGiFja1XGgmQbym3yxhhBs6ZYH7y9MQBDXCrMz/GXiA7HEN2BeK6QaODewxeiBsFA/5aQnSDJfIf8LyWKI75Jm5PmtAPzfTKDI+r3Jkw70Bsed7v5FzJULmg5xkhzMJzz6kHSpM3aUIZALEhnXgQKBgQDFbRSeY6wi6cXkp3Rc0u65AJWiMisvdUKjEWrTpnbBO9l2eZzN0gLGxTiJ4fKp3xpZrQ5bKXAikeYelQk5s19IymUuAgF8lYQZRRnWlBzJxiG+bWMLM7fHbf4VwDQ9uBQBm5njZxqz4QBNTa+7X6xiJ1ctlUVYlH4rpXjidV1XnQKBgQC0FVf2DuLuOF5krGLi++L6VETDW0/LB2UU1miWH6ayWsCcc6eqeVzl2JDRJJCR60kYgv7tLgqw00aoKeL2RZJ79gs5Y77c3Z/srUKuVwRETmSxhQhqRNTLOoMA5g6FE0yKgLscSZ2gFj6TDUo7/qixRI22OcYBlzdiXxeOLVfVYQKBgQC61ZkOr9rmi3+I/WQkuEXM9J2nCn1OA1WVxtTnCYEXK5GIClz3dwjDnT79VcP1OLrSJPESGqwROyugw4Agh/zjgQ6xtJo9ka2a0Ic8R5za4tNqSFDT+BSy+gfcA7IsunjMcLn4t8lQc916SsvEsi0MEpjw/XPL+XNR0N4Oye0VDQKBgEWDn6q54Ft4oudVq+5WsS1Ubh7DFrAWsKw0f7bDjQN4CLXb5zLlGjkXOf+hj7TkEBlIJ8PCbBoJ1FKBqLzL6lmzhm2m1TxIyL0BvKWzrU/4uuHTqoXrAAFbGsq0A5LW+krUmmW2/QOY0prNHITALroO7m0TLB3dE2IDtwII+sjBAoGABdC61Zf63m6BQhoafpW455SDgGqHZxdo2tMBaTLBhMRXvm0DiRqgbNzlbtD/snVGnyXEl0wE1adFo3fh6a9m0oLOgIpH6ClVHPoz5Zviuceu0J4Hl9TMDBovJTbqyTj7fT9esYkfZz7/+CKCREJC1ztsUFRHt4tBx3BMO5d+/yE=",
+		'merchant_private_key' => "MIIEpQIBAAKCAQEAu3nelg0vriZOA4q+uQKK16BT2TVoMlGcEQOOubWRPvPxegSA8V68zru2LuFnD5DjD9rNvraf4Ff/qF6K+I1K+W9F8VUNaVljdEIsSRg98PGirOxi0XEFp92fTQql4/kmXivC/yCokYqmoi82GZTZ34onbbRU2ZzlWGHN3w9u8ZvXYGJLpVyRuGBdhqZP57Mn6paWC8DUAu4ezlYb84ASyhTQJQEZxcomRSxi4PqxJwUXC+BpFAXlQDIPBP0mezdb1kA3JZtpvqINIdtg1opLvBuTwGzXEwJj0l+7xXWya7SYjpPM4ueEyJNR9jzFOBios9SUr3mj6Qblfj5P+340jQIDAQABAoIBAQC3I606HfWHBSpOsXnw17f0Pk3KsS5xgWGZCUWiyujxe3JYhQ/FOovs1Fh7YXvBLAN0GIXGmTaC/NPlkT3m4nfsRTQpNbHdSRIrnv0OBp1zw0jr7hv2h5dDze7xXsaBdoFxmwRpIGkrjCuN4drSkKNpiNdNhs0gq/ErLpfjIHt7jtmQkfyMFBuWtqd7rJ1X9dEFCvCUJZJoHhysguhr72F+3Nl6VR3SEzMXW82yF/fYJ1YP+b72gSdAkfF0/Td26qUeXMnAtevASz0XsPetHzLIA7l6y+oofWPiyqt3zD+B5MohRtvbdiwTGEAEYjN+E0eNF1GHvnuCqAqF+1TzwUgNAoGBAOpQ4TtTmbcDqfY37hmUY7qtMDyFj9sTfVZqpxrHxkcDJm5jHWI/lX02WGuGojOUl+SHvS6UPuOMk6eYmcB1D/z1eOxi5SKUTBiKdCngFpXgLZn7tKkMk0Ihy1FT/oH/qLzxDiBS63iZEmkQKsaNhM0HbCV0n/jQxSXWYbgo90IPAoGBAMzTUVS4fimFUKoFMgALgVOQmL8mhq2V1PZ1tBAsrJtKwSnQpG3V7W5b5CDymuSaCAWLsSBOhWSlclad/08/OgQwEZ+I53//dDEk0g7kOPQ83yuocXJ6ID51qCgB1NNAhwRyFqVeFbaJXmeWK/BTb2ErDg7C47tll98mN4Dkv4ujAoGAKpQZ6ZLuetBCoUhWjvVlDfYMruLCWlf3Ta3Bwd8Ni7fp0uNV4pWVT5SBisCDVwYod9GmsgEkUGsqJalYPx3Gkvv0RlhONPNnxIncRAPBduiuwK15jcKIO9syPAwcUnknq3XOUFdhDKAcNVVHwJ7UxAEWSNQhgbBGMvL6/OEM1UcCgYEAxqslVQaKIJ3VqsPVRqPiMfqrnaSxtwcAhHmQSKv8U7gDehqMkpiQbp2kvaxzPs6Ef1SKXmqrCf9L0uX3MJeEH3G8dkBlQwq1WcF8GcOV1piAYqlEOKRqSAr5Kqz0EF+jVlWOz6FdcCr3rYPEZJuZCeen//taxnZ5A5He/h9iBv8CgYEA0ka5zgZ6baLWvVZa9EdIMnkMxeVNcMdbU7fJVGqXl0kF4O3z0Dp+Toy1Jgkr0x3UMPZNMWvwHv7iKjR8NIAC2eTdKT3GY7Qn9kL6OE9gcRx4X4Oht6sXEhglG/duK8E3eiL84DwkaVO+kyQWej9VESqhAzYeoKH2LXarr+dI6pQ=",
 		
 		//异步通知地址
-		'notify_url' => "http://www.zaixianjiaoxue.net/index.php/Payoff/Alipay/notifyurl.html",
-		
-		//同步跳转
-		'return_url' => "http://www.zaixianjiaoxue.net/index.php/Payoff/Alipay/returnurl.html",
+        'notify_url' => $http_type . $_SERVER['HTTP_HOST']."".str_replace("?s=","",U('/'))."Payoff/Alipay/notifyurl.html",
+        
+        //同步跳转
+        'return_url' =>  $http_type . $_SERVER['HTTP_HOST']."".str_replace("?s=","",U('/'))."Payoff/Alipay/returnurl.html",
 
 		//编码格式
 		'charset' => "UTF-8",
@@ -19,8 +19,8 @@ $config = array (
 		'sign_type'=>"RSA2",
 
 		//支付宝网关
-		'gatewayUrl' => "https://openapi.alipay.com/gateway.do",
+		'gatewayUrl' => "https://openapi.alipaydev.com/gateway.do",
 
 		//支付宝公钥,查看地址：https://openhome.alipay.com/platform/keyManage.htm 对应APPID下的支付宝公钥。切记不要点击 查看应用公钥 要点击查看支付宝公钥
-		'alipay_public_key' => "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqKz6sjzhrIsvD9/4J/kod5Pc1BNdjMxnqfVBZVbAEx/yl4nAyA2Qxa9VJtmEqeyYwxgo+Uu6h9o37+r4H3fICrY/26L5Qciv+AMH/d/fCvDg8aUKycJx2e7FgnXnf/UpkJwxXNy4CvMfIlGagS7xOkeHSEGKVdVQGtgmtnARP0/aQVmc3tgW93yu/Y32p+fD4DonViiwWVmQLjaLXSTLNmmlylBsXCnYeHrIOmpHmQsnpMnPbDVqF6HEmhE/snPxoMm9c+7bxZHRZDKQkEl2CRHX4bivUmBH9/dJW/dTBYf54gNid5QM+P7LKojY9oXvnkHWOZAGn0uCoM7R7WQGEwIDAQAB",
+		'alipay_public_key' => "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2QhDcfC5cGFenYExRajIipMuKCjp5RiA3tssnfUwt2PZ07gr5ZSNhCsGMKc3deQu7HBvlFJL153KtdFq3Gs8ngktGGD9kLBvRSoAzvGDJYsDCuTOTg1RBj3iF43AHgG/Zg7eH0uFXrt42MI2odf4NQF0/mjww12WKQ2neKJecCHh6XNWfNKNLW2Z5DppAH2kh6G/KULMvqQbIiU8p81v0xzGC2BLvTCWa6Af0bifRBGWCSQZMp3p9SrX6HgMwue4UufpJP8az0K9PxnN9yrn56Y5EtLF7iuACcw+uTKwvaLxZOHXHnkEJBs0jxliFMYrkjX/shPGwOXeSIjdUdoUewIDAQAB",
 );

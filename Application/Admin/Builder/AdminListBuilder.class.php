@@ -192,7 +192,7 @@ class AdminListBuilder extends AdminBuilder
 
     public function keyStatus($name = 'status', $title = '状态')
     {
-        $map = array(-1 => '删除', 0 => '禁用', 1 => '启用', 2 => '未审核');
+        $map = array(-1 => '删除', 0 => '禁用', 1 => '启用', 2 => '未审核', 3 => '进行中', 4 => '已结束');
         return $this->key($name, $title, 'status', $map);
     }
     
@@ -254,7 +254,7 @@ class AdminListBuilder extends AdminBuilder
         if (is_string($getUrl)) {
             $getUrl = $this->createDefaultGetUrlFunction($getUrl);
         }
-
+        
         //确认已经创建了DOACTIONS字段
         $doActionKey = null;
         foreach ($this->_keyList as $key) {

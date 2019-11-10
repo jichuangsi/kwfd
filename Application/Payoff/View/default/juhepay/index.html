@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{$data['orgName']}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
+    <style>
+        html {
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #ececec;
+            box-sizing: border-box;
+        }
+        .title {
+            text-align: center;
+            font-size: 28px;
+            margin-top: 20px;
+        }
+        .ipt {
+            width: 80%;
+            height: 50px;
+            line-height: 50px;
+            margin: 20px auto;
+            padding: 0px 10px;
+            box-sizing: border-box;
+            background-color: #fff;
+            border-radius: 5px;
+            font-size: 22px;
+            display: flex;
+            overflow: hidden;
+        }
+        .ipt .moeny {
+            flex: 1;
+            height: 50px;
+            text-align: right;
+            box-sizing: border-box;
+            font-size: 22px;
+            line-height: 50px;
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+        }
+        .ipt .moeny em {
+            display: inline-block;
+            width: 1px;
+            height: 40%;
+            background-color: #333;
+            animation: shu 1s linear infinite;
+        }
+        .ipt .ipt_text {
+            white-space: nowrap;
+            margin-right: 10px;
+        }
+        .text {
+            width: 100%;
+            text-align: center;
+            position: absolute;
+            left: 0px;  
+            bottom: 45%;
+        }
+        .jp {
+            width: 100%;
+            height: 40%;
+            background-color: #fff;
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            border-top: 3px solid #ececec;
+            table-layout: fixed;
+            font-size: 22px;
+        }
+        td {
+            border: 1px solid #ececec;
+            text-align: center;
+        }
+        .btn {
+            background-color: #a3d4fa;
+            color: #fff;
+        }
+        @keyframes shu {
+            0%{
+                opacity: 1;
+            }
+            100%{
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">{$data['orgName']}</div>
+    <div class="ipt">
+        <div class="ipt_text">金额</div>
+        <div class="moeny">
+                <em></em>
+                <div class="number"></div>
+            <span>￥</span>
+    </div>
+    </div>
+    <div class="text">
+        订单编号 <span>{$data['orderid']}</span>
+    </div>
+    <table class="jp" cellspacing="0">
+        <tr>
+            <td onclick="number(this)">1</td>
+            <td onclick="number(this)">2</td>
+            <td onclick="number(this)">3</td>
+            <td onclick="del()">删除</td>
+        </tr>
+        <tr>
+            <td onclick="number(this)">4</td>
+            <td onclick="number(this)">5</td>
+            <td onclick="number(this)">6</td>
+            <td class="btn" onclick="submit()" rowspan="3">确认<br>支付</td>
+        </tr>
+        <tr>
+            <td onclick="number(this)">7</td>
+            <td onclick="number(this)">8</td>
+            <td onclick="number(this)">9</td>
+        </tr>
+        <tr>
+            <td colspan="2" onclick="number(this)">0</td>
+            <td onclick="number(this)">.</td>
+        </tr>
+    </table>
+    <script>
+        var moeny = document.getElementsByClassName('number')[0];
+        var btn = document.getElementsByClassName('btn')[0];
+        function number(val){
+            var text = moeny.innerText?moeny.innerText:""
+            if(text.length<15){
+                text += val.innerText
+                moeny.innerText = text
+                if(moeny.innerText != ""){
+                    btn.style.backgroundColor = "#008af5"
+                }else {
+                    btn.style.backgroundColor = "#a3d4fa"
+                }
+            }
+        }
+        function del(){
+            moeny.innerText = moeny.innerText.substring(0,moeny.innerText.length-1)
+            if(moeny.innerText != ""){
+                btn.style.backgroundColor = "#008af5"
+            }else {
+                btn.style.backgroundColor = "#a3d4fa"
+            }
+        }
+        function submit() {
+        	$.ajax({
+                url:"/index.php?s=/payoff/juhepay/submitPayment.html",
+                type:"post",
+                data:{o:"<php> echo $data['orderid'];</php>"},
+                success:function(data){
+                    //window.clearInterval(timer);
+                    //console.log("over..");
+					if(data.status==1)
+					{
+						moeny.innerText = "";
+					}
+					$(".title").text(data);
+                },
+                error:function(e){
+                    alert("网络异常，请稍后再试！！");
+                }
+            });
+            
+        }
+    </script>
+</body>
+</html>

@@ -20,6 +20,7 @@ class IndexController extends Controller
 	protected $orderModel;
 	protected $orderlistModel;
 	protected $cart;
+    protected $protocol;
     public function _initialize()
     {
        $this->cart = new Cart();
@@ -32,6 +33,8 @@ class IndexController extends Controller
 	       S('DB_CONFIG_DATA',$config);
 	   }
 	   C($config); //添加配置
+	   $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+	   $this->protocol = $http_type . $_SERVER['HTTP_HOST'];
     }
 
     public function index()
@@ -95,7 +98,7 @@ class IndexController extends Controller
 	}
 	function ordersn(){
       $yCode = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J');
-      $orderSn = $yCode[intval(date('Y')) - 2011] . strtoupper(dechex(date('m'))) . date('d') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('%04d%02d', rand(1000, 9999),rand(0,99));
+      $orderSn = $yCode[((intval(date('Y')) - 2011)%10)] . strtoupper(dechex(date('m'))) . date('d') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('%04d%02d', rand(1000, 9999),rand(0,99));
       return $orderSn;
     }
     public function order()
@@ -106,6 +109,78 @@ class IndexController extends Controller
 		/* uid调用*/
         $uid=get_uid();
 		/* 创建订单*/
+        
+        $curlUrl = C('MAJOR_ORDER_API_URL');
+        $majorOrg = C('MAJOR_ORG');
+        if($curlUrl){            
+            $curlData = array();
+            foreach($this->cart->contents() as $key => $val){
+                if( ! is_array($val) OR ! isset($val['price']) OR ! isset($val['qty'])) {
+                    continue;
+                }
+                
+                $curlData[$key]['goodid'] = $val["id"];
+                $curlData[$key]['num'] = $val["qty"];
+                $curlData[$key]['uid'] = $uid;
+                $curlData[$key]['MODULE_NAME'] = $val["MODULE_NAME"];
+                $curlData[$key]['title'] = $val["name"];
+                $curlData[$key]['url'] = $val["url"];
+                if(!empty($val["suid"])){
+                    $curlData[$key]['suid'] = $val["suid"];
+                }
+                $curlData[$key]['username'] = query_user('nickname',$uid);
+                $curlData[$key]['price'] = $val['price'];
+                $curlData[$key]['total'] = $val['subtotal'];
+                if($majorOrg&&!empty($val['orgId'])&&!empty($val['orgName'])){
+                    $curlData[$key]['orgId'] = $val['orgId'];
+                    $curlData[$key]['orgName'] = $val['orgName'];
+                }else{
+                    $curlData[$key]['orgId'] = C('ORG_ID');
+                    $curlData[$key]['orgName'] = C('ORG_NAME');
+                }                
+                $curlData[$key]['view'] = $val['view'];
+                if($val['image']) $curlData[$key]['image'] = $this->protocol . get_cover($val['image'], 'path');
+                $curlData[$key]['starttime'] = $val["starttime"];
+                $curlData[$key]['endtime'] = $val["endtime"];
+                $curlData[$key]['courseStatus'] = $val["status"];
+                $curlData[$key]['online'] = $val["online"];
+                $curlData[$key]['updateFlag'] = $val["updateFlag"];
+            }            
+            
+            $curlParams = array(str_replace("__ACTION__", "orderCreate", $curlUrl), $curlData);
+            
+            $result = json_decode(api('CurlRequest/post', $curlParams),true);
+            //dump($result);
+            if($result){
+                if(is_array($result)){
+                    if($result['success']){
+                        $this->cart->destroy();
+                        $this->assign('data',$result['data']);
+                        $this->assign('orderid',$result['data']['orderid']);
+                        //聚合码url
+                        $juhepayurl=str_replace("__orderid__", $result['data']['orderid'], C('MAJOR_JUHEPAY_QRCODE_URL'));
+                        //dump($juhepayurl);
+                        $this->assign('juhepayurl',$juhepayurl);
+                        
+                        if(($result['data']['pricetotal']+0)===0){
+                            $this->display("returnurl");
+                        }else{
+                            $this->display("Payoff@Index:index");
+                        }                       
+                        
+                    }else{
+                        $this->error( "下单异常：".$result['message'],U("home/index/index") );	
+                    }
+                }else if(is_string($result)){
+                    $this->error( "下单异常：".$result,U("home/index/index") );	
+                }else{
+                    $this->error( "下单未知异常",U("home/index/index") );	
+                }
+            }            
+            return;
+        }       
+        
+        
 	 if(IS_POST)
 	 {
 	  $goodlist=M("orderlist");
@@ -138,6 +213,13 @@ class IndexController extends Controller
         $goodlist->price =$goodprice;
 		$goodtotal=$val['subtotal'];
 		$goodlist->total =$goodtotal;
+		if(C('MAJOR_ORG')){
+		    $goodlist->orgId =$val['orgId'];
+		    $goodlist->orgName =$val['orgName'];		    
+		}else{		    
+		    $goodlist->orgId =C('ORG_ID');
+		    $goodlist->orgName =C('ORG_NAME');
+		}
 		$goodlist->add();
       } 
 	  $this->assign('tag',$tag);
@@ -204,6 +286,10 @@ class IndexController extends Controller
         $data=D("order")->where("orderid='$tag'")->find();
 		$this->assign('data',$data);
         $this->assign('orderid',$tag);
+        //聚合码url
+        $juhepayurl=str_replace("__orderid__", $tag, C('MAJOR_JUHEPAY_QRCODE_URL'));
+        //dump($juhepayurl);
+        $this->assign('juhepayurl',$juhepayurl);
 		
 		if(($data['pricetotal']+0)==0)//订单金额为0的免费课程，直接修改状态为已支付
 		{

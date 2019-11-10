@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>集创思双师-课程详情</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./assets/style/reset.css">
+    <link rel="stylesheet" href="./assets/style/detail.css">
+    <script src="./assets/libs/jquery.min.js"></script>
+    <script src="./assets/libs/pageMe.js"></script>
+</head>
+<body>
+    <div class="box">
+        <div class="top">
+            <img src="./assets/images/微信图片_20191009141254.jpg" alt="">
+            <div class="information">
+                <div class="title">
+                    荔湾学校小学部<span>(全科)</span>
+                </div>
+                <div class="text">
+                    <span>总课时4</span><span>剩余课时1</span>
+                </div>
+                <div class="text">
+                    <span>学生人数1</span><span>满意度100%</span>
+                </div> 
+                <div class="btn" onclick="Timetable()">查看课表</div>
+                <div class="state">免费</div>
+            </div>
+        </div>
+        <div class="center">
+            <div class="nav">
+                <div class="check" data-id="1">课程时间</div>
+                <div data-id="2">课程资源</div>
+                <div data-id="3">课程评论（0）</div>
+            </div>
+            <div class="center_box" id="one">
+                <div class="box_nav">
+                    <div class="check">未上课时</div>
+                    <div>结束课时</div>
+                </div>
+                <div class="ipt clearfix">
+                    <div class="search">
+                        <input type="text" placeholder="搜索">
+                        <img src="./assets/images/搜索.png" alt="">
+                    </div>
+                </div>
+                <table>
+                    <tr>
+                        <th><em class="all"></em></th>
+                        <th>序号</th>
+                        <th>ID信息</th>
+                        <th>主题</th>
+                        <th>知识点</th>
+                        <th>开始时间</th>
+                        <th>时长（分）</th>
+                        <th>授课老师</th>
+                        <th>课时资源</th>
+                        <th>操作</th>
+                    </tr>
+                    <tr>
+                        <td><em></em></td>
+                        <td>1</td>
+                        <td>教室<span style="color:blue;">123456</span><br>课堂号<span style="color:red;">654321</span></td>
+                        <td>人文素养</td>
+                        <td>人文素养</td>
+                        <td>2019-11-07 16:10:56</td>
+                        <td>80</td>
+                        <td><img src="./assets/images/xxjs.png" alt=""><br>集创思老师48</td>
+                        <td><div class="zy">进行中</div></td>
+                        <th></th>
+                    </tr>
+                    </table>
+            </div>
+            <div class="center_box" id="two" style="display:none">
+                <div class="ipt clearfix">
+                    <div class="search">
+                        <input type="text" placeholder="搜索">
+                        <img src="./assets/images/搜索.png" alt="">
+                    </div>
+                </div>
+                <table>
+                    <tr>
+                        <th><em class="all"></em></th>
+                        <th>编号</th>
+                        <th>课时</th>
+                        <th>文件</th>
+                        <th>大小（M）</th>
+                        <th>备注</th>
+                    </tr>
+                    <tr>
+                        <td><em></em></td>
+                        <td>1</td>
+                        <td>2019-11-07 16:10:56</td>
+                        <td>人文素养</td>
+                        <td>80</td>
+                        <th>123456</th>
+                    </tr>
+                </table>
+            </div>
+            <div class="center_box" id="three" style="display:none">
+                <div class="three_box">
+                    <div class="left">
+                        <div class="left_top">
+                            <div class="top_l">满意度
+                                <span>100%</span>
+                            </div>
+                            <div class="top_r">
+                                <div class="jdt">好评<div><span></span></div><em>0%</em></div>
+                                <div class="jdt">中评<div><span></span></div><em>0%</em></div>
+                                <div class="jdt">差评<div><span></span></div><em>0%</em></div>
+                            </div>
+                        </div>
+                        <div class="left_bottom">
+                            <div class="check">全部(0)</div>
+                            <div>好评(0)</div>
+                            <div>中评(0)</div>
+                            <div>差评(0)</div>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="comment">
+                            发表评论
+                            <img src="./assets/images/星星.png" alt="">
+                            <img src="./assets/images/星星.png" alt="">
+                            <img src="./assets/images/星星.png" alt="">
+                            <img src="./assets/images/星星.png" alt="">
+                            <img src="./assets/images/星星.png" alt="">
+                        </div>
+                        <textarea name="" id="" cols="30" rows="10" placeholder="填写您的评论"></textarea>
+                        <div class="fl"></div>
+                        <div class="fr">发表</div>
+                    </div>
+                </div>
+                <div class="message">
+                    <div class="li">
+                        <div class="username">xxx:</div>
+                        <div>
+                            课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div id="page"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("#page").paging({
+            pageNum: 1, // 当前页面
+            totalNum: 9, // 总页码
+            totalList: 1, // 记录总数量
+            callback: function(num) { //回调函数
+                console.log(num);
+            }
+        });
+        $('table').find('em').click(function(){
+            if(this.className.indexOf('check') != -1){
+                $(this).removeClass('check')
+                if(this.className.indexOf('all') != -1){
+                    $(this).parent().parent().parent().find('em').removeClass('check')
+                }
+            }else{
+                $(this).addClass('check')
+                if(this.className.indexOf('all') != -1){
+                    $(this).parent().parent().parent().find('em').addClass('check')
+                }
+            }
+            var arr = $(this).parent().parent().parent().find('em')
+            for(let i =0; i<arr.length; i++){
+                if(arr[i].className == 'check'||arr[i].className == 'all'){
+                    $(this).parent().parent().parent().find('.all').addClass('check')
+                }else{
+                    $(this).parent().parent().parent().find('.all').removeClass('check')
+                }
+            }
+        })
+        $('.nav > div').click(function(){
+            $(this).addClass('check').siblings().removeClass('check')
+            if($(this).attr('data-id') == '1'){
+                $('#one').css('display','block')
+                $('#two').css('display','none')
+                $('#three').css('display','none')
+            }else if($(this).attr('data-id') == '2'){
+                $('#one').css('display','none')
+                $('#two').css('display','block')
+                $('#three').css('display','none')
+                aa = 10
+            }else if($(this).attr('data-id') == '3'){
+                $('#one').css('display','none')
+                $('#two').css('display','none')
+                $('#three').css('display','block')
+            }
+        })
+        $('.left_bottom > div').click(function(){
+            $(this).addClass('check').siblings().removeClass('check')
+        })
+        $('.comment > img').mousemove(function(){
+            $(this).attr('src','./assets/images/星星 (1).png').prevAll().attr('src','./assets/images/星星 (1).png')
+            $(this).nextAll().attr('src','./assets/images/星星.png')
+        })
+        function Timetable(){
+            window.parent.aaa('schedule')
+        }
+    </script>
+</body>
+</html>

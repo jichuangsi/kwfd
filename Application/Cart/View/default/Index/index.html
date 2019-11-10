@@ -66,7 +66,15 @@
 	 <if condition="is_array($vo)">
 	 <php>$total_items+=$vo['qty']</php>
 	 <div class="itemRow row-0 odd" id="cartItem_SCI-2">
-	   <div class="item-name">{$vo["name"]}</div>
+	   <div class="item-name">{$vo["name"]}
+	   								<if condition="C('MAJOR_ORG') eq '1'">									
+									<if condition="$vo.orgName neq null">
+									({$vo.orgName})
+									<else/>
+									(-)
+									</if>
+									</if>
+	   </div>
 	   <div class="item-price">¥{$vo["price"]}</div>
 	   <div class="item-quantitybox">
 	     <div class="item-decrement"><a <if condition="$vo['qty'] gt 1">href="{:U("/Cart/Index/update/id/".$vo["id"]."/qty/".($vo['qty']+0-1))}"<else/>href="javascript:toastr.error('数量不能小于1', '温馨提示');;"</if> class="simpleCart_decrement">-</a></div>

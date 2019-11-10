@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>集创思双师-课表</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./assets/style/reset.css">
+    <link rel="stylesheet" href="./assets/libs/packages/core/main.css">
+    <link rel="stylesheet" href="./assets/libs/packages/daygrid/main.css">
+    <link rel="stylesheet" href='./assets/libs/packages/timegrid/main.css'/>
+    <link rel="stylesheet" href="./assets/style/schedule.css">
+    <script src="./assets/libs/jquery.min.js"></script>
+    <script src="./assets/libs/packages/core/main.js"></script>
+    <script src="./assets/libs/packages/interaction/main.js"></script>
+    <script src="./assets/libs/packages/daygrid/main.js"></script>
+	<script src="./assets/libs/packages/timegrid/main.js"></script>
+    <script src="./assets/libs/packages/core/locales-all.min.js"></script>
+</head>
+<body>
+    <div class="box">
+        <div class="top">
+            集创思双师-课表
+        </div>
+        <div class="center">
+            <div id='calendar'></div>
+        </div>
+    </div>
+    <script>
+    	var today=new Date()
+    	today = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate()
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: [ 'interaction', 'dayGrid','timeGrid'],
+            header: {
+                left: 'prevYear,prev,next,nextYear today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            locale:'zh-cn',
+            defaultView: 'dayGridMonth',
+            defaultDate: today,
+            navLinks: true,	// can click day/week names to navigate views
+            businessHours: true, // display business hours
+            editable: true,
+            eventLimit: true, // allow "more" link when too many events
+            navLinkDayClick: function(date, jsEvent) {
+                console.log('day', date.toISOString());
+                console.log('coords', jsEvent.pageX, jsEvent.pageY);
+           		window.parent.aaa('detail')
+            },
+            events: {
+                url: '/index.php?s=/live/index/testFullCalendar',
+                failure: function() {
+                  console.log('failure');
+                }
+             },
+            /* events: [
+            	{
+                    title: 'All Day Event',
+                    start: '2019-11-10',
+                },
+                {
+                title: 'Business LunchLunch',
+                start: today+'T11:00:00',
+                end:today+'T14:00:00',
+                constraint: 'businessHours'
+                },
+                {
+                title: 'Business LunchLunch',
+                start: '2018-06-01T11:00:00',
+                end:'2018-06-01T14:00:00',
+                constraint: 'businessHours'
+                },
+            ] */
+            });
+            calendar.render();
+        });
+    </script>
+</body>
+</html>

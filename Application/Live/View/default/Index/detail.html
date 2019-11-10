@@ -131,7 +131,12 @@ function hide(){
                 <!---------------------------------------->
 				
 				<div class="common_block_border">
-                    <div class="common_block_title">{$data.title}</div>               
+                    <div class="common_block_title">{$data.title}</div>    
+					<if condition="C('MAJOR_ORG') eq '1'">
+					<div class="detaildatetime">
+					机构：<if condition="$data.orgName neq null">{$data.orgName}<else/>-</if>   
+					</div>  
+					</if>         
                     <div class="detaildatetime">发布时间：{$data.createtime|date='Y-m-d H:i',###}</div>
 					<div style="padding: 0px 10px 10px 10px;display:none">           
 					 <if condition="$data['price'] gt 0 ">

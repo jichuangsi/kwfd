@@ -1,0 +1,65 @@
+.top {
+    width: 100%;
+    padding: 20px;
+    line-height: 56px;
+    font-size: 28px;
+    background-color: #fff;
+    box-shadow: 3px 0px 15px rgba(0, 0, 0, 0.3);
+    letter-spacing: 2px;
+}
+.top img {
+    width: 28px;
+}
+.center {
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 3px 0px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+.center .list {
+    width: 21%;
+    border: 1px solid #f2f2f2;
+    float: left;
+    margin-right: 5%;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+.center .list:nth-child(4n){
+    margin-right: 0%;
+}
+.center .list:hover {
+    box-shadow: 3px 0px 15px rgba(0, 0, 0, 0.1);
+}
+.center .list img {
+    width: 100%;
+}
+.center .list .title {
+    font-size: 20px;
+    line-height: 32px;
+    padding: 0px 10px;
+}
+.center .list .title .fr {
+    font-size: 16px;
+    color: gold;
+}
+.center .list .text {
+    font-size: 18px;
+    line-height: 32px;
+    padding: 0px 10px;
+}
+.center .list .text span {
+    color: #999;
+    margin-left: 20px;
+}
+.center .list .teacher {
+    display: flex;
+    padding: 10px;
+}
+.center .list .teacher img {
+    width: 50px;
+}
+.center .list .teacher .text_j {
+    margin-left: 10px;
+    line-height: 28px;
+}

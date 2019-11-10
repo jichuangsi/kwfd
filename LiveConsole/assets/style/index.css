@@ -1,0 +1,74 @@
+.box {
+    width: 100%;
+    display: flex;
+}
+.left_box {
+    width: 300px;
+    margin-left: 10px;
+    margin-right: 20px;
+}
+.left_box img {
+    width: 100%;
+}
+.left_box .top_box{
+    background-color: #fff;
+    box-shadow: 3px 0px 15px rgba(0, 0, 0, 0.3);
+    padding: 10px 20px;
+}
+.left_box .bottom_box{
+    background-color: #fff;
+    box-shadow: 3px 0px 15px rgba(0, 0, 0, 0.3);
+    margin-top: 20px;
+    padding: 10px 20px;
+}
+.left_box .top_box .title{
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 46px;
+}
+.left_box .top_box .text_span {
+    font-size: 16px;
+    color: #999;
+    text-align: center;
+    line-height: 32px;
+}
+.left_box .top_box input {
+    border: 1px solid #999;
+    display: block;
+    margin: 0px auto;
+}
+.left_box .top_box .text {
+    font-size: 20px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+.left_box .top_box .text span {
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+}
+.left_box .top_box .text span img{
+    width: 24px;
+}
+.left_box .bottom_box div {
+    font-size: 20px;
+    line-height: 32px;
+    font-weight: 600;
+}
+.left_box .bottom_box span {
+    font-size: 20px;
+    line-height: 28px;
+    color: #999;
+    display: block;
+}
+.right_box {
+    flex: 1;
+}
+.right_box iframe {
+    width: 100%;
+    height: 99vh;
+}

@@ -20,6 +20,7 @@ class IndexController extends Controller
 	protected $chaptersmodel;
 	protected $des;
 	protected $crypt;
+	protected $protocol;
     public function _initialize()
     { 
 		$this->datamodel = D($this->_model.'/'.$this->_model);
@@ -55,9 +56,8 @@ class IndexController extends Controller
         }
         C($config); //添加配置
 		
-		//$http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
-        //echo $http_type . $_SERVER['HTTP_HOST'];
-		//echo $http_type . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];  		
+        $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+        $this->protocol = $http_type . $_SERVER['HTTP_HOST'];
     }
 	public function getmenu()
     {
@@ -66,13 +66,19 @@ class IndexController extends Controller
         echo json_encode($tree);
 	}
 
-	public function gotomeeting($id=0)
+	public function gotomeeting($id=0, $orgId)
 	{
-		 $data = $this->datamodel->find($id);
+	    unset($map);
+	    $map['id'] = $id;
+	    $map['orgId'] = $orgId;
+		 $data = $this->datamodel->where($map)->count();
+		 
          if (!$data) {
-            $this->error('404 not found');
+            $this->error('请到相应的机构上课！');
          }
 		  
+         unset($data);
+         $data = $this->datamodel->where($map)->find();
 		  
 		if(!is_login())
 		{
@@ -80,7 +86,7 @@ class IndexController extends Controller
             $uid=NOW_TIME;
 			$username="游客";
 			$role="1";
-			
+			$this->error( "您还没有登陆",U("/Home/User/login") );
 	    }
 		else
 		{
@@ -92,6 +98,8 @@ class IndexController extends Controller
 		  if($uid==$data["teacherid"])
 		  {
 			  $role="4";
+			  $rs = $this->datamodel->where($map)->where(['status'=>1])->setField(['status'=>3]); //老师上课			  
+			  if($rs) $this->datamodel->where($map)->setInc('updateFlag');
 		  }
 		  else
 		  {
@@ -255,6 +263,57 @@ class IndexController extends Controller
 	    }
 	}
 	
+	public function setshareuuid(){
+	    $room = $_POST['room'];
+	    $uuid = $_POST['uuid'];
+	    $isteacher = $_POST['isteacher'];
+	    
+	    if(empty($room)||empty($uuid)||empty($isteacher)){
+	        return $this->ajaxReturn('fail');
+	    }
+	    
+	    if(!is_dir('lock')){
+	        mkdir('lock');
+	    }
+	    if(!is_dir('lock/Live')){
+	        mkdir('lock/Live');
+	    }
+	    
+	    $fp = fopen('lock/Live/'.$room.'.txt', "w+");
+	    if(flock($fp,LOCK_EX)){
+	        if($isteacher==1){
+	            $join_users = F('Live/'.$room);
+	            if($join_users){
+	                $join_users['ss_uuid'] = $uuid;
+	            }else{
+	                $join_users = array('ss_uuid'=>$uuid);
+	            }
+	            F('Live/'.$room,$join_users);
+	            return $this->ajaxReturn('success');
+	        }
+	        flock($fp,LOCK_UN);
+	    }
+	    fclose($fp);
+	}
+	
+	public function getshareuuid(){
+	    
+	    $room = $_POST['room'];
+	    
+	    if(empty($room)||!is_dir('lock')||!is_dir('lock/Live')){
+	        return null;
+	    }
+	    
+	    $join_users = F('Live/'.$room);
+	    if($join_users){
+	        $res = $join_users['ss_uuid'];
+	    }else{
+	        $res = null;
+	    }
+	    
+	    return $this->ajaxReturn($res);
+	}
+	
 	public function getjoiners(){
 	    $room = $_POST['room'];
 	    
@@ -290,6 +349,172 @@ class IndexController extends Controller
 	    }
 	    
 	    return $this->ajaxReturn($res);
+	}
+	
+	public function uploadPictures(){
+	    
+    	    $room = $_POST['room'];
+    	           
+    	    if(empty($room)){
+    	        return $this->ajaxReturn('fail');
+    	    }
+    	    
+    	    $data = explode("-",$room);
+    	    
+    	    if(!$data||!$data[0]||empty($data[0])){
+    	        return $this->ajaxReturn('fail');
+    	    }
+	    
+    	    /* 返回标准数据 */
+    	    $return  = array('status' => 1, 'info' => 'success', 'data' => '');    	    
+    	    
+    	    $Picture = D($this->_model.'/Picture');
+    	    
+    	    $driver = modC('PICTURE_UPLOAD_DRIVER','local','config');
+    	    $driver = check_driver_is_exist($driver);
+    	    $uploadConfig = get_upload_config($driver);
+    	    
+    	     $info = $Picture->upload(
+    	        $_FILES,
+    	        C('PICTURE_UPLOAD'),
+    	        $driver,
+    	        $uploadConfig
+    	        ); //TODO:上传到远程服务器
+    	   
+	        if($info){	            
+	            unset($map);
+	            $map['id'] = $data[0];
+	            $ret = $this->datamodel->field("images")->where($map)->find();	 
+	            
+	            $data = array();
+	            if($ret["images"]){
+	                $images = $ret["images"].',';
+	                $imagesId = explode(",", $ret["images"]);
+	                foreach($imagesId as $k => $v){
+	                    array_push($data, array('id'=>$v,'path'=>$this->protocol.get_cover($v, 'path')));
+	                }
+	            }else{
+	                $images = '';
+	            }	            
+	            
+	            foreach($info as $k => $v){
+	                $images .= $v['id'].',';
+	                array_push($data, array('id'=>$v['id'],'path'=>$this->protocol.$v['path']));
+	            }
+	            
+	            if($images){	                
+	                $this->datamodel->where($map)->setField('images', substr($images, 0, strlen($images)-1));	                
+	            }
+	            
+	            
+	            $return['data'] = $data;	            
+	            
+	            $return['status'] = 1;
+	            
+	        } else {
+	            $return['status'] = 0;
+	            $return['info']   = $Picture->getError();
+	        }
+	    
+	    
+	       /* 返回JSON数据 */
+	        $this->ajaxReturn($return);
+	}
+	
+	public function getPictures(){
+	    $room = $_POST['room'];
+	    
+	    if(empty($room)){
+	        return $this->ajaxReturn('fail');
+	    }
+	    
+	    $data = explode("-",$room);
+	    
+	    if(!$data||!$data[0]||empty($data[0])){
+	        return $this->ajaxReturn('fail');
+	    }
+	    
+	    /* 返回标准数据 */
+	    $return  = array('status' => 1, 'info' => 'success', 'data' => '');
+	    
+	    unset($map);
+	    $map['id'] = $data[0];
+	    $ret = $this->datamodel->field("images")->where($map)->find();
+	    
+	    if($ret){
+	        $data = array();
+	        if($ret["images"]){
+	            $imagesId = explode(",", $ret["images"]);
+	            foreach($imagesId as $k => $v){
+	                array_push($data, array('id'=>$v,'path'=>$this->protocol.get_cover($v, 'path')));
+	            }
+	        }
+	        
+	        $return['data'] = $data;
+	        
+	        $return['status'] = 1;
+	    }else{
+	        $return['status'] = 0;
+	        $return['info']   = 'fail';
+	    }
+	    
+	    /* 返回JSON数据 */
+	    $this->ajaxReturn($return);
+	}
+	
+	public function removePictures(){
+	    $room = $_POST['room'];
+	    $removeId = $_POST['imageId'];
+	    
+	    if(empty($room)||empty($removeId)){
+	        return $this->ajaxReturn('fail');
+	    }
+	    
+	    $data = explode("-",$room);
+	    
+	    if(!$data||!$data[0]||empty($data[0])){
+	        return $this->ajaxReturn('fail');
+	    }
+	    
+	    /* 返回标准数据 */
+	    $return  = array('status' => 1, 'info' => 'success', 'data' => '');
+	    
+	    unset($map);
+	    $map['id'] = $data[0];
+	    $ret = $this->datamodel->field("images")->where($map)->find();
+	    
+	    if($ret){
+	        unset($data);
+	        $data = array();
+	        if($ret["images"]){
+	            
+	            $removeIds = explode(",", $removeId);
+	            $imageIds = explode(",", $ret["images"]);
+	            $diff = array_diff($imageIds, $removeIds);
+	             
+	            $images = '';
+	            foreach($diff as $k => $v){
+	                $images .= $v.',';
+	                array_push($data, array('id'=>$v,'path'=>$this->protocol.get_cover($v, 'path')));
+	            }
+	            
+	            if($images&&count($diff)>0){
+	                $this->datamodel->where($map)->setField('images', substr($images, 0, strlen($images)-1));
+	            }else if(count($diff)==0){
+	                $this->datamodel->where($map)->setField('images', '');
+	            }
+	        }
+	        
+	        $return['data'] = $data;
+	        
+	        $return['status'] = 1;
+	    }else{
+	        $return['status'] = 0;
+	        $return['info']   = 'fail';
+	    }
+	    
+	    /* 返回JSON数据 */
+	    $this->ajaxReturn($return);
 	}
 	
     /*
@@ -429,4 +654,18 @@ class IndexController extends Controller
             ]));
 		}
     }	
+    
+    public function testFullCalendar($start, $end){
+        
+        dump(strtotime($start));
+        dump(strtotime($end));
+        
+        $return = array();
+        
+        array_push($return, ['title'=>'All Day Event','start'=>'2019-11-10']);
+        array_push($return, ['title'=>'Long Event','start'=>'2019-11-10T10:00','end'=>'2019-11-10T12:00']);
+        
+        /* 返回JSON数据 */
+        $this->ajaxReturn($return);
+    }
 }

@@ -34,33 +34,73 @@ class OrderController extends AdminController {
     public function index($page = 1, $r = 20){
         /* 查询条件初始化 */
 	
-       $map['id']  = array('gt',0);
+       $map['orders.id']  = array('gt',0);
 	   foreach(I() as $key=>$val)
 		{
            if(!(strpos($key,'search_') === FALSE))
 		   {
 			  if($val=="")continue;
 			  $tempkey=str_replace('search_','',$key);
-			  $map[$tempkey] = array('like', '%' . $val . '%');
+			  $map["orders.$tempkey"] = array('like', '%' . $val . '%');
 		   }
         }
 		if(!empty(I('begin_time')) && !empty(I('end_time')))
 		{
  
-			$map['create_time'] = array(array('EGT', I('begin_time')), array('ELT', I('end_time')));
+			$map['orders.create_time'] = array(array('EGT', I('begin_time')), array('ELT', I('end_time')));
 		}
 		else if(!empty(I('begin_time')))
 		{
-			$map["create_time"]=array('egt',I('begin_time'));
+			$map["orders.create_time"]=array('egt',I('begin_time'));
 		}
 		else if(!empty(I('end_time')))
 		{
-			$map["create_time"]=array('elt',I('end_time'));
+			$map["orders.create_time"]=array('elt',I('end_time'));
 		}
-	   $map["status"]=array('neq',6);
-	   //dump($map);
-       $lists = $this->datamodel->where($map)->order('id desc')->page($page, $r)->select();
-	   $totalCount = $this->datamodel->where($map)->count();
+	   $map["orders.status"]=array('neq',6);
+	   //dump($map);      
+	   
+	   $curlUrl = C('MAJOR_ORDER_API_URL');
+	   $majorOrg = C('MAJOR_ORG');
+	   if($curlUrl){
+	       
+	       $action = "orderPostQuery";
+	       
+	       if(!$majorOrg){
+	           if(!empty(C('ORG_ID'))){
+	               $map['g'] = C('ORG_ID');
+	           }else{
+	               $this->error( "缺少必要机构参数");
+	           }
+	       }
+	       
+	       $map['p'] = $page;
+	       $map['r'] = $r;
+	       
+	       $curlParams = array(str_replace("__ACTION__", $action, $curlUrl), $map);
+	       
+	       $result = json_decode(api('CurlRequest/post', $curlParams),true);
+	       //dump($result);
+	       if($result){
+	           if(is_array($result)){
+	               if($result['success']){
+	                   $lists = $result['data'];
+	                   $totalCount = $result['count'];
+	               }else{
+	                   $this->error( "查单异常：".$result['message']);
+	               }
+	           }else if(is_string($result)){
+	               $this->error( "查单异常：".$result);
+	           }else{
+	               $this->error( "查单未知异常");
+	           }
+	       }
+	       
+	   }else{
+	       $lists = $this->datamodel->alias("orders")->where($map)->order('orders.id desc')->page($page, $r)->select();
+	       $totalCount = $this->datamodel->alias("orders")->where($map)->count();
+	   }
+	   
 	   foreach ($lists as $key=>&$val) {
           $val['ispay']=$val['ispay']==2?"已付款":"未付款";
        }
@@ -89,33 +129,73 @@ class OrderController extends AdminController {
     public function cancel($page = 1, $r = 20){
         /* 查询条件初始化 */
 	
-       $map['id']  = array('gt',0);
+       $map['orders.id']  = array('gt',0);
 	   foreach(I() as $key=>$val)
 		{
            if(!(strpos($key,'search_') === FALSE))
 		   {
 			  if($val=="")continue;
 			  $tempkey=str_replace('search_','',$key);
-			  $map[$tempkey] = array('like', '%' . $val . '%');
+			  $map["orders.$tempkey"] = array('like', '%' . $val . '%');
 		   }
         }
 		if(!empty(I('begin_time')) && !empty(I('end_time')))
 		{
  
-			$map['create_time'] = array(array('EGT', I('begin_time')), array('ELT', I('end_time')));
+			$map['orders.create_time'] = array(array('EGT', I('begin_time')), array('ELT', I('end_time')));
 		}
 		else if(!empty(I('begin_time')))
 		{
-			$map["create_time"]=array('egt',I('begin_time'));
+			$map["orders.create_time"]=array('egt',I('begin_time'));
 		}
 		else if(!empty(I('end_time')))
 		{
-			$map["create_time"]=array('elt',I('end_time'));
+			$map["orders.create_time"]=array('elt',I('end_time'));
 		}
 	   //dump($map);
-	   $map["status"]=6;
-       $lists = $this->datamodel->where($map)->order('id desc')->page($page, $r)->select();
-	   $totalCount = $this->datamodel->where($map)->count();
+	   $map["orders.status"]=6;
+	   
+	   $curlUrl = C('MAJOR_ORDER_API_URL');
+	   $majorOrg = C('MAJOR_ORG');
+	   if($curlUrl){
+	       
+	       $action = "orderPostQuery";
+	       
+	       if(!$majorOrg){
+	           if(!empty(C('ORG_ID'))){
+	               $map['g'] = C('ORG_ID');
+	           }else{
+	               $this->error( "缺少必要机构参数");
+	           }
+	       }
+	       
+	       $map['p'] = $page;
+	       $map['r'] = $r;
+	       
+	       $curlParams = array(str_replace("__ACTION__", $action, $curlUrl), $map);
+	       
+	       $result = json_decode(api('CurlRequest/post', $curlParams),true);
+	       //dump($result);
+	       if($result){
+	           if(is_array($result)){
+	               if($result['success']){
+	                   $lists = $result['data'];
+	                   $totalCount = $result['count'];
+	               }else{
+	                   $this->error( "查单异常：".$result['message']);
+	               }
+	           }else if(is_string($result)){
+	               $this->error( "查单异常：".$result);
+	           }else{
+	               $this->error( "查单未知异常");
+	           }
+	       }
+	       
+	   }else{
+	       $lists = $this->datamodel->alias("orders")->where($map)->order('orders.id desc')->page($page, $r)->select();
+	       $totalCount = $this->datamodel->where($map)->count();
+	   }
+       
 	   foreach ($lists as $key=>&$val) {
           $val['status']="已取消";
        }
@@ -160,35 +240,75 @@ class OrderController extends AdminController {
     public function lists($page = 1, $r = 20){
         /* 查询条件初始化 */
 	
-       $map['id']  = array('gt',0);
+       $map['orders.id']  = array('gt',0);
 	   foreach(I() as $key=>$val)
 		{
            if(!(strpos($key,'search_') === FALSE))
 		   {
 			  if($val=="")continue;
 			  $tempkey=str_replace('search_','',$key);
-			  $map[$tempkey] = array('like', '%' . $val . '%');
+			  $map["orders.$tempkey"] = array('like', '%' . $val . '%');
 		   }
         }
 		if(!empty(I('begin_time')) && !empty(I('end_time')))
 		{
  
-			$map['create_time'] = array(array('EGT', I('begin_time')), array('ELT', I('end_time')));
+			$map['orders.create_time'] = array(array('EGT', I('begin_time')), array('ELT', I('end_time')));
 		}
 		else if(!empty(I('begin_time')))
 		{
-			$map["create_time"]=array('egt',I('begin_time'));
+			$map["orders.create_time"]=array('egt',I('begin_time'));
 		}
 		else if(!empty(I('end_time')))
 		{
-			$map["create_time"]=array('elt',I('end_time'));
+			$map["orders.create_time"]=array('elt',I('end_time'));
 		}
-	   $map["ispay"]=array('eq',2);
+	   $map["orders.ispay"]=array('eq',2);
 	   //dump($map);
-       $lists = $this->datamodel->where($map)->order('id desc')->page($page, $r)->select();
-	   //var_dump($lists);
-	   //var_dump($this->datamodel->_sql());
-	   $totalCount = $this->datamodel->where($map)->count();
+	   
+	   $curlUrl = C('MAJOR_ORDER_API_URL');
+	   $majorOrg = C('MAJOR_ORG');
+	   if($curlUrl){
+	       
+	       $action = "orderPostQuery";
+	       
+	       if(!$majorOrg){
+	           if(!empty(C('ORG_ID'))){
+	               $map['g'] = C('ORG_ID');
+	           }else{
+	               $this->error( "缺少必要机构参数");
+	           }
+	       }
+	       
+	       $map['p'] = $page;
+	       $map['r'] = $r;
+	       
+	       $curlParams = array(str_replace("__ACTION__", $action, $curlUrl), $map);
+	       
+	       $result = json_decode(api('CurlRequest/post', $curlParams),true);
+	       //dump($result);
+	       if($result){
+	           if(is_array($result)){
+	               if($result['success']){
+	                   $lists = $result['data'];
+	                   $totalCount = $result['count'];
+	               }else{
+	                   $this->error( "查单异常：".$result['message']);
+	               }
+	           }else if(is_string($result)){
+	               $this->error( "查单异常：".$result);
+	           }else{
+	               $this->error( "查单未知异常");
+	           }
+	       }
+	       
+	   }else{
+	       $lists = $this->datamodel->alias("orders")->where($map)->order('orders.id desc')->page($page, $r)->select();
+	       //var_dump($lists);
+	       //var_dump($this->datamodel->_sql());
+	       $totalCount = $this->datamodel->where($map)->count();
+	   }
+       
 	   $money=0;
 	   foreach ($lists as $key=>&$val) {
 		  $money+=$val['pricetotal'];
@@ -248,46 +368,124 @@ class OrderController extends AdminController {
      */
     public function edit($id = 0){
         if(IS_POST){
-            $Form = D('order');
-          $user=session('user_auth');
-          $uid=$user['uid'];
-            if($_POST["id"]){ 
-                $Form->create();
-				$id=$_POST["id"];
-				$Form->update_time = NOW_TIME;
-			$Form->assistant = $uid;
-
-           $result=$Form->where("id='$id'")->save();
-                if($result){
-                    //记录行为
-                    action_log('update_order', 'order', $data['id'], UID);
-                    $this->success('更新成功', Cookie('__forward__'));
-                } else {
-                    $this->error('更新失败55'.$id);
+            
+            $curlUrl = C('MAJOR_ORDER_API_URL');
+            $majorOrg = C('MAJOR_ORG');
+            if($curlUrl){
+                if(!$_POST["id"]){
+                    $this->error( "缺少必要参数");
                 }
-            } else {
-                $this->error($Config->getError());
+                
+                $map['id']  = $_POST["id"];
+                $map['assistant']  = get_uid();
+                $map['update_time']  = NOW_TIME;
+                $map['total']  = floatval($_POST["total"]);
+                $map['pricetotal']  = floatval($_POST["pricetotal"]);
+                
+                $action = "orderPostUpdate";
+                
+                $curlParams = array(str_replace("__ACTION__", $action, $curlUrl), $map);
+                
+                $result = json_decode(api('CurlRequest/post', $curlParams),true);
+                //dump($result);
+                if($result){
+                    if(is_array($result)){
+                        if($result['success']){
+                            //记录行为
+                            action_log('update_order', 'order', $_POST["id"], UID);
+                            $this->success('订单更新成功', Cookie('__forward__'));
+                        }else{
+                            $this->error( "订单更新异常：".$result['message']);
+                        }
+                    }else if(is_string($result)){
+                        $this->error( "订单更新异常：".$result);
+                    }else{
+                        $this->error( "订单更新未知异常");
+                    }
+                }
+            }else{
+                $Form = D('order');
+                $user=session('user_auth');
+                $uid=$user['uid'];
+                if($_POST["id"]){
+                    $Form->create();
+                    $id=$_POST["id"];
+                    $Form->update_time = NOW_TIME;
+                    $Form->assistant = $uid;
+                    
+                    $result=$Form->where("id='$id'")->save();
+                    if($result){
+                        //记录行为
+                        action_log('update_order', 'order', $data['id'], UID);
+                        $this->success('更新成功', Cookie('__forward__'));
+                    } else {
+                        $this->error('更新失败'.$id);
+                    }
+                } else {
+                    $this->error($Config->getError());
+                }
             }
+            
+            
         } else {
             $info = array();
             /* 获取数据 */
-            $info = M('order')->find($id);
-$detail= M('order')->where("id='$id'")->select();
-         $list=M('orderlist')->alias("orderlist")->field('orderlist.*,live.image')->join('LEFT JOIN '.C('DB_PREFIX').'live as live on live.id=orderlist.goodid')->where("orderid='$id'")->select();
-
-         //$list=M('orderlist')->where("orderid='$id'")->select();
-//dump($list);
-//die();
-$addressid=M('order')->where("id='$id'")->getField("addressid");
-$address=M('transport')->where("id='$addressid'")->select();
- $this->assign('alist', $address);
+            
+            $curlUrl = C('MAJOR_ORDER_API_URL');
+            $majorOrg = C('MAJOR_ORG');
+            if($curlUrl){
+                
+                if(empty($id)){
+                    $this->error( "缺少必要参数");
+                }
+                
+                $map['orders.id']  = $id;
+                
+                $action = "orderPostQuery";
+                
+                $curlParams = array(str_replace("__ACTION__", $action, $curlUrl), $map);
+                
+                $result = json_decode(api('CurlRequest/post', $curlParams),true);
+                //dump($result);
+                if($result){
+                    if(is_array($result)){
+                        if($result['success']){
+                            $info = $result['data'][0];
+                            $detail = $result['data'];
+                            $list = $info["orderlist"];
+                            //$totalCount = $result['count'];
+                        }else{
+                            $this->error( "查单异常：".$result['message']);
+                        }
+                    }else if(is_string($result)){
+                        $this->error( "查单异常：".$result);
+                    }else{
+                        $this->error( "查单未知异常");
+                    }
+                }
+                
+            }else{
+                $info = M('order')->find($id);
+                $detail= M('order')->where("id='$id'")->select();
+                $list=M('orderlist')->alias("orderlist")->field('orderlist.*,live.image')->join('LEFT JOIN '.C('DB_PREFIX').'live as live on live.id=orderlist.goodid')->where("orderid='$id'")->select();
+                
+                //$list=M('orderlist')->where("orderid='$id'")->select();                
+                //die();
+                
+            }      
+            $addressid=M('order')->where("id='$id'")->getField("addressid");
+            $address=M('transport')->where("id='$addressid'")->select();
+            //dump($info);
+            //dump($detail);
+            //dump($list);
+            $this->assign('alist', $address);
             if(false === $info){
                 $this->error('获取订单信息错误');
             }
-$this->assign('list', $list);
+            $this->assign('list', $list);
             $this->assign('detail', $detail);
-			 $this->assign('info', $info);
-			 $this->assign('a', $orderid);
+			$this->assign('info', $info);
+			$this->assign('a', $orderid);
             $this->meta_title = '编辑订单';
             $this->display();
         }
