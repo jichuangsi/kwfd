@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./assets/style/reset.css">
+    <link rel="stylesheet" href="./assets/style/login.css">
+    <script src="./assets/libs/jquery.min.js"></script>
+</head>
+<body>
+    <div class="login">
+        <div class="title">登录</div>
+        <div class="ipt">
+            <span><img src="./assets/images/用户.png" alt=""></span>
+            <input type="text">
+        </div>
+        <div class="ipt">
+            <span><img src="./assets/images/密码.png" alt=""></span>
+            <input type="text">
+        </div>
+        <div class="btn" onclick="login()">
+            登录
+        </div>
+    </div>
+    <script>
+        function login(){
+            var data = {
+                "username":"keyman6",
+                "password":"abcd1234"
+                }
+            $.ajax({
+                url:'http://192.168.31.108:92/index.php/api/LiveConsole/login',
+                type:'POST',
+                data:JSON.stringify(data),
+                success:function(res){
+                    console.log(JSON.parse(res))
+                    getdata()
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            })
+        }
+        function getdata(){
+            $.ajax({
+                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getUserInfo',
+                type:'GET',
+                success:function(res){
+                    console.log(res)
+                    console.log(JSON.parse(res))
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            })
+        }
+    </script>
+</body>
+</html>
