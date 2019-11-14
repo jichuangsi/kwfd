@@ -18,6 +18,9 @@ body {
     letter-spacing: 5px;
     margin-bottom: 20px;
 }
+.title img {
+    width: 300px;
+}
 .ipt {
     width: 100%;
     height: 56px;

@@ -3,12 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>乐享课双师-课程详情</title>
+    <title>集创思双师-课程详情</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="./assets/style/reset.css">
     <link rel="stylesheet" href="./assets/style/detail.css">
     <script src="./assets/libs/jquery.min.js"></script>
     <script src="./assets/libs/pageMe.js"></script>
+    <script src="./assets/libs/template-web.js"></script>
 </head>
 <body>
     <div class="box">
@@ -19,10 +20,10 @@
                     荔湾学校小学部<span>(全科)</span>
                 </div>
                 <div class="text">
-                    <span>总课时4</span><span>剩余课时1</span>
+                    <span>总课时<em class="period">1</em></span><span>剩余课时<em class="rest">1</em></span>
                 </div>
                 <div class="text">
-                    <span>学生人数1</span><span>满意度100%</span>
+                    <span>学生人数<em class="sold">1</em></span><span>满意度<em class="good">100%</em></span>
                 </div> 
                 <div class="btn" onclick="Timetable()">查看课表</div>
                 <div class="state">免费</div>
@@ -47,20 +48,20 @@
                 </div>
                 <table>
                     <tr>
-                        <th><em class="all"></em></th>
+                        <!-- <th><em class="all" onclick="table_em(this)"></em></th> -->
                         <th>序号</th>
                         <th>ID信息</th>
                         <th>主题</th>
                         <th>知识点</th>
                         <th>开始时间</th>
-                        <th>时长（分）</th>
+                        <th>时长（小时）</th>
                         <th>授课老师</th>
                         <th>课时资源</th>
                         <th>操作</th>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td><em></em></td>
-                        <td>1</td>
+                        <td>{{index}}</td>
                         <td>教室<span style="color:blue;">123456</span><br>课堂号<span style="color:red;">654321</span></td>
                         <td>人文素养</td>
                         <td>人文素养</td>
@@ -69,8 +70,12 @@
                         <td><img src="./assets/images/xxjs.png" alt=""><br>集创思老师48</td>
                         <td><div class="zy">进行中</div></td>
                         <th></th>
-                    </tr>
+                    </tr>   -->
                     </table>
+                    
+            <div class="clearfix">
+                <div id="page_one" class="page"></div>
+            </div>
             </div>
             <div class="center_box" id="two" style="display:none">
                 <div class="ipt clearfix">
@@ -81,22 +86,21 @@
                 </div>
                 <table>
                     <tr>
-                        <th><em class="all"></em></th>
-                        <th>编号</th>
-                        <th>课时</th>
-                        <th>文件</th>
-                        <th>大小（M）</th>
-                        <th>备注</th>
-                    </tr>
-                    <tr>
-                        <td><em></em></td>
-                        <td>1</td>
-                        <td>2019-11-07 16:10:56</td>
-                        <td>人文素养</td>
-                        <td>80</td>
-                        <th>123456</th>
+                        <!-- <th><em class="all" onclick="table_em(this)"></em></th> -->
+                        <th>课程分类</th>
+                        <th>大纲</th>
+                        <th>章节</th>
+                        <!-- <th>图片</th> -->
                     </tr>
                 </table>
+                <div class="imgli">
+                    <div class="imgt">
+                        显示图片
+                    </div>
+                    <div class="img">
+
+                    </div>
+                </div>
             </div>
             <div class="center_box" id="three" style="display:none">
                 <div class="three_box">
@@ -127,70 +131,76 @@
                             <img src="./assets/images/星星.png" alt="">
                             <img src="./assets/images/星星.png" alt="">
                         </div>
-                        <textarea name="" id="" cols="30" rows="10" placeholder="填写您的评论"></textarea>
+                        <textarea name="" id="pl" cols="30" rows="10" placeholder="填写您的评论"></textarea>
                         <div class="fl"></div>
-                        <div class="fr">发表</div>
+                        <div class="fr" onclick="commentbtn()">发表</div>
                     </div>
                 </div>
                 <div class="message">
-                    <div class="li">
-                        <div class="username">xxx:</div>
-                        <div>
-                            课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！课程很棒~！！！
-                        </div>
-                    </div>
                 </div>
-            </div>
-            <div class="clearfix">
-                <div id="page"></div>
+                <div class="clearfix">
+                    <div id="page_three" class="page"></div>
+                </div>
             </div>
         </div>
     </div>
     <script>
-        $("#page").paging({
-            pageNum: 1, // 当前页面
-            totalNum: 9, // 总页码
-            totalList: 1, // 记录总数量
-            callback: function(num) { //回调函数
-                console.log(num);
-            }
-        });
-        $('table').find('em').click(function(){
-            if(this.className.indexOf('check') != -1){
-                $(this).removeClass('check')
-                if(this.className.indexOf('all') != -1){
-                    $(this).parent().parent().parent().find('em').removeClass('check')
+        var state = 1;
+        var id = window.location.href.split('?')[1].split('&&')[0].split('=')[1]
+        var orgId = window.location.href.split('?')[1].split('&&')[1].split('=')[1]
+        var cid = window.location.href.split('?')[1].split('&&')[2].split('=')[1]
+        var did = window.location.href.split('?')[1].split('&&')[3]?window.location.href.split('?')[1].split('&&')[3].split('=')[1]:''
+        // var id = 242
+        // var orgId = 31
+        // var cid = 38
+        var star = 0
+        getone(1)
+        function table_em(val){
+            if(val.className.indexOf('check') != -1){
+                $(val).removeClass('check')
+                if(val.className.indexOf('all') != -1){
+                    $(val).parent().parent().parent().find('em').removeClass('check')
                 }
             }else{
-                $(this).addClass('check')
-                if(this.className.indexOf('all') != -1){
-                    $(this).parent().parent().parent().find('em').addClass('check')
+                $(val).addClass('check')
+                if(val.className.indexOf('all') != -1){
+                    $(val).parent().parent().parent().find('em').addClass('check')
                 }
             }
-            var arr = $(this).parent().parent().parent().find('em')
+            var arr = $(val).parent().parent().parent().find('em')
             for(let i =0; i<arr.length; i++){
                 if(arr[i].className == 'check'||arr[i].className == 'all'){
-                    $(this).parent().parent().parent().find('.all').addClass('check')
+                    $(val).parent().parent().parent().find('.all').addClass('check')
                 }else{
-                    $(this).parent().parent().parent().find('.all').removeClass('check')
+                    $(val).parent().parent().parent().find('.all').removeClass('check')
                 }
             }
-        })
+        }
         $('.nav > div').click(function(){
             $(this).addClass('check').siblings().removeClass('check')
             if($(this).attr('data-id') == '1'){
                 $('#one').css('display','block')
                 $('#two').css('display','none')
                 $('#three').css('display','none')
+                getone(1)
             }else if($(this).attr('data-id') == '2'){
                 $('#one').css('display','none')
                 $('#two').css('display','block')
                 $('#three').css('display','none')
-                aa = 10
+                gettwo(1)
             }else if($(this).attr('data-id') == '3'){
                 $('#one').css('display','none')
                 $('#two').css('display','none')
                 $('#three').css('display','block')
+                getthree(1)
+            }
+        })
+        $('.box_nav > div').click(function(){
+            $(this).addClass('check').siblings().removeClass('check')
+            if($(this).text() == '未上课时'){
+                getone(1)
+            }else{
+                getone_end(1)
             }
         })
         $('.left_bottom > div').click(function(){
@@ -199,10 +209,222 @@
         $('.comment > img').mousemove(function(){
             $(this).attr('src','./assets/images/星星 (1).png').prevAll().attr('src','./assets/images/星星 (1).png')
             $(this).nextAll().attr('src','./assets/images/星星.png')
+            star = $('.comment > img').index(this)+1;//获取当前点击的span下标
         })
         function Timetable(){
-            window.parent.aaa('schedule')
+            window.parent.aaa('schedule.html')
+        }
+        function getLocalTime(nS) {  
+            return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');  
+        }
+        function getone(page){
+            $.ajax({
+                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getEventDetail/oid/242/cid/'+cid+'/orgId/'+orgId+'/p/'+page+'/r/10',
+                type:'GET',
+                success:function(res){
+                    console.log(JSON.parse(res))
+                    $('.nav > div').eq(2).text('课程评论（'+JSON.parse(res).data.comments+'）')
+                    $('.period').text(JSON.parse(res).data.period)
+                    $('.rest').text(JSON.parse(res).data.rest)
+                    $('.sold').text(JSON.parse(res).data.sold)
+                    $('.good').text(JSON.parse(res).data.good)
+                    JSON.parse(res).data.price == '0.00'?$('.state').text('免费'):$('.state').text('价格：'+JSON.parse(res).data.price)
+                    $('.top').find('img').attr('src',JSON.parse(res).data.imageurl)
+                    $('.top').find('.title').text(JSON.parse(res).data.orgName)
+                    let classList = JSON.parse(res).data.classes?JSON.parse(res).data.classes:[]
+                    let data = {'data':classList}
+                    console.log(data)
+                    for(let i = 0; i<classList.length;i++){
+                        classList[i].starttime = getLocalTime(classList[i].starttime)
+                        classList[i].teacher = JSON.parse(res).data.teacher
+                    }
+                    var html = template('startList',data)
+                    $('#one').find('tbody').find('tr').eq(0).siblings().remove()
+                    $('#one').find('tbody').append(html)
+                    $("#page_one").paging({
+                        pageNum: page, // 当前页面
+                        totalNum: Math.ceil(JSON.parse(res).data.c_tot/10), // 总页码
+                        totalList: JSON.parse(res).data.c_tot, // 记录总数量
+                        callback: function(num) { //回调函数
+                            console.log(num);
+                            getone(num)
+                        }
+                    });
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            })
+        }
+        function getone_end(page){
+            $.ajax({
+                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getEventDetail/oid/'+id+'/cid/'+cid+'/orgId/'+orgId+'/end/1/p/'+page,
+                type:'GET',
+                success:function(res){
+                    console.log(JSON.parse(res))
+                    let classList = JSON.parse(res).data.classes?JSON.parse(res).data.classes:[]
+                    for(let i = 0; i<classList.length;i++){
+                        classList[i].starttime = getLocalTime(classList[i].starttime)
+                        classList[i].teacher = JSON.parse(res).data.teacher
+                    }
+                    let data = {'data':classList}
+                    console.log(data)
+                    var html = template('startList',data)
+                    $('#one').find('tbody').find('tr').eq(0).siblings().remove()
+                    $('#one').find('tbody').append(html)
+                    $("#page_one").paging({
+                        pageNum: page, // 当前页面
+                        totalNum: Math.ceil(JSON.parse(res).data.c_tot/10), // 总页码
+                        totalList: JSON.parse(res).data.c_tot, // 记录总数量
+                        callback: function(num) { //回调函数
+                            console.log(num);
+                            getone_end(num)
+                        }
+                    });
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            })
+        }
+        function gettwo(){
+            $.ajax({
+                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getEventMaterial/cid/'+cid+'/orgId/'+orgId,
+                type:'GET',
+                success:function(res){
+                    console.log(JSON.parse(res))
+                    let arr = JSON.parse(res).data.chapters._
+                    let arrimg = JSON.parse(res).data.images
+                    let html = ""
+                    let html1 = ""
+                    for(let i = 0;i<arr.length;i++){
+                        if(arr[i]._){
+                            for(let q = 0;q<arr[i]._.length;q++){
+                                html += '<tr><td rowspan>'+arr[i].title+'</td><td>'+arr[i]._[q].title+'</td></tr>'
+                            }
+                        }else{
+                            html += '<tr><td rowspan>'+arr[i].title+'</td></tr>'
+                        }
+                    }
+                    for(let j = 0;j<arrimg.length;j++){
+                        html1 += '<img src="'+arrimg[j]+'" alt="">'
+                    }
+                    $('#two').find('tbody').find('tr').eq(0).siblings().remove()
+                    $('.img').children().remove()
+                    $('#two').find('tbody').append(html)
+                    $('#two').find('tbody').find('tr').eq(1).prepend('<td rowspan='+arr.length+'>'+JSON.parse(res).data.category+'</td>')
+                    $('.img').append(html1)
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            })
+        }
+        function getthree(page){
+            $.ajax({
+                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getEventComment/p/'+page+'/r/10/cid/'+cid+'/orgId/'+orgId,
+                type:'GET',
+                success:function(res){
+                    console.log(JSON.parse(res))
+                    let date = JSON.parse(res).data
+                    let myd = ((Number(date.c_good))/Number(date.c_tot)*100).toFixed(0)
+                    $('.top_l > span').text(myd+'%')
+                    $('.left_bottom > div').eq(0).text('全部('+date.c_tot+')')
+                    $('.left_bottom > div').eq(1).text('好评('+date.c_good+')')
+                    $('.left_bottom > div').eq(2).text('中评('+date.c_soso+')')
+                    $('.left_bottom > div').eq(3).text('差评('+date.c_bad+')')
+                    
+                    $('.jdt').eq(0).find('span').css('width',(Number(date.c_good)/Number(date.c_tot)*100).toFixed(0)+'%')
+                    $('.jdt').eq(0).find('em').text((Number(date.c_good)/Number(date.c_tot)*100).toFixed(0)+'%')
+                    $('.jdt').eq(1).find('span').css('width',(Number(date.c_soso)/Number(date.c_tot)*100).toFixed(0)+'%')
+                    $('.jdt').eq(1).find('em').text((Number(date.c_soso)/Number(date.c_tot)*100).toFixed(0)+'%')
+                    $('.jdt').eq(2).find('span').css('width',(Number(date.c_bad)/Number(date.c_tot)*100).toFixed(0)+'%')
+                    $('.jdt').eq(2).find('em').text((Number(date.c_bad)/Number(date.c_tot)*100).toFixed(0)+'%')
+
+                    $('.nav > div').eq(2).text('课程评论（'+date.c_tot+'）')
+                    let data = {
+                        data: date.comments
+                    }
+                    let html = template('commentList',data)
+                    $('.message').children().remove()
+                    $('.message').append(html)
+                    $("#page_three").paging({
+                        pageNum: page, // 当前页面
+                        totalNum: Math.ceil(date.c_tot/10), // 总页码
+                        totalList: date.c_tot, // 记录总数量
+                        callback: function(num) { //回调函数
+                            console.log(num);
+                            getthree(num)
+                        }
+                    });
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            })
+        }
+        function commentbtn(){
+            console.log(star)
+            let data = {
+                    "cid":cid,
+                    "orgId":orgId,
+                    "score":star,
+                    "comment":$('#pl')[0].value
+                    }
+            $.ajax({
+                url:'http://192.168.31.108:92/index.php/api/LiveConsole/postComment',
+                type:'POST',
+                data:JSON.stringify(data),
+                success:function(res){
+                    console.log(JSON.parse(res))
+                    if(JSON.parse(res).success){
+                        $('#pl')[0].value = ''
+                        $('.comment > img').attr('src','./assets/images/星星.png')
+                        getthree(1)
+                    }
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            })
         }
     </script>
+        <script type="text/template" id="startList">
+            {{each data as value index}}
+                <tr>
+                    <td>{{index+1}}</td>
+                    <td>{{value.id}}</td>
+                    <td>{{value.MODULE_NAME}}</td>
+                    <td>{{value.title}}</td>
+                    <td>{{value.starttime}}</td>
+                    <td>{{value.duraion}}</td>
+                    <td><img src="{{value.teacher.imageurl}}" alt=""><br>{{value.teacher.nickname}}</td>
+                    <td><div class="zy">进行中</div></td>
+                    {{if value.courseStatus == 3}}
+                    <td><div class="zy">去听课</div></td>
+                    {{else if  value.courseStatus < 3}}
+                    <td><div class="zy">待上课</div></td>
+                    {{else}}
+                    <td><div class="zy">课程结束</div></td>
+                    {{/if}}
+                </tr>            
+			{{/each}}
+        </script> 
+        
+    </script>    
+    <script type="text/template" id="commentList">
+        {{each data as value index}}   
+            <div class="li">
+                <div class="user">
+                    <div class="userimg"><img src="{{value.image}}" alt=""></div>
+                    <div class="username">{{value.nickname}}</div>
+                    <div class="time">{{value.timeTip}}</div>
+                </div>
+                <div class="commt">
+                    {{value.content}}
+                </div>
+            </div>       
+        {{/each}}
+    </script>  
 </body>
 </html>

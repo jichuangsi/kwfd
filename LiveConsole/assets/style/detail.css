@@ -1,11 +1,11 @@
 /* 外面盒子样式---自己定义 */
-#page{
+.page{
     margin:20px 10px 20px 0;
     color:#666;
     float: right;
 }
 /* 页数按钮样式 */
-#page button{
+.page button{
     display:inline-block;
     min-width:30px;
     height:28px;
@@ -30,7 +30,7 @@
 #nextPage,#prePage{
     width:70px
 }
-#page .current{
+.page .current{
     background-color:#0073A9;
     border-color:#0073A9;
     color:#FFF;
@@ -44,7 +44,7 @@
     margin:0 5px
 }
 /*button禁用*/
-#page button:disabled{
+.page button:disabled{
     opacity:.5;
     cursor:no-drop;
 }
@@ -81,6 +81,10 @@
     width: 50%;
     display: inline-block;
     line-height: 36px;
+}
+.top .information .text span em {
+    font-style: normal;
+    margin-left: 10px;
 }
 .top .information .btn {
     padding: 10px 20px;
@@ -151,6 +155,7 @@
 }
 .center table {
     width: 100%;
+    margin: auto;
     background-color: #fff;
 }
 .center table img {
@@ -168,6 +173,7 @@
     text-align: center;
     padding: 10px 20px;
     border: 1px solid #f2f2f2;
+    vertical-align: middle;
 }
 .center table td .zy {
     padding: 5px 10px;
@@ -224,7 +230,7 @@
 }
 .three_box .left .left_top .top_r .jdt div span {
     background-color: #0094ff;
-    width: 50%;
+    width: 0%;
     height: 100%;
     display: inline-block;
     transition: width 0.2s linear;
@@ -274,11 +280,23 @@
 }
 .message .li {
     width: 100%;
-    display: flex;
+    border-bottom: 1px dashed #999;
+    margin-bottom: 40px;
+    padding: 10px;
 }
-.message .li .username{
+.message .li .user{
     font-size: 26px;
     font-weight: 600;
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+.message .li .userimg img {
+    width: 30px;
+}
+.message .li .time {
+    font-weight: normal;
+    font-size: 18px;
 }
 .message .li div{
     font-size: 24px;
@@ -286,4 +304,27 @@
 .message .li .username{
     font-weight: 600;
     margin-right: 20px;
+}
+.message .li .commt{
+    text-indent: 2em;
+}
+.imgli {
+    width: 100%;
+    display: flex;
+    font-weight: 600;
+    letter-spacing: 5px;
+    margin-top: 20px;
+}
+.imgli .imgt {
+    white-space: nowrap;
+}
+.imgli .img {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+}
+.imgli .img img {
+    width: 15%;
+    margin-left: 1%;
+    margin-bottom: 10px;
 }

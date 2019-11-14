@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./assets/style/reset.css">
     <link rel="stylesheet" href="./assets/style/courses.css">
     <script src="./assets/libs/jquery.min.js"></script>
+    <script src="./assets/libs/template-web.js"></script>
 </head>
 <body>
     <div class="box">
@@ -15,84 +16,52 @@
             <span><img src="./assets/images/心.png" alt=""></span> 我的课程
         </div>
         <div class="center clearfix">
-            <div class="list">
-                <img src="./assets/images/微信图片_20191009141254.jpg" alt="">
-                <div class="title">荔湾学校小学部<div class="fr">免费</div></div>
-                <div class="text"><em>1</em>人已学<span>100%满意度</span></div>
-                <div class="teacher">
-                    <img src="./assets/images/xxjs.png" alt="">
-                    <div class="text_j">
-                        <div>集创思老师48</div>
-                        <div>全科 小学</div>
-                    </div>
-                </div>
-            </div>
-            <div class="list">
-                <img src="./assets/images/微信图片_20191009141254.jpg" alt="">
-                <div class="title">荔湾学校小学部<div class="fr">免费</div></div>
-                <div class="text"><em>1</em>人已学<span>100%满意度</span></div>
-                <div class="teacher">
-                    <img src="./assets/images/xxjs.png" alt="">
-                    <div class="text_j">
-                        <div>集创思老师48</div>
-                        <div>全科 小学</div>
-                    </div>
-                </div>
-            </div>
-            <div class="list">
-                <img src="./assets/images/微信图片_20191009141254.jpg" alt="">
-                <div class="title">荔湾学校小学部<div class="fr">免费</div></div>
-                <div class="text"><em>1</em>人已学<span>100%满意度</span></div>
-                <div class="teacher">
-                    <img src="./assets/images/xxjs.png" alt="">
-                    <div class="text_j">
-                        <div>集创思老师48</div>
-                        <div>全科 小学</div>
-                    </div>
-                </div>
-            </div>
-            <div class="list">
-                <img src="./assets/images/微信图片_20191009141254.jpg" alt="">
-                <div class="title">荔湾学校小学部<div class="fr">免费</div></div>
-                <div class="text"><em>1</em>人已学<span>100%满意度</span></div>
-                <div class="teacher">
-                    <img src="./assets/images/xxjs.png" alt="">
-                    <div class="text_j">
-                        <div>集创思老师48</div>
-                        <div>全科 小学</div>
-                    </div>
-                </div>
-            </div>
-            <div class="list">
-                <img src="./assets/images/微信图片_20191009141254.jpg" alt="">
-                <div class="title">荔湾学校小学部<div class="fr">免费</div></div>
-                <div class="text"><em>1</em>人已学<span>100%满意度</span></div>
-                <div class="teacher">
-                    <img src="./assets/images/xxjs.png" alt="">
-                    <div class="text_j">
-                        <div>集创思老师48</div>
-                        <div>全科 小学</div>
-                    </div>
-                </div>
-            </div>
-            <div class="list">
-                <img src="./assets/images/微信图片_20191009141254.jpg" alt="">
-                <div class="title">荔湾学校小学部<div class="fr">免费</div></div>
-                <div class="text"><em>1</em>人已学<span>100%满意度</span></div>
-                <div class="teacher">
-                    <img src="./assets/images/xxjs.png" alt="">
-                    <div class="text_j">
-                        <div>集创思老师48</div>
-                        <div>全科 小学</div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     <script>
-        $('.list').click(function(){
-            window.parent.aaa('detail')
-        })
-    </script>
+        getdata()
+        function getdata(){
+            $.ajax({
+                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getCurrentCourses',
+                type:'GET',
+                success:function(res){
+                    console.log(JSON.parse(res))
+                    let data = JSON.parse(res)
+                    let html = template('List',data)
+                    $('.center').append(html)
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            })
+        }
+        function detailgo(oid,cid,orgId){
+            console.log(111)
+            window.parent.aaa('detail.html?id='+oid+'&&orgId='+orgId+'&&cid='+cid)
+        }
+    </script>   
+    <script type="text/template" id="List">
+        {{each data as value index}}     
+            <div class="list" onclick="detailgo({{value.oid}},{{value.cid}},{{value.orgId}})">
+                <img src="{{value.imageurl}}" alt="">
+                <div class="title">{{value.orgName}}
+                    {{if value.price == '0.00'}}
+                    <div class="fr">免费</div>
+                    {{else if  value.price != '0.00'}}
+                    <div class="fr">{{value.price}}</div>
+                    {{else}}
+                    {{/if}}
+                </div>
+                <div class="text"><em>{{value.sold}}</em>人已学<span>{{value.good}}满意度</span></div>
+                <div class="teacher">
+                    <img src="{{value.teacher.imageurl}}" alt="">
+                    <div class="text_j">
+                        <div>{{value.teacher.nickname}}</div>
+                        <div>{{value.category}}</div>
+                    </div>
+                </div>
+            </div>  
+        {{/each}}
+    </script> 
 </body>
 </html>

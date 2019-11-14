@@ -49,10 +49,10 @@
             navLinkDayClick: function(date, jsEvent) {
                 console.log('day', date.toISOString());
                 console.log('coords', jsEvent.pageX, jsEvent.pageY);
-           		window.parent.aaa('detail')
+           		// window.parent.aaa('detail')
             },
             events: {
-                url: '/index.php/api/LiveConsole/getCurrentEvents',
+                url: 'http://192.168.31.108:92/index.php/api/LiveConsole/getCurrentEvents',
                 failure: function() {
                   console.log('failure');
                 }
@@ -75,6 +75,20 @@
                 constraint: 'businessHours'
                 },
             ] */
+            eventRender: function(event, element, view,copiedEventObject) {
+                var html = '<br><span class="fc-description">'+event.event.extendedProps.orgName+'</span>'
+                $(event.el).find('.fc-content').append(html)
+                // element.qtip({
+                //     content: event.event.extendedProps.orgId
+                // });
+            },
+            eventClick: function(calEvent, jsEvent, view) {
+ 
+            console.log(calEvent.event);
+            window.parent.aaa('detail.html?id='+calEvent.event.id+'&&orgId='+calEvent.event.extendedProps.orgId+'&&cid='+calEvent.event.extendedProps.cid+'&&did='+calEvent.event.extendedProps.did)
+            // change the border color just for fun
+            // $(this).css('border-color', 'red');
+            }
             });
             calendar.render();
         });

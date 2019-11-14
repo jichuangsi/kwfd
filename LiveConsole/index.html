@@ -17,11 +17,11 @@
                 <div class="title">乐享课双师</div>
                 <div class="text_span">校长：aline</div>
                 <input type="text" placeholder="校内搜索">
-                <div class="text" onclick="aaa('courses')">
+                <div class="text" onclick="aaa('courses.html')">
                     <span><img src="./assets/images/工具箱.png" alt=""></span>
                     乐享课双师
                     <span><img src="./assets/images/右 (1).png" alt=""></span></div>
-                <div class="text" onclick="aaa('schedule')">
+                <div class="text" onclick="aaa('schedule.html')">
                     <span><img src="./assets/images/课表@2x.png" alt=""></span>
                     学校课程表
                     <span><img src="./assets/images/右 (1).png" alt=""></span>
@@ -42,12 +42,13 @@
             </div>
         </div>
         <div class="right_box">
-            <iframe src="./schedule.html" frameborder="0"></iframe>
+            <iframe src="./courses.html" frameborder="0"></iframe>
         </div>
     </div>
     <script>
+        $('.text_span').text(sessionStorage.getItem('userName'))
         function aaa(val){
-            $('iframe')[0].src = './'+val+'.html'
+            $('iframe')[0].src = './'+val
         }
     </script>
 </body>

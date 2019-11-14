@@ -60,10 +60,11 @@
     font-weight: 600;
 }
 .left_box .bottom_box span {
-    font-size: 20px;
+    font-size: 18px;
     line-height: 28px;
     color: #999;
     display: block;
+    white-space: nowrap;
 }
 .right_box {
     flex: 1;

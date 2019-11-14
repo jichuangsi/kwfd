@@ -11,14 +11,16 @@
 </head>
 <body>
     <div class="login">
-        <div class="title">登录</div>
+        <div class="title">
+            <img src="./assets/images/logo.lxk.png" alt="">
+        </div>
         <div class="ipt">
             <span><img src="./assets/images/用户.png" alt=""></span>
-            <input type="text">
+            <input type="text" name='user'>
         </div>
         <div class="ipt">
             <span><img src="./assets/images/密码.png" alt=""></span>
-            <input type="text">
+            <input type="text" name='psw'>
         </div>
         <div class="btn" onclick="login()">
             登录
@@ -27,8 +29,8 @@
     <script>
         function login(){
             var data = {
-                "username":"keyman4",
-                "password":"abcd1234"
+                "username": $(" input[ name='user' ] ").val(),
+                "password": $(" input[ name='psw' ] ").val()
                 }
             $.ajax({
                 url:'http://192.168.31.108:92/index.php/api/LiveConsole/login',
@@ -36,7 +38,13 @@
                 data:JSON.stringify(data),
                 success:function(res){
                     console.log(JSON.parse(res))
-                    getdata()
+                    if(JSON.parse(res).success){
+                        getdata()
+                        sessionStorage.setItem('userName',JSON.parse(res).data.username)
+                        window.location.href = './index.html'
+                    }else{
+                        alert(JSON.parse(res).message)
+                    }
                 },
                 error:function(err){
                     console.log(err)
