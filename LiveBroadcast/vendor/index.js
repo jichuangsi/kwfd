@@ -6,7 +6,8 @@ var wbuuid = sessionStorage.getItem('wbuuid');
 var images = [];
 var editState = 0
 var img_list = []
-
+var roomplayer = ''
+var timer = ''
 
 if(!wbtoken){
 	alert('Whiteboard is not available');
@@ -490,12 +491,46 @@ function replay(){
 	    //mediaURL: mediaURL,
 	    //duration: duration,
 	}).then(function(player) {
+        console.log(player)
+        roomplayer = player
 	    // 获取到 player 实例
 	    // 与 room 调用类似，与获取到 player 实例后，你需要将 player 绑定到 HTML 的 div 上。
 	    player.bindHtmlElement(document.getElementById('whiteboard'));
 	    //player.setObserverMode("directory");
-	    player.play();
+        player.play();
+        $('#whiteboard').css('position','relative')
+        $('#whiteboard').css('z-index','99999')
+        $('#whiteboard').css('background','#fff')
+        $('.replaystate').css('display','block')
+        $('.play_state').css('display','none')
+        timer = setInterval(function(){
+            if(((roomplayer.scheduleTime/roomplayer.timeDuration)*100) >= 100){
+                $('.jdt > span').css('width','100%')
+                clearInterval(timer)
+                replayout()
+            }else{
+                $('.jdt > span').css('width',((roomplayer.scheduleTime/roomplayer.timeDuration)*100)+ '%')
+            }
+        },100)
 	})
 	
 }
-
+function replayout(){
+    roomplayer.stop();
+    $('#whiteboard').css('z-index','0')
+    $('.replaystate').css('display','none')
+    clearInterval(timer)
+}
+function replayplay(){
+    roomplayer.play();
+    $('.play_state').css('display','none')
+    $('.stop_state').css('display','block')
+}
+function replaystop(){
+    roomplayer.pause();
+    $('.play_state').css('display','block')
+    $('.stop_state').css('display','none')
+}
+function jdt(event,val){
+    roomplayer.seekToScheduleTime(event.offsetX/val.offsetWidth*roomplayer.timeDuration);
+}

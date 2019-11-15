@@ -593,3 +593,41 @@ background: none;
     cursor: pointer;
     border: 1px solid #ddd
 }
+.replaystate {
+    display: none;
+}
+.replaystate div {
+    position: absolute;
+    z-index: 99999;
+    cursor: pointer;
+}
+.replaystate div img {
+    width: 30px;
+}
+.replaystate .out_state {
+    left: 10px;
+    top: 10px;
+}
+.replaystate .play_state{
+    left: 20px;
+    bottom: 20px;
+}
+.replaystate .stop_state{
+    left: 20px;
+    bottom: 20px;
+}
+.replaystate .jdt {
+    width: 90%;
+    left: 50%;
+    bottom: 25px;
+    transform: translateX(-50%);
+    background-color: #999;
+    height: 15px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.replaystate .jdt span {
+    display: inline-block;
+    background-color: #0094ff;
+    height: 100%;
+}

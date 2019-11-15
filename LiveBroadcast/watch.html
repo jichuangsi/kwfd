@@ -38,7 +38,6 @@
             <div id="agora_local"></div>
         </div>
     </div-->
-
     <div class="box">
             <div class="left_box" id="whiteboard">
 
@@ -86,6 +85,20 @@
                     <div class="only"></div>
                     <div class="sendbox">
                         <input type="text" class="allipt" onkeyup = "sendkey(event)"><button onclick="send()">发送/Send</button>
+                    </div>
+                </div>
+                <div class="replaystate">
+                    <div class="out_state" onclick="replayout()">
+                        <img src="./assets/images/首页.png" alt="">
+                    </div>
+                    <div class="play_state" onclick="replayplay()">
+                        <img src="./assets/images/播放.png" alt="">
+                    </div>
+                    <div class="stop_state" onclick="replaystop()">
+                        <img src="./assets/images/暂停.png" alt="">
+                    </div>
+                    <div class="jdt" onclick="jdt(event,this)">
+                        <span></span>
                     </div>
                 </div>
             <div class="baiban_nav">
