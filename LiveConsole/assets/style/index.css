@@ -99,6 +99,8 @@
     display: none;
 }
 .text_box {
+	width: 60%;
+	height: 70%;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -106,4 +108,5 @@
     border-radius: 10px;
     padding: 20px;
     transform: translate(-50%,-50%);
+    overflow: auto;
 }

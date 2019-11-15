@@ -182,7 +182,8 @@
                 $('#one').css('display','block')
                 $('#two').css('display','none')
                 $('#three').css('display','none')
-                getone(1)
+                //getone(1)
+                $('.box_nav > div').eq(0).click()
             }else if($(this).attr('data-id') == '2'){
                 $('#one').css('display','none')
                 $('#two').css('display','block')
@@ -300,7 +301,7 @@
                     for(let i = 0;i<arr.length;i++){
                         if(arr[i]._){
                             for(let q = 0;q<arr[i]._.length;q++){
-                                html += '<tr><td rowspan>'+arr[i].title+'</td><td onclick="block(lock('+arr[i]._[q].content+')">'+arr[i]._[q].title+'</td></tr>'
+                                html += '<tr><td rowspan>'+arr[i].title+'</td><td style="cursor: pointer;" data-html='+JSON.stringify(arr[i]._[q].content)+' onclick="block(this)">'+arr[i]._[q].title+'</td></tr>'
                             }
                         }else{
                             html += '<tr><td rowspan>'+arr[i].title+'</td></tr>'
@@ -389,7 +390,7 @@
             })
         }
         function block(val){
-            window.parent.bigblock(val)
+        	window.parent.bigblock($(val).attr('data-html'))
         }
     </script>
         <script type="text/template" id="startList">
@@ -404,11 +405,10 @@
                     <td><img src="{{value.teacher.imageurl}}" alt=""><br>{{value.teacher.nickname}}</td>
                     {{if value.courseStatus == 3}}
                     <td><div class="zy">进行中</div></td>
-                    <td><div class="zy lan"><a href=" " target="_blank">去听课</a></div></td>
+                    <td><div class="zy lan"><a href="/index.php?s=/live/index/gotomeeting/id/{{value.goodid}}/orgId/{{value.orgId}}.html" target="_blank">去听课</a></div></td>
                     {{else if  value.courseStatus < 3}}
                     <td><div class="zy">待上课</div></td>
                     {{else}}
-                    <td><div class="zy hui">没有操作</div></td>
                     <td><div class="zy hui">课程结束</div></td>
                     {{/if}}
                 </tr>            

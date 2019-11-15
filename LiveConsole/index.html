@@ -76,8 +76,14 @@
             $('.big_bj').css('display','none')
         }
         function bigblock(val){
-            $('.big_bj > .text_box').append(val)
-            $('.big_bj').css('display','block')
+        	$('.big_bj > .text_box').empty()
+        	if(val != 'undefined'){
+	        	$('.big_bj > .text_box').append(val.replace(/\\n/g, '').replace(/\\t/g, '').replace(/\\r/g, ''))
+	        	$('.big_bj').css('display','block')
+        	}else{
+	        	$('.big_bj > .text_box').append('暂无')
+	        	$('.big_bj').css('display','block')
+        	}
         }
     </script>
 </body>
