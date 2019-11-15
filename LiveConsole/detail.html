@@ -219,7 +219,7 @@
         }
         function getone(page){
             $.ajax({
-                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getEventDetail/oid/242/cid/'+cid+'/orgId/'+orgId+'/p/'+page+'/r/10',
+                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getEventDetail/oid/'+id+'/cid/'+cid+'/orgId/'+orgId+'/p/'+page+'/r/10',
                 type:'GET',
                 success:function(res){
                     console.log(JSON.parse(res))
@@ -401,11 +401,11 @@
                     <td><img src="{{value.teacher.imageurl}}" alt=""><br>{{value.teacher.nickname}}</td>
                     <td><div class="zy">进行中</div></td>
                     {{if value.courseStatus == 3}}
-                    <td><div class="zy">去听课</div></td>
+                    <td><div class="zy lan"><a href=" " target="_blank">去听课</a></div></td>
                     {{else if  value.courseStatus < 3}}
                     <td><div class="zy">待上课</div></td>
                     {{else}}
-                    <td><div class="zy">课程结束</div></td>
+                    <td><div class="zy hui">课程结束</div></td>
                     {{/if}}
                 </tr>            
 			{{/each}}

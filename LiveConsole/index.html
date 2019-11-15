@@ -40,6 +40,7 @@
                 <div>网络需求</div>
                 <span>推荐2M的上下行宽带</span>
             </div>
+            <div class="outbtn" onclick="loginout()">登出</div>
         </div>
         <div class="right_box">
             <iframe src="./courses.html" frameborder="0"></iframe>
@@ -49,6 +50,24 @@
         $('.text_span').text(sessionStorage.getItem('userName'))
         function aaa(val){
             $('iframe')[0].src = './'+val
+        }
+        function out(){
+            window.location.href = './login.html'
+        }
+        function loginout(){
+            $.ajax({
+                url:'http://192.168.31.108:92/index.php/api/LiveConsole/logout',
+                type:'POST',
+                success:function(res){
+                    console.log(JSON.parse(res))
+                    if(JSON.parse(res).success){
+                        out()
+                    }
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            })
         }
     </script>
 </body>

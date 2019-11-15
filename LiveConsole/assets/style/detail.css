@@ -180,6 +180,13 @@
     color: #fff;
     background-color: #29a829;
 }
+.center table td .hui {
+    background-color: #999;
+}
+.center table td .lan {
+    background-color: #0094ff;
+    cursor: pointer;
+}
 .center table em {
     display: inline-block;
     width: 20px;

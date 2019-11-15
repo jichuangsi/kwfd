@@ -26,6 +26,9 @@
                 type:'GET',
                 success:function(res){
                     console.log(JSON.parse(res))
+                    if(JSON.parse(res).error_code == '9005'){
+                        window.parent.out()
+                    }
                     let data = JSON.parse(res)
                     let html = template('List',data)
                     $('.center').append(html)

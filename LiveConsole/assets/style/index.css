@@ -73,3 +73,19 @@
     width: 100%;
     height: 99vh;
 }
+.outbtn {
+    width: 100%;
+    background-color: #fff;
+    margin-top: 20px;
+    line-height: 46px;
+    font-size: 24px;
+    text-align: center;
+    letter-spacing: 10px;
+    font-weight: 600;
+    box-shadow: 3px 0px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    border: 1px solid #f2f2f2;
+}
+.outbtn:active {
+    box-shadow: 3px 0px 15px rgba(0, 0, 0, 0);
+}
