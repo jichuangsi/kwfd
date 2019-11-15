@@ -48,6 +48,11 @@
         <div class="big_bj" onclick="bignone()">
             <div class="text_box"></div>
         </div>
+        <div class="img_bj" onclick="bignone()">
+            <div class="img_box">
+                <img src="" alt="">
+            </div>
+        </div>
     </div>
     <script>
         $('.text_span').text(sessionStorage.getItem('userName'))
@@ -74,6 +79,7 @@
         }
         function bignone(){
             $('.big_bj').css('display','none')
+            $('.img_bj').css('display','none')
         }
         function bigblock(val){
         	$('.big_bj > .text_box').empty()
@@ -84,6 +90,10 @@
 	        	$('.big_bj > .text_box').append('暂无')
 	        	$('.big_bj').css('display','block')
         	}
+        }
+        function bigimg(val){
+            $('.img_bj').css('display','block')
+            $('.img_bj').find('img').attr('src',val)
         }
     </script>
 </body>

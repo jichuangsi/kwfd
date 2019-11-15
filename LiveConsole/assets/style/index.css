@@ -110,3 +110,29 @@
     transform: translate(-50%,-50%);
     overflow: auto;
 }
+.img_bj {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0.3);
+
+}
+.img_bj .img_box {
+    width: 60%;
+    max-height: 80%;
+    position: absolute;
+    background-color: #fff;
+    left: 50%;
+    top: 50%;
+    border-radius: 10px;
+    padding: 20px;
+    transform: translate(-50%,-50%);
+    overflow: auto;
+}
+.img_bj .img_box img {
+    width: 90%;
+    display: block;
+    margin: auto;
+}
