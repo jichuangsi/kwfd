@@ -45,6 +45,9 @@
         <div class="right_box">
             <iframe src="./courses.html" frameborder="0"></iframe>
         </div>
+        <div class="big_bj" onclick="bignone()">
+            <div class="text_box"></div>
+        </div>
     </div>
     <script>
         $('.text_span').text(sessionStorage.getItem('userName'))
@@ -68,6 +71,13 @@
                     console.log(err)
                 }
             })
+        }
+        function bignone(){
+            $('.big_bj').css('display','none')
+        }
+        function bigblock(val){
+            $('.big_bj > .text_box').append(val)
+            $('.big_bj').css('display','block')
         }
     </script>
 </body>

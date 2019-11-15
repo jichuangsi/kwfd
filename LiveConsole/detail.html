@@ -300,7 +300,7 @@
                     for(let i = 0;i<arr.length;i++){
                         if(arr[i]._){
                             for(let q = 0;q<arr[i]._.length;q++){
-                                html += '<tr><td rowspan>'+arr[i].title+'</td><td>'+arr[i]._[q].title+'</td></tr>'
+                                html += '<tr><td rowspan>'+arr[i].title+'</td><td onclick="block(lock('+arr[i]._[q].content+')">'+arr[i]._[q].title+'</td></tr>'
                             }
                         }else{
                             html += '<tr><td rowspan>'+arr[i].title+'</td></tr>'
@@ -388,6 +388,9 @@
                 }
             })
         }
+        function block(val){
+            window.parent.bigblock(val)
+        }
     </script>
         <script type="text/template" id="startList">
             {{each data as value index}}
@@ -399,12 +402,13 @@
                     <td>{{value.starttime}}</td>
                     <td>{{value.duraion}}</td>
                     <td><img src="{{value.teacher.imageurl}}" alt=""><br>{{value.teacher.nickname}}</td>
-                    <td><div class="zy">进行中</div></td>
                     {{if value.courseStatus == 3}}
+                    <td><div class="zy">进行中</div></td>
                     <td><div class="zy lan"><a href=" " target="_blank">去听课</a></div></td>
                     {{else if  value.courseStatus < 3}}
                     <td><div class="zy">待上课</div></td>
                     {{else}}
+                    <td><div class="zy hui">没有操作</div></td>
                     <td><div class="zy hui">课程结束</div></td>
                     {{/if}}
                 </tr>            
