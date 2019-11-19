@@ -37,7 +37,10 @@
         <div id="video" class="video__item">
             <div id="agora_local"></div>
         </div>
-    </div-->
+    </div--> 
+    <div class="suofang" onclick="enlarge()">
+        <img src="./assets/images/缩小 退出全屏 收回 (1).png" alt="">
+    </div>
     <div class="box">
             <div class="left_box" id="whiteboard">
 
@@ -950,15 +953,17 @@
             if(demo.style.zIndex != '9999'){
                 demo.style.top = '0px'
                 demo.style.zIndex = '9999'
-                demo.style.width = w-320+'px'
+                demo.style.width = w+'px'
                 demo.style.height = h+'px'
-                demo.style.right = '100%'
+                demo.style.right = '0%'
                 $('.s7').find('img').attr('src','./assets/images/缩小 退出全屏 收回.png');
+                $('.suofang').css('display','block')
             }else{
                 demo.style.zIndex = '1'
                 demo.style.width = '100%'
                 demo.style.right = '0%'
                 $('.s7').find('img').attr('src','./assets/images/扩大 (1).png');
+                $('.suofang').css('display','none')
                 if(role == '2'){
                     demo.style.height = '100%'
                     demo.style.top = '0px'
@@ -972,6 +977,15 @@
         $(function(){
         	w = document.body.clientWidth
         	$('.iframe_box').css('width',(w-420)+'px')
+        })
+        $(document).keyup(function(event){
+            //判断回车键的CODE
+            if(event.keyCode == 27){
+                // 第一种 如果确定键盘键，就调用登录方法
+                // sign_in();
+                enlarge()
+                // 第二种 模拟点击按
+            }
         })
 
     </script>

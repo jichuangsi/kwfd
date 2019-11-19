@@ -631,3 +631,14 @@ background: none;
     background-color: #0094ff;
     height: 100%;
 }
+.suofang {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    z-index: 99999;
+    display: none;
+    cursor: pointer;
+}
+.suofang img{
+    width: 60px;
+}
