@@ -64,6 +64,15 @@
                 }
             })
         }
+        
+        $(document).keyup(function(event){
+            //判断回车键的CODE
+            if(event.keyCode == 13){
+                // 第一种 如果确定键盘键，就调用登录方法
+                // sign_in();
+                login()
+            }
+        })
     </script>
 </body>
 </html>
