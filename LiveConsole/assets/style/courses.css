@@ -38,6 +38,7 @@
     font-size: 20px;
     line-height: 32px;
     padding: 0px 10px;
+    height: 32px;
 }
 .center .list .title .fr {
     font-size: 16px;
@@ -47,6 +48,7 @@
     font-size: 18px;
     line-height: 32px;
     padding: 0px 10px;
+    height: 32px;
 }
 .center .list .text span {
     color: #999;
@@ -55,11 +57,20 @@
 .center .list .teacher {
     display: flex;
     padding: 10px;
+    height: 76px;
+    width: 100%;
 }
 .center .list .teacher img {
     width: 50px;
+    height: 50px;
 }
 .center .list .teacher .text_j {
     margin-left: 10px;
     line-height: 28px;
+    width: 80%;
+}
+.center .list .teacher .text_j div {
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    overflow: hidden;
 }

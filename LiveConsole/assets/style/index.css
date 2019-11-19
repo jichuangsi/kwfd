@@ -117,7 +117,7 @@
     top: 0px;
     left: 0px;
     background-color: rgba(0, 0, 0, 0.3);
-
+    display: none;
 }
 .img_bj .img_box {
     width: 60%;
