@@ -55,7 +55,7 @@ class OrderController extends BaseController
 	           if(!empty(C('ORG_ID'))){
 	               $action .= "/g/".C('ORG_ID');
 	           }else{
-	               $this->error( "缺少必要机构参数",U("usercenter/config/index") );
+	               $this->error( "缺少必要机构参数",U("usercenter/order/index") );
 	           }
 	       }
 	       
@@ -69,12 +69,12 @@ class OrderController extends BaseController
 	                   $list = $result['data'];
 	                   $totalCount = $result['count'];
 	               }else{
-	                   $this->error( "查单异常：".$result['message'],U("usercenter/config/index") );
+	                   $this->error( "查单异常：".$result['message'],U("usercenter/order/index") );
 	               }
 	           }else if(is_string($result)){
-	               $this->error( "查单异常：".$result,U("usercenter/config/index") );
+	               $this->error( "查单异常：".$result,U("usercenter/order/index") );
 	           }else{
-	               $this->error( "查单未知异常",U("usercenter/config/index") );
+	               $this->error( "查单未知异常",U("usercenter/order/index") );
 	           }
 	       }  	       
 	       

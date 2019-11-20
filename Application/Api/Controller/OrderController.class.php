@@ -200,7 +200,7 @@ class OrderController extends ApiController
         $list = $this->orderlistmodel->alias("l")->field('l.*,o.*,d.*')
                 ->join(C('DB_PREFIX').'Order o ON l.tag=o.orderid','LEFT')
                 ->join(C('DB_PREFIX').'Orderlistdetail d ON d.orderlistid=l.id','LEFT')
-                ->where($map)->order('l.id desc')->page($p, $r)->select();
+                ->where($map)->order('l.id desc, d.id asc')->page($p, $r)->select();
         //dump($this->orderlistmodel->_SQL());
         $totalCount = $this->orderlistmodel->alias("l")
                         ->join(C('DB_PREFIX').'Order o ON l.tag=o.orderid','LEFT')
