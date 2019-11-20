@@ -140,11 +140,14 @@ class IndexController extends Controller
                 }                
                 $curlData[$key]['view'] = $val['view'];
                 if($val['image']) $curlData[$key]['image'] = $this->protocol . get_cover($val['image'], 'path');
+                $curlData[$key]['period'] = $val["period"];
+                $curlData[$key]['interval'] = $val["interval"];
                 $curlData[$key]['starttime'] = $val["starttime"];
                 $curlData[$key]['endtime'] = $val["endtime"];
                 $curlData[$key]['courseStatus'] = $val["status"];
                 $curlData[$key]['online'] = $val["online"];
                 $curlData[$key]['updateFlag'] = $val["updateFlag"];
+                $curlData[$key]['teacherid'] = $val["teacherid"];
             }            
             
             $curlParams = array(str_replace("__ACTION__", "orderCreate", $curlUrl), $curlData);

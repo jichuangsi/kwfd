@@ -30,7 +30,7 @@ class LiveChaptersModel extends Model{
      * @return array
      * @author 
      */
-    public function getTree($id = 0, $field = true){
+	public function getTree($id = 0, $field = true, $status = -1){
         /* 获取当前分类信息 */
         if($id){
             
@@ -40,7 +40,7 @@ class LiveChaptersModel extends Model{
 	 
         }
         /* 获取所有分类 */
-        $map  = array('courseid'=>$id,'status' => array('gt', -1));
+        $map  = array('courseid'=>$id,'status' => array('gt', $status));
         $list = $this->field($field)->where($map)->order('sort')->select();
 		//dump($this->_sql());
 		//dump($list);

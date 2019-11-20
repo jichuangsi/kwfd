@@ -34,7 +34,15 @@ class ConfigApi {
     private static function getConfigFromMaster(&$config){
         if(empty($config['MASTER_API_CONFIG'])) return;
         
-        $arr = json_decode(file_get_contents($config['MASTER_API_CONFIG'].$_SERVER['HTTP_HOST']),true);
+        $opts = array('http' =>
+            array(
+                'method'  => 'GET',
+                'timeout' => 3
+            )
+        );
+        $context  = stream_context_create($opts);
+        
+        $arr = json_decode(file_get_contents($config['MASTER_API_CONFIG'].$_SERVER['HTTP_HOST'],false,$context),true);
         
         if($arr['data']&&is_array($arr['data'])){
             foreach($arr['data'] as $k => $v){

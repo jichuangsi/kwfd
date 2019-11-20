@@ -27,12 +27,14 @@ class LiveController extends AdminController
 	protected $datamodel;
     protected $categorymodel;
 	protected $chaptersmodel;
+	protected $schedulemodel;
     function _initialize()
     {
 
 		$this->datamodel = D($this->_model.'/'.$this->_model);
 		$this->categorymodel = D($this->_model.'/'.$this->_model.'Category');
 		$this->chaptersmodel = D($this->_model.'/'.$this->_model.'Chapters');
+		$this->schedulemodel = D($this->_model.'/'.$this->_model.'Schedule');
         parent::_initialize();
 
     }
@@ -75,9 +77,9 @@ class LiveController extends AdminController
 			$map["userId"]=array('eq',UID);
 		}		
 		
-		$orderBy = 'recommend desc, createtime desc, view desc';
-		if($majorOrg){
-		    $orderBy = 'id desc, orgId asc, ' . $orderBy;
+		$orderBy = 'online desc, createtime desc, view desc';
+		if($majorOrg&&IS_ROOT){
+		    $orderBy = 'id desc, orgId asc, recommend desc, ' . $orderBy;
 		}
 		
 		$data = $this->datamodel->where($map)->order($orderBy)->page($page, $r)->select();
@@ -85,7 +87,16 @@ class LiveController extends AdminController
 		$totalCount = $this->datamodel->where($map)->count();
 		
 		foreach ($data as $key=>&$val) {
-		    if($val['endtime']<time()){
+		    if($val['status']==='1'){
+		        if($val['online']){
+		            $val['gotomeeting'] = '<a href="'.U('Live/index/gotomeeting?id='.$val["id"].'&orgId='.$val["orgId"]).'" target="_blank" class="btn">进入课堂</a>';
+		        }else{
+		            $val['gotomeeting'] = '<div class="btn" style="background-color:#FFC125">非直播</div>';
+		        }		    
+		    }else{
+		        $val['gotomeeting'] = '<div class="btn" style="background-color:#ec2b2b">课堂暂不可用</div>';
+		    }
+		    /* if($val['endtime']<time()){
 		        $val['gotomeeting'] = '<div class="btn" style="background-color:#ec2b2b">课堂已结束</div>';
 		    }else{
 		        if($val['status']==='1'){
@@ -101,7 +112,7 @@ class LiveController extends AdminController
 		        }else{
 		            $val['gotomeeting'] = '<div class="btn">课堂暂不可用</div>';
 		        }
-		    }                
+		    } */                
         }
 		 
 		$builder = new AdminListBuilder();
@@ -219,19 +230,28 @@ class LiveController extends AdminController
 	 */
 	public function add(
 	    $id = 0, $title = '', $image = '', $content = '', $categoryid = array(), $price=0,$status = '',$recommend = 0,
-	    $starttime=0,$endtime=0,$pid=0,$teacherid=0,$commission=0,$online=0,$activityId=0,$activityName='',$activityRule='',$orgCatId=0,$orgId=0,$orgName='')
-	{
+	    $starttime=0,$endtime=0,$pid=0,$teacherid=0,$commission=0,$online=0,$activityId=0,$activityName='',$activityRule='',
+	    $orgCatId=0,$orgId=0,$orgName='',$period=1,$interval=1,$schedules='')
+	{   	    
 	   $majorOrg = C('MAJOR_ORG');
 	   $isEdit = $id ? 1 : 0;
 	   if (IS_POST) 
-	   {
+	   {   	       
 	        if ($title == '' || $title == null) {
                 $this->error('请输入名称');
             }    
             if (!is_numeric($price)||$price<0)	
             {
 				$this->error('请输入正确的价格。');
-			}						
+			}	
+			if (!is_numeric($period)||intval($period)<1)
+			{
+			    $this->error('请输入正确的总课时。');
+			}
+			if (intval($period)===1&&intval($interval)>1)
+			{
+			    $this->error('请输入合理的总课时与课时间隔。');
+			}
 			
 			if(IS_ROOT){
 			    if (!is_numeric($commission)||$commission<0)
@@ -314,6 +334,12 @@ class LiveController extends AdminController
 			            $data['orgName'] = C('ORG_NAME');
 			        }			        
 			    }
+			}else{
+			    if(C('ORG_ID')&&C('ORG_NAME')){
+			        $data['orgCatId'] = 0;
+			        $data['orgId'] = C('ORG_ID');
+			        $data['orgName'] = C('ORG_NAME');
+			    }
 			}
 			
             $data['title'] = $title;
@@ -324,6 +350,8 @@ class LiveController extends AdminController
             $data['status'] = $status;
             $data['online'] = $online;
             $data['changetime'] = time();
+            $data['period'] = intval($period);
+            $data['interval'] = intval($interval);
 			$data['starttime'] = $starttime;
 			$data['endtime'] = $endtime;
 			$data['pid'] = $pid;
@@ -333,7 +361,7 @@ class LiveController extends AdminController
 			    $data['recommend'] = $recommend;
 			}else
 			    $data['teacherid'] = UID;
-			    
+			   
 			if ($isEdit) {
 			    if(IS_ROOT){
 			        $data['userId'] = $teacherid;
@@ -357,10 +385,14 @@ class LiveController extends AdminController
                 }                
                 $data['createtime'] = time();
                 $rs = $this->datamodel->add($data);
+                
             }
             if ($rs) {
                 
                 if(IS_ROOT){
+                    
+                    if($schedules) $this->setCourseSchedules($isEdit?$id:$rs, $schedules);
+                    
                     if($majorOrg){
                         $gid = $data['orgId'];                        
                     }else{
@@ -395,11 +427,17 @@ class LiveController extends AdminController
 		    $teachers = M("Member")->alias("m")->field('m.uid as teacherid,m.nickname as title')->join(C('DB_PREFIX').'avatar a ON m.uid=a.uid','LEFT')->where($map)->select();
 		    //dump(M("Member")->_sql()); 
 		    
-			$teachersoptions = array_combine(array_column($teachers, 'teacherid'), array_column($teachers, 'title'));
-			//dump($teachersoptions); 
+		    $teachers = array_combine(array_column($teachers, 'teacherid'), array_column($teachers, 'title'));
+		    $teachersoptions = array(0=>'不安排老师');
+		    foreach($teachers as $k => $v){
+		        $teachersoptions[$k] = $v;
+		    }
+		    //dump($teachersoptions); 
 			
 			$onlineoptions = array('否','是');
 			//dump($onlineoptions); 
+			
+			$intervaloptions = array(0=>'特定日期',1=>'一次',2=>'每天(含周末)',3=>'每天(不含周末)',4=>'隔天(含周末)',5=>'隔天(不含周末)',6=>'每周',7=>'每月',8=>'每季',9=>'每年');
 			
 			$tree = $this->categorymodel->getTree(0, 'id,title,sort,pid,status');
 			//var_dump($tree);
@@ -436,16 +474,22 @@ class LiveController extends AdminController
 			 $builder->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
                 ->keyText('price', '价格','')
                 ->keyText('commission', '分润','请填0~100')
-				->keyTime('starttime', '开始时间','')->keyTime('endtime', '结束时间','')
+                ->keyText('period', '总课时','请填大于0')
+                ->keyRadio("interval","课时间隔","",$intervaloptions)
+    			->keyTime('starttime', '课程开始时间','')->keyTime('endtime', '课程结束时间','')
 				->keyRadio("teacherid","老师","",$teachersoptions)
 				->keyCategory('categoryid',"分类","",$tree)
 				->keyHidden('pid')
 				->keyStatus('status', '状态')
 				->keyRecommend('recommend', '推荐', '最多推荐三个课程')
-				->keyRadio("online","是否线上","",$onlineoptions);				
+				->keyRadio("online","是否线上","",$onlineoptions)
+				//->keySchedule("schedules","上课时间表","",array('teachers'=>$teachersoptions, 'interval'=>$intervaloptions))
+			     ;	
 			}else{
 			 $builder->keyId()->keyText('title', $this->_modelname.'名称')->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
 			    ->keyText('price', '价格','')
+			    ->keyText('period', '总课时','请填大于0')
+			    ->keyRadio("interval","课时间隔","",$intervaloptions)
 			    ->keyTime('starttime', '开始时间','')->keyTime('endtime', '结束时间','')
 			    //->keyRadio("teacherid","老师","",$teachersoptions)
 			    ->keyCategory('categoryid',"分类","",$tree)
@@ -455,6 +499,14 @@ class LiveController extends AdminController
 			}
             if ($isEdit) {
                 $data = $this->datamodel->where('id=' . $id)->find();
+                
+                if(IS_ROOT){
+                    $schedules = $this->schedulemodel->where(['courseid'=>$id])->order('id asc')->select();
+                    if($schedules&&!empty($schedules)){
+                        $data['schedules'] = $schedules;
+                    }
+                }
+                
                 $builder->data($data);
                 if($majorOrg){
                     if($data['orgId'])
@@ -468,6 +520,8 @@ class LiveController extends AdminController
                 $builder->display();
             } else {
                 $data['price'] = 0;
+                $data['period'] = 1;
+                $data['interval'] = 1;
                 $data['status'] = 1;
                 $data['recommend'] = 0;
                 $data['online'] = 0;
@@ -484,6 +538,55 @@ class LiveController extends AdminController
             }
 	   }
 	}
+	
+	private function setCourseSchedules($id, $schedules){
+	    $scheduleArr = json_decode($schedules, true);
+	    //dump($scheduleArr);exit;
+	    unset($map);
+	    $map['courseid'] = $id;
+	    $old_schedules = $this->schedulemodel->where($map)->select();
+	    if($old_schedules&&!empty($old_schedules)){	        
+	        $rmt_schedule = array();
+	        foreach($old_schedules as $k => $v){
+	            $isExist = false;
+	            foreach($scheduleArr as $k1 => &$v1){
+	                if(!$v1['id']||empty($v1['id'])) continue;
+	                if($v1['id']==$v['id']){
+	                    unset($map);
+	                    $map['id'] = $v1['id'];
+	                    $map['courseid'] = $id;
+	                    $v1['starttime'] = strtotime($v1['starttime']);
+	                    $v1['endtime'] = strtotime($v1['endtime']);
+	                    $this->schedulemodel->where($map)->setField($v1);
+	                    $isExist=true;
+	                }
+	            }
+	            if(!$isExist) array_push($rmt_schedule, $v);
+	        }
+	        
+	        foreach($rmt_schedule as $k => $v){
+	            unset($map);
+	            $map['id'] = $v['id'];
+	            $map['courseid'] = $id;
+	            $this->schedulemodel->where($map)->delete();
+	        }
+	    }
+	    
+	    foreach($scheduleArr as $k => $v){
+	        if($v['id']&&!empty($v['id'])) continue;
+	        unset($data);
+	        $data['courseid'] = $id;
+	        $data['teacherid'] = $v['teacher'];
+	        $data['interval'] = $v['interval'];
+	        $data['starttime'] = strtotime($v['starttime']);
+	        $data['endtime'] = strtotime($v['endtime']);
+	        
+	        $this->schedulemodel->add($data);
+	    }
+	    
+	}
+	
+	
 	public function addChapter($id = 0, $title = '', $image = '', $content = '', $categoryid = 0, $price=0,$status = '',$starttime=0,$endtime=0,$pid=0,$courseid=0)
     {
 	   $isEdit = $id ? 1 : 0;

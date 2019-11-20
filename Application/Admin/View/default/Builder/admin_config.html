@@ -764,6 +764,216 @@
                         	</select>
                         	<input type="hidden" name="orgName" id="orgName" value=""/>                        
                     </case>
+                    
+                    <case value="schedule">
+                    	<link rel="stylesheet" href="__STATIC__/jsgrid/jsgrid.min.css" />
+                    	<link rel="stylesheet" href="__STATIC__/jsgrid/jsgrid-theme.min.css" />
+						<script charset="utf-8" src="__STATIC__/jsgrid/jsgrid.min.js"></script>
+                    	<script charset="utf-8" src="__STATIC__/jsgrid/i18n/jsgrid-zh-cn.js"></script>
+                    	<!-- <link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+                    	<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+                    	<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.js"></script>
+        				<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script> -->
+                    	<div id="jsGrid"></div>
+                    	<input type="hidden" name="{$field.name}" value="{$field.value}" class="text input-large"/>
+                    	<php>//dump($field);</php>
+                    	<script>
+                    		//增加自定义域
+	                    	var MyDateField = function(config) {
+	                    	    jsGrid.Field.call(this, config);
+	                    	};
+	
+	                    	MyDateField.prototype = new jsGrid.Field({
+	
+	                    	    css: "date-field",            // redefine general property 'css'
+	                    	    align: "center",              // redefine general property 'align'
+		
+	                    	    sorter: function(date1, date2) {
+	                    	        return new Date(date1) - new Date(date2);
+	                    	    },
+	
+	                    	    itemTemplate: function(value) {
+	                    	        return new Date(value).Format("yyyy-mm-dd hh:ii");
+	                    	    },
+	
+	                    	    insertTemplate: function(value) {
+	                    	        return this._insertPicker = $("<input>").datetimepicker({
+	                                    format: 'yyyy-mm-dd hh:ii',
+	                                    language:"zh-CN",
+	                                    minView:'hour',
+	                                    autoclose:true,
+	                                    todayBtn : true
+	                                });
+	                    	    },
+	
+	                    	    editTemplate: function(value) {
+	                    	        return this._editPicker = $("<input>").datetimepicker().datetimepicker("setDate", new Date(value));
+	                    	    },
+	
+	                    	    insertValue: function() {
+	                    	        return this._insertPicker.datetimepicker("getDate").val();
+	                    	    },
+	
+	                    	    editValue: function() {
+	                    	        return this._editPicker.datetimepicker("getDate").val();
+	                    	    }
+	                    	});
+	
+	                    	jsGrid.fields.date = MyDateField;	
+						    
+						    jsGrid.locale("zh-cn");    
+
+						    //初始化数据
+						    var db = {
+						    		loadData: function(filter) {
+						                return $.grep(this.schedules, function(schedule) {
+						                    return (!filter.teacher || schedule.teacher === filter.teacher)
+						                        && (!filter.interval || schedule.interval === filter.interval);
+						                });
+						            }, 
+									
+						            insertItem: function(insertingSchedule) {
+						            	console.log(insertingSchedule);
+						                //this.schedules.push(insertingSchedule);
+						            	this.submit.push(insertingSchedule);
+							   	     	console.log(JSON.stringify(this.submit));
+							   	     	$("input[name='schedules']").val(JSON.stringify(this.submit));
+						            },
+						            
+						            /* updateItem: function(updatingSchedule) { 
+						            	console.log(updatingSchedule);
+						            	var scheduleIndex = $.inArray(updatingSchedule, this.schedules);
+						            	this.submit[scheduleIndex] = updatingSchedule;
+						            	console.log(JSON.stringify(this.submit));
+							   	     	$("input[name='schedules']").val(JSON.stringify(this.submit));
+						            }, */
+						            
+						            deleteItem: function(deletingSchedule) {
+						            	console.log(deletingSchedule);
+						                /* var scheduleIndex = $.inArray(deletingSchedule, this.schedules);
+						                this.schedules.splice(scheduleIndex, 1); */
+						                var scheduleIndex = $.inArray(deletingSchedule, this.schedules);
+						                this.submit.splice(scheduleIndex, 1);
+						                console.log(JSON.stringify(this.submit));
+						                if(!this.submit||this.submit.length==0)
+						                	$("input[name='schedules']").val('');
+						                else
+							   	     		$("input[name='schedules']").val(JSON.stringify(this.submit));
+						            }
+						            
+						        };
+						        //window.db = db;
+						        						        
+						        db.interval = [
+									<php>
+										foreach($field["opt"]["interval"] as $k => $v){
+									</php>
+											{ Name: "{$v}", Id: {$k} },
+									<php>
+										}	
+									</php>
+								];
+						        
+						        db.teachers = [
+									<php>
+										foreach($field["opt"]["teachers"] as $k => $v){
+									</php>
+											{ Name: "{$v}", Id: {$k} },
+									<php>
+										}	
+									</php>
+								];
+
+					        	db.schedules = [];
+					        	db.submit = [];
+						        <php>
+						        if($field["value"]){						        	
+						        	foreach($field["value"] as $k => $v){
+								</php>
+						        		db.schedules.push(
+						        				{	id:<php>echo $v["id"]</php>,
+						        					teacher:<php>echo $v['teacherid']</php>,
+						        					interval:<php>echo $v['interval']</php>,
+						        					starttime:new Date(<php>echo $v['starttime'].'000'</php>).Format('yyyy-mm-dd hh:ii'),
+						        					endtime:new Date(<php>echo $v['endtime'].'000'</php>).Format('yyyy-mm-dd hh:ii')});
+						        								        		
+							        	db.submit.push(
+						        				{	id:<php>echo $v["id"]</php>,
+						        					teacher:<php>echo $v['teacherid']</php>,
+						        					interval:<php>echo $v['interval']</php>,
+						        					starttime:new Date(<php>echo $v['starttime'].'000'</php>).Format('yyyy-mm-dd hh:ii'),
+						        					endtime:new Date(<php>echo $v['endtime'].'000'</php>).Format('yyyy-mm-dd hh:ii')});
+								 <php>
+						        	}
+						        }
+						        </php>
+						    if(db.submit&&db.submit.length>0) $("input[name='schedules']").val(JSON.stringify(db.submit));   
+							//渲染表格控件
+						    $("#jsGrid").jsGrid({
+						        width: "100%",
+						        height: "400px",
+						
+						        inserting: true,
+						        editing: true,
+						        sorting: true,
+						        paging: false,
+						        filtering: true,
+						        //selecting: true,
+						        //autoload: true,
+						        confirmDeleting:false,
+						
+						        controller: db,
+						        
+						        data: db.schedules,
+						
+						        fields: [
+						        	{ name: "id", type: "text", visible: false},
+						        	{ title: "老师", name: "teacher", type: "select", items: db.teachers, valueField: "Id", textField: "Name" },
+						        	{ title: "间距", name: "interval", type: "select", items: db.interval, valueField: "Id", textField: "Name" },
+						        	{ title: "开始时间", name: "starttime", type: "date", validate: "required" },
+						        	{ title: "结束时间", name: "endtime", type: "date", validate: "required" },
+						            /* { name: "Name", type: "text", width: 150, validate: "required" },
+						            { name: "Age", type: "number", width: 50 },
+						            { name: "Address", type: "text", width: 200 },
+						            { name: "Country", type: "select", items: db.countries, valueField: "Id", textField: "Name" },
+						            { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+						            { name: "Birthday", type: "date" }, */
+						            { type: "control" }
+						        ],
+						    
+						        /* onItemInserted: function(args) {
+						   	        console.log(args);
+						   	     	db.submit.push(args.item);
+						   	     	console.log(JSON.stringify(db.submit));
+						   	     	$("input[name='schedules']").val(JSON.stringify(db.submit));
+						   	    }, */
+						        
+						   		onItemUpdated: function(args) {
+						   	        console.log(args);
+						   	     	var scheduleIndex = $.inArray(args.item, db.schedules);
+					            	db.submit[scheduleIndex] = args.item;
+					            	console.log(JSON.stringify(db.submit));
+						   	     	$("input[name='schedules']").val(JSON.stringify(db.submit));
+						   	    },
+						   	    
+						   	 	/*onItemDeleted: function(args) {
+						   	        console.log(args);
+						   	     	var scheduleIndex = $.inArray(args.item, db.schedules);
+					                db.submit.splice(scheduleIndex, 1);
+					                console.log(JSON.stringify(db.submit));
+					                if(!db.submit||db.submit.length==0)
+					                	$("input[name='schedules']").val('');
+					                else
+						   	     		$("input[name='schedules']").val(JSON.stringify(db.submit));
+						   	    }, */
+
+						    });
+						    
+						    
+						</script>
+                    </case>
+                    
+                    
                     <default/>
                     <span style="color: #f00;">错误：未知字段类型 {$field.type}</span>
                     <input type="hidden" name="{$field.name}" value="{$field.value|htmlspecialchars}"/>

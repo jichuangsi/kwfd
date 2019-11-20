@@ -22,7 +22,15 @@ class OrgansApi {
     private static function getOrgansCategoryFromMaster($url){
         if(empty($url)) return NULL;
         
-        $arr = json_decode(file_get_contents($url),true);
+        $opts = array('http' =>
+            array(
+                'method'  => 'GET',
+                'timeout' => 3
+            )
+        );
+        $context  = stream_context_create($opts);
+        
+        $arr = json_decode(file_get_contents($url,false,$context),true);
         
         //dump($arr);
         

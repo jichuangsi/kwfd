@@ -21,11 +21,13 @@ class IndexController extends Controller
 	protected $des;
 	protected $crypt;
 	protected $protocol;
+	protected $orderlistdetailmodel;
     public function _initialize()
     { 
 		$this->datamodel = D($this->_model.'/'.$this->_model);
 		$this->categorymodel = D($this->_model.'/'.$this->_model.'Category');
 		$this->chaptersmodel = D($this->_model.'/'.$this->_model.'Chapters');
+		$this->orderlistdetailmodel = D('Cart/Orderlistdetail');
 		$tree = $this->categorymodel->getTree();
 		//$tree=array($tree);
 		//var_dump($tree);
@@ -71,7 +73,7 @@ class IndexController extends Controller
 	    unset($map);
 	    $map['id'] = $id;
 	    $map['orgId'] = $orgId;
-		 $data = $this->datamodel->where($map)->count();
+	    $data = $this->datamodel->where($map)->count();
 		 
          if (!$data) {
             $this->error('请到相应的机构上课！');
@@ -98,8 +100,17 @@ class IndexController extends Controller
 		  if($uid==$data["teacherid"])
 		  {
 			  $role="4";
-			  $rs = $this->datamodel->where($map)->where(['status'=>1])->setField(['status'=>3]); //老师上课			  
-			  if($rs) $this->datamodel->where($map)->setInc('updateFlag');
+			  
+			  $param['goodid'] = $id;
+			  $param['orgId'] = $orgId;
+			  $param['courseStatus'] = 1;
+			  $param['teacherid'] = $uid;
+			  $param['starttime'] = array('elt',time()+15*60);
+			  $rs = $this->orderlistdetailmodel->where($param)->setField(['courseStatus'=>3]);
+			  /* print_r($this->orderlistdetailmodel->where($param)->select());
+			  echo $this->orderlistdetailmodel->_sql();exit; */
+			  /* $rs = $this->datamodel->where($map)->where(['status'=>1])->setField(['status'=>3]); //老师上课			  
+			  if($rs) $this->datamodel->where($map)->setInc('updateFlag'); */
 		  }
 		  else
 		  {
@@ -654,18 +665,4 @@ class IndexController extends Controller
             ]));
 		}
     }	
-    
-    public function testFullCalendar($start, $end){
-        
-        dump(strtotime($start));
-        dump(strtotime($end));
-        
-        $return = array();
-        
-        array_push($return, ['title'=>'All Day Event','start'=>'2019-11-10']);
-        array_push($return, ['title'=>'Long Event','start'=>'2019-11-10T10:00','end'=>'2019-11-10T12:00']);
-        
-        /* 返回JSON数据 */
-        $this->ajaxReturn($return);
-    }
 }

@@ -22,7 +22,15 @@ class ActivityApi {
     private static function getActivityFromMaster($url, $orgId){
         if(empty($url)||empty($orgId)) return NULL;
         
-        $arr = json_decode(file_get_contents($url.$orgId),true);
+        $opts = array('http' =>
+            array(
+                'method'  => 'GET',
+                'timeout' => 3
+            )
+        );
+        $context  = stream_context_create($opts);
+        
+        $arr = json_decode(file_get_contents($url.$orgId,false,$context),true);
         
         /* if(!$arr){
             $arr["errorCode"] = "1";

@@ -5308,7 +5308,7 @@ CREATE TABLE IF NOT EXISTS `onethink_live` (
   `content` text COMMENT '内容',
   `companyid` int(11) NOT NULL,
   `changetime` int(11) NOT NULL,
-  `status` tinyint(4) NOT NULL COMMENT '状态，-1：删除；0：禁用；1：启用；2：未审核；3：进行中；4：结束',
+  `status` tinyint(4) NOT NULL COMMENT '状态，-1：删除；0：禁用；1：启用；2：未审核；',
   `recommend` tinyint(4) NOT NULL COMMENT '推荐，0：不启用；1：启用',
   `online` tinyint(4) NOT NULL COMMENT '是否线上，0：否；1：是',
   `createtime` int(11) NOT NULL COMMENT '创建时间',
