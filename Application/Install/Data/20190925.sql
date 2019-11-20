@@ -10,7 +10,7 @@ update `onethink_auth_group` set  `rules` = '1,53,263,264,274,276,278,279,280,29
 alter table onethink_local_comment add `score` int(4) NOT NULL DEFAULT '0' COMMENT '评论评分';
 
 alter table onethink_live add `period` int(11) NOT NULL DEFAULT '1' COMMENT '总课时';
-alter table onethink_live add `interval` int(11) NOT NULL DEFAULT '1' COMMENT '可是间隔：1.一次；2.每天；3.每周；4.每月；5.每季；6.每年';
+alter table onethink_live add `interval` int(11) NOT NULL DEFAULT '1' COMMENT '课时间隔：1=>一次,2=>每天(含周末),3=>每天(不含周末),4=>隔天(含周末),5=>隔天(不含周末),6=>每周,7=>每月,8=>每季,9=>每年';
 
 
 CREATE TABLE IF NOT EXISTS `onethink_orderlistdetail` (
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `onethink_live_schedule` (
 	`id` int(10) NOT NULL AUTO_INCREMENT,
 	`courseid` int(11) DEFAULT '0',
 	`teacherid` varchar(10) DEFAULT '0' COMMENT '老师id',
-	`interval` int(11) DEFAULT '0' COMMENT '可是间隔：1=>一次,2=>每天(含周末),3=>每天(不含周末),4=>隔天(含周末),5=>隔天(不含周末),6=>每周,7=>每月,8=>每季,9=>每年',
+	`interval` int(11) DEFAULT '0' COMMENT '课时间隔：1=>一次,2=>每天(含周末),3=>每天(不含周末),4=>隔天(含周末),5=>隔天(不含周末),6=>每周,7=>每月,8=>每季,9=>每年',
 	`starttime` int(11) unsigned DEFAULT NULL COMMENT '单节课程开始时间',
 	`endtime` int(11) unsigned DEFAULT NULL COMMENT '单节课程结束时间',
 	PRIMARY KEY (`id`)
