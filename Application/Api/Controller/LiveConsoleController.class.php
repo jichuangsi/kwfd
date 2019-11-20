@@ -347,9 +347,9 @@ class LiveConsoleController extends ApiController
         
         unset($map);
         $map['c.id'] = $cid;
-        $comments = $this->coursemodel->alias("c")->field('l.id')->join(C('DB_PREFIX').'local_comment l ON l.row_id=c.id','LEFT')->where($map)->select();
+        $comments = $this->coursemodel->alias("c")->field('l.id')->join(C('DB_PREFIX').'local_comment l ON l.row_id=c.id','INNER')->where($map)->select();
         $map['l.score'] = array('gt', 3);
-        $goods = $this->coursemodel->alias("c")->field('l.id')->join(C('DB_PREFIX').'local_comment l ON l.row_id=c.id','LEFT')->where($map)->count();
+        $goods = $this->coursemodel->alias("c")->field('l.id')->join(C('DB_PREFIX').'local_comment l ON l.row_id=c.id','INNER')->where($map)->count();
         if($comments&&!empty($comments)){
             if($goods){
                 $course['good'] = round(intval($goods)/count($comments)*100).'%';
@@ -358,7 +358,7 @@ class LiveConsoleController extends ApiController
             }            
             $course['comments'] = count($comments);
         }else{
-            $course['comments'] = $comments;
+            $course['comments'] = 0;
             $course['good'] = '0%';
         }        
         
@@ -453,7 +453,7 @@ class LiveConsoleController extends ApiController
         unset($map);
         $map['c.id'] = $cid;
         $commentsAll = $this->coursemodel->alias("c")->field('l.score')
-                        ->join(C('DB_PREFIX').'local_comment l ON l.row_id=c.id','LEFT')
+                        ->join(C('DB_PREFIX').'local_comment l ON l.row_id=c.id','INNER')
                         ->where($map)->order('l.create_time desc')->select();
         $course['c_tot'] = 0;
         $course['c_good'] = 0;
@@ -473,7 +473,7 @@ class LiveConsoleController extends ApiController
         unset($map);
         $map['c.id'] = $cid;
         $comments = $this->coursemodel->alias("c")->field('l.content,l.uid,l.create_time,l.score,m.nickname,m.sex,m.status,CASE WHEN ISNULL(a.path) THEN "Addons/Avatar/default.jpg" ELSE CONCAT("Uploads/Avatar/",a.path) end as path')
-                    ->join(C('DB_PREFIX').'local_comment l ON l.row_id=c.id','LEFT')
+                    ->join(C('DB_PREFIX').'local_comment l ON l.row_id=c.id','INNER')
                     ->join(C('DB_PREFIX').'member m ON m.uid=l.uid','LEFT')
                     ->join(C('DB_PREFIX').'avatar a ON m.uid=a.uid','LEFT')
                     ->where($map)->order('l.create_time desc')->page($p, $r)->select();
