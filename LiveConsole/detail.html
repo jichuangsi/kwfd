@@ -230,7 +230,7 @@
                     $('.sold').text(JSON.parse(res).data.sold)
                     $('.good').text(JSON.parse(res).data.good)
                     JSON.parse(res).data.price == '0.00'?$('.state').text('免费'):$('.state').text('价格：'+JSON.parse(res).data.price)
-                    $('.top').find('img').attr('src',JSON.parse(res).data.imageurl)
+                    $('.top').find('img').attr('src',JSON.parse(res).data.imageurl != null?JSON.parse(res).data.imageurl:'./assets/images/lx.png')
                     $('.top').find('.title').text(JSON.parse(res).data.orgName)
                     let classList = JSON.parse(res).data.classes?JSON.parse(res).data.classes:[]
                     let data = {'data':classList}
