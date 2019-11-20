@@ -46,7 +46,12 @@
     <script type="text/template" id="List">
         {{each data as value index}}     
             <div class="list" onclick="detailgo({{value.oid}},{{value.cid}},{{value.orgId}})">
+                {{if value.imageurl != null}}
                 <img src="{{value.imageurl}}" alt="">
+                {{else if  value.imageurl == null}}
+                <img src="./assets/images/lx.png" alt="">
+                {{else}}
+                {{/if}}
                 <div class="title">{{value.orgName}}
                     {{if value.price == '0.00'}}
                     <div class="fr">免费</div>

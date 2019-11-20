@@ -32,7 +32,10 @@
     box-shadow: 3px 0px 15px rgba(0, 0, 0, 0.1);
 }
 .center .list img {
-    width: 100%;
+    width: 207px;
+    height: 207px;
+    display: block;
+    margin: 0 auto;
 }
 .center .list .title {
     font-size: 20px;
