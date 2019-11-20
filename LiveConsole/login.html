@@ -33,7 +33,7 @@
                 "password": $(" input[ name='psw' ] ").val()
                 }
             $.ajax({
-                url:'http://192.168.31.108:92/index.php/api/LiveConsole/login',
+                url:'/index.php/api/LiveConsole/login',
                 type:'POST',
                 data:JSON.stringify(data),
                 success:function(res){
@@ -53,7 +53,7 @@
         }
         function getdata(){
             $.ajax({
-                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getUserInfo',
+                url:'/index.php/api/LiveConsole/getUserInfo',
                 type:'GET',
                 success:function(res){
                     console.log(res)

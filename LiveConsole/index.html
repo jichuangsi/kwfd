@@ -64,7 +64,7 @@
         }
         function loginout(){
             $.ajax({
-                url:'http://192.168.31.108:92/index.php/api/LiveConsole/logout',
+                url:'/index.php/api/LiveConsole/logout',
                 type:'POST',
                 success:function(res){
                     console.log(JSON.parse(res))

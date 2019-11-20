@@ -220,7 +220,7 @@
         }
         function getone(page){
             $.ajax({
-                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getEventDetail/oid/'+id+'/cid/'+cid+'/orgId/'+orgId+'/p/'+page+'/r/10',
+                url:'/index.php/api/LiveConsole/getEventDetail/oid/'+id+'/cid/'+cid+'/orgId/'+orgId+'/p/'+page+'/r/10',
                 type:'GET',
                 success:function(res){
                     console.log(JSON.parse(res))
@@ -259,7 +259,7 @@
         }
         function getone_end(page){
             $.ajax({
-                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getEventDetail/oid/'+id+'/cid/'+cid+'/orgId/'+orgId+'/end/1/p/'+page,
+                url:'/index.php/api/LiveConsole/getEventDetail/oid/'+id+'/cid/'+cid+'/orgId/'+orgId+'/end/1/p/'+page,
                 type:'GET',
                 success:function(res){
                     console.log(JSON.parse(res))
@@ -290,7 +290,7 @@
         }
         function gettwo(){
             $.ajax({
-                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getEventMaterial/cid/'+cid+'/orgId/'+orgId,
+                url:'/index.php/api/LiveConsole/getEventMaterial/cid/'+cid+'/orgId/'+orgId,
                 type:'GET',
                 success:function(res){
                     console.log(JSON.parse(res))
@@ -323,7 +323,7 @@
         }
         function getthree(page){
             $.ajax({
-                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getEventComment/p/'+page+'/r/10/cid/'+cid+'/orgId/'+orgId,
+                url:'/index.php/api/LiveConsole/getEventComment/p/'+page+'/r/10/cid/'+cid+'/orgId/'+orgId,
                 type:'GET',
                 success:function(res){
                     console.log(JSON.parse(res))
@@ -373,7 +373,7 @@
                     "comment":$('#pl')[0].value
                     }
             $.ajax({
-                url:'http://192.168.31.108:92/index.php/api/LiveConsole/postComment',
+                url:'/index.php/api/LiveConsole/postComment',
                 type:'POST',
                 data:JSON.stringify(data),
                 success:function(res){

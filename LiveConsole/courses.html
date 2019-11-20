@@ -22,7 +22,7 @@
         getdata()
         function getdata(){
             $.ajax({
-                url:'http://192.168.31.108:92/index.php/api/LiveConsole/getCurrentCourses',
+                url:'/index.php/api/LiveConsole/getCurrentCourses',
                 type:'GET',
                 success:function(res){
                     console.log(JSON.parse(res))
