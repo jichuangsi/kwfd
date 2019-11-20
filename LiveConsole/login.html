@@ -41,7 +41,6 @@
                     if(JSON.parse(res).success){
                         getdata()
                         sessionStorage.setItem('userName',JSON.parse(res).data.username)
-                        window.location.href = './index.html'
                     }else{
                         alert(JSON.parse(res).message)
                     }
@@ -58,13 +57,16 @@
                 success:function(res){
                     console.log(res)
                     console.log(JSON.parse(res))
+                    if(JSON.parse(res).success){
+                        window.location.href = './index.html'
+                    }
                 },
                 error:function(err){
                     console.log(err)
                 }
             })
         }
-        
+        getdata()
         $(document).keyup(function(event){
             //判断回车键的CODE
             if(event.keyCode == 13){

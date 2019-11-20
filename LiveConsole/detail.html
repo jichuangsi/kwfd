@@ -328,19 +328,19 @@
                 success:function(res){
                     console.log(JSON.parse(res))
                     let date = JSON.parse(res).data
-                    let myd = ((Number(date.c_good))/Number(date.c_tot)*100).toFixed(0)
+                    let myd = date.c_good == 0 ? '0' : ((Number(date.c_good))/Number(date.c_tot)*100).toFixed(0)
                     $('.top_l > span').text(myd+'%')
                     $('.left_bottom > div').eq(0).text('全部('+date.c_tot+')')
                     $('.left_bottom > div').eq(1).text('好评('+date.c_good+')')
                     $('.left_bottom > div').eq(2).text('中评('+date.c_soso+')')
                     $('.left_bottom > div').eq(3).text('差评('+date.c_bad+')')
                     
-                    $('.jdt').eq(0).find('span').css('width',(Number(date.c_good)/Number(date.c_tot)*100).toFixed(0)+'%')
-                    $('.jdt').eq(0).find('em').text((Number(date.c_good)/Number(date.c_tot)*100).toFixed(0)+'%')
-                    $('.jdt').eq(1).find('span').css('width',(Number(date.c_soso)/Number(date.c_tot)*100).toFixed(0)+'%')
-                    $('.jdt').eq(1).find('em').text((Number(date.c_soso)/Number(date.c_tot)*100).toFixed(0)+'%')
-                    $('.jdt').eq(2).find('span').css('width',(Number(date.c_bad)/Number(date.c_tot)*100).toFixed(0)+'%')
-                    $('.jdt').eq(2).find('em').text((Number(date.c_bad)/Number(date.c_tot)*100).toFixed(0)+'%')
+                    $('.jdt').eq(0).find('span').css('width', date.c_good == 0 ? '0%' : (Number(date.c_good)/Number(date.c_tot)*100).toFixed(0)+'%')
+                    $('.jdt').eq(0).find('em').text( date.c_good == 0 ? '0%' : (Number(date.c_good)/Number(date.c_tot)*100).toFixed(0)+'%')
+                    $('.jdt').eq(1).find('span').css('width', date.c_soso == 0 ? '0%' : (Number(date.c_soso)/Number(date.c_tot)*100).toFixed(0)+'%')
+                    $('.jdt').eq(1).find('em').text( date.c_soso == 0 ? '0%' : (Number(date.c_soso)/Number(date.c_tot)*100).toFixed(0)+'%')
+                    $('.jdt').eq(2).find('span').css('width', date.c_bad == 0 ? '0%' : (Number(date.c_bad)/Number(date.c_tot)*100).toFixed(0)+'%')
+                    $('.jdt').eq(2).find('em').text( date.c_bad == 0 ? '0%' : (Number(date.c_bad)/Number(date.c_tot)*100).toFixed(0)+'%')
 
                     $('.nav > div').eq(2).text('课程评论（'+date.c_tot+'）')
                     let data = {
