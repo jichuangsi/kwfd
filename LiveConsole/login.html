@@ -57,7 +57,8 @@
                 success:function(res){
                     console.log(res)
                     console.log(JSON.parse(res))
-                    if(JSON.parse(res).success){
+                    if(JSON.parse(res).data){
+                    	sessionStorage.setItem('userName',JSON.parse(res).data.username)
                         window.location.href = './index.html'
                     }
                 },
