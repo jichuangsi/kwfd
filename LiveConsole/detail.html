@@ -237,7 +237,7 @@
                     console.log(data)
                     for(let i = 0; i<classList.length;i++){
                         classList[i].starttime = getLocalTime(classList[i].starttime)
-                        classList[i].teacher = JSON.parse(res).data.teacher
+                        // classList[i].teacher = JSON.parse(res).data.teacher
                     }
                     var html = template('startList',data)
                     $('#one').find('tbody').find('tr').eq(0).siblings().remove()
@@ -266,7 +266,7 @@
                     let classList = JSON.parse(res).data.classes?JSON.parse(res).data.classes:[]
                     for(let i = 0; i<classList.length;i++){
                         classList[i].starttime = getLocalTime(classList[i].starttime)
-                        classList[i].teacher = JSON.parse(res).data.teacher
+                        // classList[i].teacher = JSON.parse(res).data.teacher
                     }
                     let data = {'data':classList}
                     console.log(data)
@@ -405,7 +405,7 @@
                     <td>{{value.title}}</td>
                     <td>{{value.starttime}}</td>
                     <td>{{value.duraion}}</td>
-                    <td><img src="{{value.teacher.imageurl}}" alt=""><br>{{value.teacher.nickname}}</td>
+                    <td><img src="{{value.image}}" alt=""><br>{{value.nickname}}</td>
                     {{if value.courseStatus == 3}}
                     <td><div class="zy">进行中</div></td>
                     <td><div class="zy lan"><a href="/index.php?s=/live/index/gotomeeting/id/{{value.goodid}}/orgId/{{value.orgId}}.html" target="_blank">去听课</a></div></td>
