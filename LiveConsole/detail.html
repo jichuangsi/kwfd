@@ -295,7 +295,7 @@
                 success:function(res){
                     console.log(JSON.parse(res))
                     let arr = JSON.parse(res).data.chapters&&JSON.parse(res).data.chapters._?JSON.parse(res).data.chapters._:[];
-                    let arrimg = JSON.parse(res).data.images
+                    let arrimg = JSON.parse(res).data.images?JSON.parse(res).data.images:[];
                     let html = ""
                     let html1 = ""
                     if(arr){
