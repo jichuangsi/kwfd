@@ -294,19 +294,21 @@
                 type:'GET',
                 success:function(res){
                     console.log(JSON.parse(res))
-                    let arr = JSON.parse(res).data.chapters._
+                    let arr = JSON.parse(res).data.chapters._?JSON.parse(res).data.chapters._:null;
                     let arrimg = JSON.parse(res).data.images
                     let html = ""
                     let html1 = ""
-                    for(let i = 0;i<arr.length;i++){
-                        if(arr[i]._){
-                            for(let q = 0;q<arr[i]._.length;q++){
-                                html += '<tr><td rowspan>'+arr[i].title+'</td><td style="cursor: pointer;" data-html='+JSON.stringify(arr[i]._[q].content)+' onclick="block(this)">'+arr[i]._[q].title+'</td></tr>'
+                    if(arr){
+                    	for(let i = 0;i<arr.length;i++){
+                            if(arr[i]._){
+                                for(let q = 0;q<arr[i]._.length;q++){
+                                    html += '<tr><td rowspan>'+arr[i].title+'</td><td style="cursor: pointer;" data-html='+JSON.stringify(arr[i]._[q].content)+' onclick="block(this)">'+arr[i]._[q].title+'</td></tr>'
+                                }
+                            }else{
+                                html += '<tr><td rowspan>'+arr[i].title+'</td></tr>'
                             }
-                        }else{
-                            html += '<tr><td rowspan>'+arr[i].title+'</td></tr>'
                         }
-                    }
+                    }                    
                     if(arrimg){
                     	for(let j = 0;j<arrimg.length;j++){
 	                        html1 += '<img onclick="blockimg(this)" src="'+arrimg[j]+'" alt="">'
