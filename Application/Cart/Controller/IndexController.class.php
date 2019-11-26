@@ -128,6 +128,9 @@ class IndexController extends Controller
                 if(!empty($val["suid"])){
                     $curlData[$key]['suid'] = $val["suid"];
                 }
+                if(!empty($val["sid"])){
+                    $curlData[$key]['sid'] = $val["sid"];
+                }
                 $curlData[$key]['username'] = query_user('nickname',$uid);
                 $curlData[$key]['price'] = $val['price'];
                 $curlData[$key]['total'] = $val['subtotal'];

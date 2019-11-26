@@ -77,9 +77,37 @@ font{
 		    width: 100%;
 		    height: auto;
 		}
+		
+		.radio_div{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .radio_div .radio_right {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .radio_div .radio_right span {
+            padding: 2px 4px;
+            border: 1px solid #999;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0px 5px;
+            margin-bottom: 5px;
+        }
+        .radio_div .radio_right .check {
+            border-color: #3d72fe;
+            color: #3d72fe;
+        }
+        .radio_time {
+            display: none;
+        }
+        .radio_check {
+            display: flex;
+        }
 </style>
 <script>
-
+var submitUrl = '';
 $(function(){
 $('#myModal').on('shown.bs.modal', function (e) {
             // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零
@@ -105,7 +133,25 @@ $('#myModal').on('shown.bs.modal', function (e) {
 
  })
  
+ var initTeacher = $(".radio_teacher").find(".radio_right").find("span").eq(0);
+ initTeacher.addClass('check'); 
+ refreshTeacherAvatar(initTeacher);
+ $(".radio_time").eq(0).addClass('radio_check');
+ 
+ $('.submitCourse').click(function(event){
+	 	var selectedCourse = $('.radio_check .check');
+		if(selectedCourse.length==0){
+			event.preventDefault();
+			alert("请先选择课程！");
+		}
+ });
 })
+function refreshTeacherAvatar(val){
+	$(".selectedTeacher").empty();
+	if($(val).attr('data-id')==="0") return;
+	var html = '<a href="/Teacher/Index/Detail/id/'+$(val).attr('data-id')+'.html"><img src="'+$(val).find("input").val()+'" style="border-radius: 50%;width:60px"/>&nbsp;&nbsp;'+$(val).text()+'</a>';    
+	$(".selectedTeacher").append(html);
+}
 function qrcodes(url){
 	//console.log(url);
 	$('.mask').css('display','block'); 
@@ -122,6 +168,26 @@ function qrcodes(url){
 }
 function hide(){
     $('.mask').css('display','none');
+}
+function check_teacher(val){
+    $(val).addClass('check').siblings().removeClass('check')
+    $('.radio_time').removeClass('radio_check')
+    $('.radio_time .check').removeClass('check');
+    var times = $('.radio_time');
+    for(var i = 0; i < times.length; i++){
+    	if(parseInt($(times[i]).attr('data-id'))==parseInt($(val).attr('data-id'))){
+    		$(times[i]).addClass('radio_check');
+    		break;
+    	}
+    }
+    refreshTeacherAvatar(val);    
+    //$('.radio_time').eq($(val).attr('data-id')-1).addClass('radio_check')    
+}
+function check_time(val){
+    $(val).addClass('check').siblings().removeClass('check')
+    
+    submitUrl = './live/index/cart/id/'+{$data["id"]}+'/sid/'+$(val).attr('data-id')+'.html';
+    $('.submitCourse').attr('href', submitUrl);
 }
 </script> 
     <link type="text/css" rel="stylesheet" href="__CSS__/style.css"/>
@@ -157,10 +223,145 @@ function hide(){
 							<div class="whole-left">价格：</div>
 							<div class="whole-right"><span class="red1">¥{$data.price}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="text-decoration:line-through;display:none">原价:¥4399</span></div>
 						  </div>
-						  <div class="whole">
+						  
+						  <div class="whole clearfix">
+							<div class="whole-left">总课时：</div>
+							<div class="whole-right">{$data.period}</div>
+						  </div>
+						  
+							 <div class="radio_teacher radio_div whole">
+						        <div class="whole-left radio_left">
+						            课程老师：
+						        </div>
+						        <div class="whole-right radio_right">
+						            <!-- <span class="check" data-id="1" onclick="check_teacher(this)">duang</span>
+						            <span data-id="2" onclick="check_teacher(this)">李老师</span>
+						            <span data-id="3" onclick="check_teacher(this)">王老师</span>
+						            <span data-id="4" onclick="check_teacher(this)">季老师</span>
+						            <span data-id="5" onclick="check_teacher(this)">孙老师</span> -->
+						            
+						            <volist name="schedules" id="schedule">
+						            
+						            	<span data-id="{$key}" onclick="check_teacher(this)">
+						            	
+						            	<php>  
+						            		$teacherName = array_slice($schedule,0,1)[0]["nickname"];
+						            		$teacherAvatar  = array_slice($schedule,0,1)[0]["path"];
+						            		if($teacherName){
+						            			echo $teacherName;
+						            		}else{
+						            			echo '非指定老师';
+						            		}
+						            	</php>
+						            	<input type="hidden" name="avatar" value="{$teacherAvatar}">
+						            	</span>
+						            	
+						            </volist>
+						            
+						        </div>
+						    </div>
+						    
+						    <volist name="schedules" id="schedule">
+						    	<div class="radio_time radio_div whole" data-id="{$key}">
+						    	<div class="whole-left radio_left">
+						            课程时间：
+						        </div>
+						        <div class="whole-right radio_right">
+							    	<volist name="schedule" id="detail">
+							    	<php>
+							    		if($key==='spec'){
+							    			$ids = '';
+							    			$times = '';
+							    			$num = 1;
+							    			foreach($detail as $spec){
+							    				$ids .= ($ids?'-':'') . $spec['sid'];
+							    				$times .= ($num++) . '。'. $spec['starttime'] .'~'. $spec['endtime'] . '；';
+							    			}
+							    	</php>
+							    		<span onclick="check_time(this)" data-id="{$ids}">
+							    			<b>特定时间：</b>{$times}
+							    		</span>
+							    	<php>	
+							    		}else{
+							    	</php>
+							    		<span onclick="check_time(this)" data-id="{$detail['sid']}">
+							    			<b>周期：</b>{$detail['intervalStr']}；
+							    			<b>首次：</b>{$detail['starttime']}~{$detail['endtime']}
+							    		</span>
+							    	<php>
+							    		}							    	
+							    	</php>
+							    		
+							    	</volist>
+						    	</div>
+						    	</div>
+						    </volist>
+						    
+						    <!-- <div class="radio_time radio_div whole radio_check">
+						        <div class="whole-left radio_left">
+						            课程时间：
+						        </div>
+						        <div class="whole-right radio_right">
+						            <span onclick="check_time(this)">8:01-10:00</span>
+						            <span onclick="check_time(this)">13:00-14:00</span>
+						            <span onclick="check_time(this)">16:00-17:00</span>
+						            <span onclick="check_time(this)">15:00-16:00</span>
+						            <span onclick="check_time(this)">17:00-18:00</span>
+						        </div>
+						    </div>
+						    <div class="radio_time radio_div whole">
+						        <div class="whole-left radio_left">
+						            课程时间：
+						        </div>
+						        <div class="whole-right radio_right">
+						            <span onclick="check_time(this)">8:02-10:00</span>
+						            <span onclick="check_time(this)">13:00-14:00</span>
+						            <span onclick="check_time(this)">16:00-17:00</span>
+						            <span onclick="check_time(this)">15:00-16:00</span>
+						            <span onclick="check_time(this)">17:00-18:00</span>
+						        </div>
+						    </div>
+						    <div class="radio_time radio_div whole">
+						        <div class="whole-left radio_left">
+						            课程时间：
+						        </div>
+						        <div class="whole-right radio_right">
+						            <span onclick="check_time(this)">8:03-10:00</span>
+						            <span onclick="check_time(this)">13:00-14:00</span>
+						            <span onclick="check_time(this)">16:00-17:00</span>
+						            <span onclick="check_time(this)">15:00-16:00</span>
+						            <span onclick="check_time(this)">17:00-18:00</span>
+						        </div>
+						    </div>
+						    <div class="radio_time radio_div whole">
+						        <div class="whole-left radio_left">
+						            课程时间：
+						        </div>
+						        <div class="whole-right radio_right">
+						            <span onclick="check_time(this)">8:04-10:00</span>
+						            <span onclick="check_time(this)">13:00-14:00</span>
+						            <span onclick="check_time(this)">16:00-17:00</span>
+						            <span onclick="check_time(this)">15:00-16:00</span>
+						            <span onclick="check_time(this)">17:00-18:00</span>
+						        </div>
+						    </div>
+						    <div class="radio_time radio_div whole">
+						        <div class="whole-left radio_left">
+						            课程时间：
+						        </div>
+						        <div class="whole-right radio_right">
+						            <span onclick="check_time(this)">8:05-10:00</span>
+						            <span onclick="check_time(this)">13:00-14:00</span>
+						            <span onclick="check_time(this)">16:00-17:00</span>
+						            <span onclick="check_time(this)">15:00-16:00</span>
+						            <span onclick="check_time(this)">17:00-18:00</span>
+						        </div>
+						    </div> -->
+						  
+						  <!-- <div class="whole">
 							<div class="whole-left">上课时间：</div>
 							<div class="whole-right">{$data.starttime|date='Y年m月d H:i',###} ~ {$data.endtime|date='m月d H:i',###}</div>
-						  </div>
+						  </div> -->
 						  <div class="whole">
 							<div class="whole-left">学习人数：</div>
 							<div class="whole-right">{:count($orderlist)}人</div>
@@ -177,7 +378,8 @@ function hide(){
 								<a onclick="qrcodes('{$qrCodeUrl}')"  class="btn btn-primary">&nbsp;&nbsp;享客码&nbsp;&nbsp;</a>
 							</if>&nbsp;&nbsp;
 							<a href="/index.php?s=/feedback/index/index.html" class="btn btn-primary">&nbsp;&nbsp;联系我们&nbsp;&nbsp;</a>&nbsp;&nbsp;	
-							<a href="{:U('Cart',array('id'=>$data["id"],'suid'=>$suid))}" class="btn btn-primary">&nbsp;&nbsp;立即报名&nbsp;&nbsp;</a>					
+							<!-- <a href="{:U('Cart',array('id'=>$data["id"],'suid'=>$suid))}" class="btn btn-primary">&nbsp;&nbsp;立即报名&nbsp;&nbsp;</a> -->	
+							<a href="" class="btn btn-primary submitCourse">&nbsp;&nbsp;立即报名&nbsp;&nbsp;</a>			
 							</div>
 						  </div>
 					  </div>
@@ -235,7 +437,8 @@ function hide(){
                 <!---------------------------------------->
 				  <div class="common_block_border blog_position">
                     <div class="common_block_title">授课老师</div>
-					  <div style="margin:0px 0px 0px 10px">
+					  <div style="margin:0px 0px 0px 10px" class="selectedTeacher">
+					  	 <a href=""><img src="" style="border-radius: 50%;width:60px"/></a>
 					     <if condition="count($teacher) gt 0">
                             <a href="{:U('Teacher/Index/Detail',array('id'=>$teacher[0]['uid']))}"><img src="{$teacher[0]['path']}" style="border-radius: 50%;width:60px"/>&nbsp;&nbsp;{$teacher[0]["nickname"]}</a>
                          </if>

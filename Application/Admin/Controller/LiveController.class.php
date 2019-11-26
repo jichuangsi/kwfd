@@ -74,7 +74,20 @@ class LiveController extends AdminController
 		}
         if(session('user_auth')['isteacher']=='1') 
         {
-			$map["userId"]=array('eq',UID);
+			//$map["userId"]=array('eq',UID);
+			
+			$teacherCourse = array();			
+			$soldCourse = M('Orderlistdetail')->alias('s')->field('s.goodid as courseid')->where(['s.teacherid'=>UID])->group('s.goodid')->select();	
+			foreach($soldCourse as $v){
+			    array_push($teacherCourse, $v['courseid']);
+			}
+			$selfCourse = $this->datamodel->alias('c')->field('c.id as courseid')->where(['c.userid'=>UID])->select();		
+			foreach($selfCourse as $v){
+			    array_push($teacherCourse, $v['courseid']);
+			}
+			if(!empty($teacherCourse)){
+			    $map["id"]=array('IN',implode(',', array_unique($teacherCourse)));
+			}
 		}		
 		
 		$orderBy = 'online desc, createtime desc, view desc';
@@ -126,7 +139,8 @@ class LiveController extends AdminController
 		    if($majorOrg){
 		        $builder->keyText('orgName', '所属机构');
 		    }
-		    $builder->keyUpdateTime('changetime', '更新时间')->keyCreateTime('createtime', '创建时间')->keyHtml('gotomeeting', '进入课堂')
+		    $builder->keyUpdateTime('changetime', '更新时间')->keyCreateTime('createtime', '创建时间')
+		        //->keyHtml('gotomeeting', '进入课堂')
     		    ->keyOnline()
     		    ->keyStatus()
     		    ->keyRecommend()->setRecommendUrl(U('setRecommend'))
@@ -236,7 +250,8 @@ class LiveController extends AdminController
 	   $majorOrg = C('MAJOR_ORG');
 	   $isEdit = $id ? 1 : 0;
 	   if (IS_POST) 
-	   {   	       
+	   {   	       	       
+	       
 	        if ($title == '' || $title == null) {
                 $this->error('请输入名称');
             }    
@@ -388,11 +403,9 @@ class LiveController extends AdminController
                 
             }
             if ($rs) {
+                if($schedules) $this->setCourseSchedules($isEdit?$id:$rs, $schedules);
                 
-                if(IS_ROOT){
-                    
-                    if($schedules) $this->setCourseSchedules($isEdit?$id:$rs, $schedules);
-                    
+                if(IS_ROOT){                          
                     if($majorOrg){
                         $gid = $data['orgId'];                        
                     }else{
@@ -437,7 +450,8 @@ class LiveController extends AdminController
 			$onlineoptions = array('否','是');
 			//dump($onlineoptions); 
 			
-			$intervaloptions = array(0=>'特定日期',1=>'一次',2=>'每天(含周末)',3=>'每天(不含周末)',4=>'隔天(含周末)',5=>'隔天(不含周末)',6=>'每周',7=>'每月',8=>'每季',9=>'每年');
+			//$intervaloptions = array(0=>'特定日期',1=>'一次',2=>'每天(含周末)',3=>'每天(不含周末)',4=>'隔天(含周末)',5=>'隔天(不含周末)',6=>'每周',7=>'每月',8=>'每季',9=>'每年');
+			$intervaloptions = get_course_interval(-1);
 			
 			$tree = $this->categorymodel->getTree(0, 'id,title,sort,pid,status');
 			//var_dump($tree);
@@ -475,36 +489,36 @@ class LiveController extends AdminController
                 ->keyText('price', '价格','')
                 ->keyText('commission', '分润','请填0~100')
                 ->keyText('period', '总课时','请填大于0')
-                ->keyRadio("interval","课时间隔","",$intervaloptions)
-    			->keyTime('starttime', '课程开始时间','')->keyTime('endtime', '课程结束时间','')
-				->keyRadio("teacherid","老师","",$teachersoptions)
+                //->keyRadio("interval","课时间隔","",$intervaloptions)
+    			//->keyTime('starttime', '课程开始时间','')->keyTime('endtime', '课程结束时间','')
+				//->keyRadio("teacherid","老师","",$teachersoptions)
 				->keyCategory('categoryid',"分类","",$tree)
 				->keyHidden('pid')
 				->keyStatus('status', '状态')
 				->keyRecommend('recommend', '推荐', '最多推荐三个课程')
 				->keyRadio("online","是否线上","",$onlineoptions)
-				//->keySchedule("schedules","上课时间表","",array('teachers'=>$teachersoptions, 'interval'=>$intervaloptions))
+				->keySchedule("schedules","上课时间表","",array('teachers'=>$teachersoptions, 'interval'=>$intervaloptions))
 			     ;	
 			}else{
 			 $builder->keyId()->keyText('title', $this->_modelname.'名称')->keySingleImage('image', '图标','建议尺寸：250*150')->keyEditor('content', '详情')
 			    ->keyText('price', '价格','')
 			    ->keyText('period', '总课时','请填大于0')
-			    ->keyRadio("interval","课时间隔","",$intervaloptions)
-			    ->keyTime('starttime', '开始时间','')->keyTime('endtime', '结束时间','')
+			    //->keyRadio("interval","课时间隔","",$intervaloptions)
+			    //->keyTime('starttime', '开始时间','')->keyTime('endtime', '结束时间','')
 			    //->keyRadio("teacherid","老师","",$teachersoptions)
 			    ->keyCategory('categoryid',"分类","",$tree)
 			    ->keyHidden('pid')
 			    ->keyStatus('status', '状态')
-			    ->keyRadio("online","是否线上","",$onlineoptions);
+			    ->keyRadio("online","是否线上","",$onlineoptions)
+			    ->keySchedule("schedules","上课时间表","",array('teachers'=>NULL, 'interval'=>$intervaloptions))
+			     ;
 			}
             if ($isEdit) {
                 $data = $this->datamodel->where('id=' . $id)->find();
                 
-                if(IS_ROOT){
-                    $schedules = $this->schedulemodel->where(['courseid'=>$id])->order('id asc')->select();
-                    if($schedules&&!empty($schedules)){
-                        $data['schedules'] = $schedules;
-                    }
+                $schedules = $this->schedulemodel->where(['courseid'=>$id])->order('id asc')->select();
+                if($schedules&&!empty($schedules)){
+                    $data['schedules'] = $schedules;
                 }
                 
                 $builder->data($data);
@@ -555,6 +569,7 @@ class LiveController extends AdminController
 	                    unset($map);
 	                    $map['id'] = $v1['id'];
 	                    $map['courseid'] = $id;
+	                    $v1['teacherid'] = $v1['teacherid']?$v1['teacherid']:get_uid();
 	                    $v1['starttime'] = strtotime($v1['starttime']);
 	                    $v1['endtime'] = strtotime($v1['endtime']);
 	                    $this->schedulemodel->where($map)->setField($v1);
@@ -576,7 +591,7 @@ class LiveController extends AdminController
 	        if($v['id']&&!empty($v['id'])) continue;
 	        unset($data);
 	        $data['courseid'] = $id;
-	        $data['teacherid'] = $v['teacher'];
+	        $data['teacherid'] = $v['teacher']?$v['teacher']:get_uid();
 	        $data['interval'] = $v['interval'];
 	        $data['starttime'] = strtotime($v['starttime']);
 	        $data['endtime'] = strtotime($v['endtime']);

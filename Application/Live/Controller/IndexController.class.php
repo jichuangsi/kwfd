@@ -18,6 +18,7 @@ class IndexController extends Controller
     protected $datamodel;
     protected $categorymodel;
 	protected $chaptersmodel;
+	protected $schedulemodel;
 	protected $des;
 	protected $crypt;
 	protected $protocol;
@@ -27,6 +28,7 @@ class IndexController extends Controller
 		$this->datamodel = D($this->_model.'/'.$this->_model);
 		$this->categorymodel = D($this->_model.'/'.$this->_model.'Category');
 		$this->chaptersmodel = D($this->_model.'/'.$this->_model.'Chapters');
+		$this->schedulemodel = D($this->_model.'/'.$this->_model.'Schedule');
 		$this->orderlistdetailmodel = D('Cart/Orderlistdetail');
 		$tree = $this->categorymodel->getTree();
 		//$tree=array($tree);
@@ -68,7 +70,7 @@ class IndexController extends Controller
         echo json_encode($tree);
 	}
 
-	public function gotomeeting($id=0, $orgId)
+	public function gotomeeting($id=0, $orgId, $tid='')
 	{
 	    unset($map);
 	    $map['id'] = $id;
@@ -96,6 +98,7 @@ class IndexController extends Controller
 		  $user = query_user(array('id','nickname', 'signature', 'email', 'mobile', 'avatar128', 'rank_link', 'sex', 'pos_province', 'pos_city', 'pos_district', 'pos_community'), $uid);
 	      //dump($user);
 		  $userid=$uid;
+		  $teacherid='';
 		  $username=$user['nickname'];
 		  if($uid==$data["teacherid"])
 		  {
@@ -105,7 +108,9 @@ class IndexController extends Controller
 			  $param['orgId'] = $orgId;
 			  $param['courseStatus'] = 1;
 			  $param['teacherid'] = $uid;
-			  $param['starttime'] = array('elt',time()+15*60);
+			  $teacherid = $uid;
+			  //$param['starttime'] = array('egt',time()+15*60);
+			  $param['starttime'] = array('between', array(time(), time()+15*60));
 			  $rs = $this->orderlistdetailmodel->where($param)->setField(['courseStatus'=>3]);
 			  /* print_r($this->orderlistdetailmodel->where($param)->select());
 			  echo $this->orderlistdetailmodel->_sql();exit; */
@@ -115,13 +120,14 @@ class IndexController extends Controller
 		  else
 		  {
 			  $role="2";
+			  $teacherid = $tid;
 		  }
 		  //var_dump($data);
 		  
 		}
 		
-		$room = $id.'-'.$data["createtime"];		
-		
+		$room = $id.'-'.($teacherid?$teacherid.'-':'').$data["createtime"];		
+		//dump($room);exit;
 		$this->des = new SecretUtilTools();
 		//dump($this->des->encrypt('wefwefwe'));
 		$this->crypt=new Crypt();
@@ -604,6 +610,36 @@ class IndexController extends Controller
 		$this->assign('teacher', $teacher); 
 		
 		unset($map);
+		$map['s.courseid'] = $id;
+		$teachers = $this->schedulemodel->alias("s")
+		              ->field('s.id as sid, s.teacherid, s.courseid, s.interval, s.starttime, s.endtime, m.nickname, m.signature, a.path, CASE WHEN ISNULL(a.path) THEN "Addons/Avatar/default.jpg" ELSE CONCAT("Uploads/Avatar/",a.path) end as path')
+		              ->join(C('DB_PREFIX').'Member m ON m.uid=s.teacherid','LEFT')->join(C('DB_PREFIX').'avatar a ON m.uid=a.uid','LEFT')->where($map)->select();
+		//dump($teachers);
+		
+		$schedules = array();
+		foreach($teachers as $k => $v){		
+		    $this->formatScheduleData($v);
+		    if (array_key_exists($v['teacherid'],$schedules)){
+		        if($v['interval']){
+		            $schedules[$v['teacherid']][$v['sid']] = $v;
+		        }else{
+		            $schedules[$v['teacherid']]['spec'][$v['sid']] = $v;
+		        }
+		        
+		    }else{
+		        $schedules[$v['teacherid']] = array();
+		        if($v['interval']){
+		            $schedules[$v['teacherid']][$v['sid']] = $v;
+		        }else{
+		            $schedules[$v['teacherid']]['spec'] = array();
+		            $schedules[$v['teacherid']]['spec'][$v['sid']] = $v;
+		        }		        
+		    }
+		}
+		//dump($schedules);
+		$this->assign('schedules', $schedules); 
+		
+		unset($map);
 		$map['o.goodid'] = $data['id'];
 		$map['o.MODULE_NAME']=MODULE_NAME;
 		$orderlist = M("Orderlist")->alias("o")->field('m.*,a.*,CASE WHEN ISNULL(a.path) THEN "Addons/Avatar/default.jpg" ELSE CONCAT("Uploads/Avatar/",a.path) end as path')->join(C('DB_PREFIX').'Member m ON m.uid=o.uid','LEFT')->join(C('DB_PREFIX').'avatar a ON m.uid=a.uid','LEFT')->where($map)->select();
@@ -619,7 +655,12 @@ class IndexController extends Controller
 		
 		$this->display();
     }
-    public function cart($id = 0, $suid='')
+    private function formatScheduleData(&$v){
+        $v['intervalStr'] = get_course_interval($v['interval']);
+        $v['starttime'] = date('Y-m-d H:i',$v['starttime']);
+        $v['endtime'] = date('Y-m-d H:i',$v['endtime']);
+    }
+    public function cart($id = 0, $suid='', $sid='')
     {
         $data = $this->datamodel->find($id);
         if (!$data) {
@@ -630,7 +671,21 @@ class IndexController extends Controller
 		$data['MODULE_NAME']=MODULE_NAME;
 		$data['url']=$_SERVER['HTTP_REFERER'];
 		if(!empty($suid)) $data['suid']=$suid;
-		//dump($data);	
+		if(!empty($sid)) {
+		    $data['sid']=$sid;
+		    unset($map);		    
+		    $map['s.courseid'] = $id;
+		    $map['s.id'] = array('IN', implode(',', explode('-', $sid)));
+		    $schedule = $this->schedulemodel->alias("s")->field('s.teacherid, s.interval, s.starttime, s.endtime, m.nickname')
+		                  ->join(C('DB_PREFIX').'Member m ON m.uid=s.teacherid','LEFT')->where($map)->select();
+		   
+		   foreach($schedule as $k=>$v){
+		       $this->formatScheduleData($schedule[$k]);
+		   }		   
+		   //dump($schedule);exit;
+		   $data['schedule']=$schedule;
+		}
+		//dump($data);exit;
 		$cart=A('Cart/Index');
 		$cart->insert($data);
     }

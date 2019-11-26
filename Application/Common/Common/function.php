@@ -1236,6 +1236,16 @@ function build_auth_key()
     $chars = str_shuffle($chars);
     return substr($chars, 0, 40);
 }
+
+function get_course_interval($k=-1){
+    $intervaloptions = array(0=>'特定日期',1=>'一次',2=>'每天(含周末)',3=>'每天(不含周末)',4=>'隔天(含周末)',5=>'隔天(不含周末)',6=>'每周',7=>'每月',8=>'每季',9=>'每年');
+    if($k===-1){
+        return $intervaloptions;
+    }else{
+        return $intervaloptions[$k];
+    }
+}
+
 require_once(APP_PATH . '/Common/Common/query_user.php');
 require_once(APP_PATH . '/Common/Common/seo.php');
 require_once(APP_PATH . '/Common/Common/pagination.php');

@@ -118,7 +118,17 @@
 									<if condition="$field.name eq 'sort'">
 										<input type="number" style="border:1px solid #c9c9c9;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius:3px;width:45px;height:23px;text-align:center" value="{$e[$field['name']]}" name="sort{$e['id']}">
 
-										<else /> {$e[$field['name']]}
+									<else /> 
+										<if condition="$field.name eq 'DOACTIONS'">
+										  <php>
+											//dump($e);
+											if(IS_ROOT||!isset($e['teacherid'])||(isset($e['teacherid'])&&$e['teacherid']==UID)){	
+												echo $e[$field['name']];
+											}						
+											</php>
+										<else/>
+											{$e[$field['name']]}
+										</if>
 									</if>
 								</td>
 							</volist>

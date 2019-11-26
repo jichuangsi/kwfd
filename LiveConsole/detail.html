@@ -307,9 +307,11 @@
                             html += '<tr><td rowspan>'+arr[i].title+'</td></tr>'
                         }
                     }
-                    for(let j = 0;j<arrimg.length;j++){
-                        html1 += '<img onclick="blockimg(this)" src="'+arrimg[j]+'" alt="">'
-                    }
+                    if(arrimg){
+                    	for(let j = 0;j<arrimg.length;j++){
+	                        html1 += '<img onclick="blockimg(this)" src="'+arrimg[j]+'" alt="">'
+	                    }
+                    }	                    
                     $('#two').find('tbody').find('tr').eq(0).siblings().remove()
                     $('.img').children().remove()
                     $('#two').find('tbody').append(html)
@@ -405,10 +407,10 @@
                     <td>{{value.title}}</td>
                     <td>{{value.starttime}}</td>
                     <td>{{value.duraion}}</td>
-                    <td><img src="{{value.image}}" alt=""><br>{{value.nickname}}</td>
+                    <td><img src="{{value.avatarurl}}" alt=""><br>{{value.nickname}}</td>
                     {{if value.courseStatus == 3}}
                     <td><div class="zy">进行中</div></td>
-                    <td><div class="zy lan"><a href="/index.php?s=/live/index/gotomeeting/id/{{value.goodid}}/orgId/{{value.orgId}}.html" target="_blank">去听课</a></div></td>
+                    <td><div class="zy lan"><a href="/index.php?s=/live/index/gotomeeting/id/{{value.goodid}}/orgId/{{value.orgId}}/tid/{{value.teacherid}}.html" target="_blank">去听课</a></div></td>
                     {{else if  value.courseStatus < 3}}
                     <td><div class="zy">待上课</div></td>
                     {{else}}

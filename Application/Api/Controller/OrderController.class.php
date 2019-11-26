@@ -40,6 +40,7 @@ class OrderController extends ApiController
     
     protected $coursemodel;
     protected $categorymodel;
+    protected $schedulemodel;
     protected $orderlistmodel;
     protected $orderlistdetailmodel;
     protected $ordermodel;
@@ -49,6 +50,7 @@ class OrderController extends ApiController
     {
         $this->coursemodel = D('Live/Live');
         $this->categorymodel = D('Live/LiveCategory');
+        $this->schedulemodel = D('Live/LiveSchedule');
         $this->orderlistmodel = D('Cart/Orderlist');
         $this->orderlistdetailmodel = D('Cart/Orderlistdetail');
         $this->ordermodel = D("Cart/order");
@@ -262,6 +264,7 @@ class OrderController extends ApiController
             $this->apiError("6007", $this->errMsg["6007"]);
         }        
         
+        //创建订单--start
         $model->startTrans();
         try{
             //新建订单条目           
@@ -290,7 +293,7 @@ class OrderController extends ApiController
                 $data['total'] = $total;
                 /* $data['orgId'] = $val['orgId'];
                 $data['orgName'] = $val['orgName']; */
-                if(!empty($val["suid"])){
+                if(isset($val["suid"])&&!empty($val["suid"])){
                     $data['suid'] = $val["suid"];
                 }
                 /* if(!empty($val["image"])){
@@ -314,91 +317,138 @@ class OrderController extends ApiController
                 //echo $orderlist->_sql();
                 
                 if($newid){
-                    unset($data); 
-                    $data=array();
-                    $r = 0;
-                    for($i = 0; $i < intval($val['period']); $i++){
-                        unset($param);
-                        $timeStr = "0 seconds";
-                        switch(intval($val['interval'])){
-                            case 2: $timeStr = (1*$i)." days"; break;//每天(含周末)
-                            case 3: {
-                                    if($i===0)
-                                        $timeStr  = (1*$i)." days";
-                                    else{
-                                        $j = 0;
-                                        while(true){
-                                            $z = ((1*($r?$r:$i))+$j);
-                                            $timeStr  = $z ." days";
-                                            if(!$this->checkWeekend($val["starttime"], $timeStr)){
-                                                $r = $z+1;
-                                                break;  
+                    
+                    if(isset($val["sid"])&&!empty($val["sid"])){
+                        unset($map);
+                        $map['courseid']=$val['goodid'];
+                        $map['s.id'] = array('IN', implode(',', explode('-', $val["sid"])));                        
+                        $schedules = $this->schedulemodel->alias("s")->field('s.teacherid, s.interval, s.starttime, s.endtime')->where($map)->select();
+                    }else{   
+                        $schedules = array();
+                        array_push($schedules, ['teacherid'=>$val["teacherid"],'interval'=>$val["interval"],'starttime'=>$val["starttime"],'endtime'=>$val["endtime"]]);
+                    }
+                    
+                    foreach($schedules as $skey => $sval){
+                        unset($data);
+                        $data=array();
+                        
+                        if(intval($sval['interval'])===0){//特定上课时间
+                            $param['MODULE_NAME'] = $val['MODULE_NAME'];
+                            $param['title'] = $val['title'];
+                            $param['url'] = $val['url'];
+                            $param['goodid'] = $val['goodid'];
+                            $param['orderlistid'] = $newid;
+                            $param['orgId'] = $val['orgId'];
+                            $param['orgName'] = $val['orgName'];
+                            if(!empty($val["image"])){
+                                $param['image'] = $val["image"];
+                            }
+                            if(!empty($val["view"])){
+                                $param['view'] = $val["view"];
+                            }
+                            if(!empty($sval["starttime"])){
+                                $param['starttime'] = $sval["starttime"];
+                            }
+                            if(!empty($sval["endtime"])){
+                                $param['endtime'] = $sval["endtime"];
+                            }
+                            $param['courseStatus'] = $val["courseStatus"];
+                            $param['online'] = $val["online"];
+                            $param['updateFlag'] = $val["updateFlag"];
+                            $param['teacherid'] = $sval["teacherid"];
+                            
+                            array_push($data, $param);
+                        }else{//规律上课时间
+                            $r = 0;
+                            for($i = 0; $i < intval($val['period']); $i++){
+                                unset($param);
+                                $timeStr = "0 seconds";
+                                switch(intval($sval['interval'])){
+                                    case 2: $timeStr = (1*$i)." days"; break;//每天(含周末)
+                                    case 3: {
+                                        if($i===0)
+                                            $timeStr  = (1*$i)." days";
+                                            else{
+                                                $j = 0;
+                                                while(true){
+                                                    $z = ((1*($r?$r:$i))+$j);
+                                                    $timeStr  = $z ." days";
+                                                    if(!$this->checkWeekend($sval["starttime"], $timeStr)){
+                                                        $r = $z+1;
+                                                        break;
+                                                    }
+                                                    $j++;
+                                                }
                                             }
-                                            $j++;
-                                        }                                        
-                                    }                                
-                            }; 
-                            break;//每天(不含周末)
-                            case 4: $timeStr = (2*$i)." days"; break;//隔天(含周末)
-                            case 5: {
-                                    if($i===0)
-                                        $timeStr = (2*$i)." days";
-                                    else{
-                                        $j = 0;
-                                        while(true){
-                                            $z = ((($r?$r:(2*$i)))+$j);
-                                            $timeStr  = $z ." days";
-                                            if(!$this->checkWeekend($val["starttime"], $timeStr)){
-                                                $r = $z+2;
-                                                break;
+                                    };
+                                    break;//每天(不含周末)
+                                    case 4: $timeStr = (2*$i)." days"; break;//隔天(含周末)
+                                    case 5: {
+                                        if($i===0)
+                                            $timeStr = (2*$i)." days";
+                                            else{
+                                                $j = 0;
+                                                while(true){
+                                                    $z = ((($r?$r:(2*$i)))+$j);
+                                                    $timeStr  = $z ." days";
+                                                    if(!$this->checkWeekend($sval["starttime"], $timeStr)){
+                                                        $r = $z+2;
+                                                        break;
+                                                    }
+                                                    $j+=1;
+                                                }
                                             }
-                                            $j+=1;
-                                        }
-                                    }
-                            };                            
-                            break;//隔天(不含周末)
-                            case 6: $timeStr = (7*$i)." days"; break;//每周
-                            case 7: $timeStr = (1*$i)." months"; break;//每月
-                            case 8: $timeStr = (3*$i)." months"; break;//每季
-                            case 9: $timeStr = (1*$i)." years"; break;//每年
+                                    };
+                                    break;//隔天(不含周末)
+                                    case 6: $timeStr = (7*$i)." days"; break;//每周
+                                    case 7: $timeStr = (1*$i)." months"; break;//每月
+                                    case 8: $timeStr = (3*$i)." months"; break;//每季
+                                    case 9: $timeStr = (1*$i)." years"; break;//每年
+                                }
+                                
+                                $param['MODULE_NAME'] = $val['MODULE_NAME'];
+                                $param['title'] = $val['title'];
+                                $param['url'] = $val['url'];
+                                $param['goodid'] = $val['goodid'];
+                                $param['orderlistid'] = $newid;
+                                $param['orgId'] = $val['orgId'];
+                                $param['orgName'] = $val['orgName'];
+                                if(!empty($val["image"])){
+                                    $param['image'] = $val["image"];
+                                }
+                                if(!empty($val["view"])){
+                                    $param['view'] = $val["view"];
+                                }
+                                if(!empty($sval["starttime"])){
+                                    //$param['starttime'] = $val["starttime"];
+                                    //$param['starttimetest'] = date_add(date_create(date(DATE_ISO8601, $val["starttime"])),date_interval_create_from_date_string($timeStr));
+                                    $param['starttime'] = date_timestamp_get(date_add(date_create(date(DATE_ISO8601, $sval["starttime"])),date_interval_create_from_date_string($timeStr)));
+                                }
+                                if(!empty($sval["endtime"])){
+                                    //$param['endtime'] = $val["endtime"];
+                                    //$param['endtimetest'] = date_add(date_create(date(DATE_ISO8601, $val["endtime"])),date_interval_create_from_date_string($timeStr));
+                                    $param['endtime'] = date_timestamp_get(date_add(date_create(date(DATE_ISO8601, $sval["endtime"])),date_interval_create_from_date_string($timeStr)));
+                                }
+                                $param['courseStatus'] = $val["courseStatus"];
+                                $param['online'] = $val["online"];
+                                $param['updateFlag'] = $val["updateFlag"];
+                                $param['teacherid'] = $sval["teacherid"];
+                                
+                                array_push($data, $param);
+                            }
                         }
                         
-                        $param['MODULE_NAME'] = $val['MODULE_NAME'];
-                        $param['title'] = $val['title'];
-                        $param['url'] = $val['url'];
-                        $param['goodid'] = $val['goodid'];
-                        $param['orderlistid'] = $newid;
-                        $param['orgId'] = $val['orgId'];
-                        $param['orgName'] = $val['orgName'];
-                        if(!empty($val["image"])){
-                            $param['image'] = $val["image"];
+                        foreach($data as $v){
+                            $orderlistdetail=$model->table(C(DB_PREFIX)."orderlistdetail");
+                            $orderlistdetail->add($v);
                         }
-                        if(!empty($val["view"])){
-                            $param['view'] = $val["view"];
-                        }
-                        if(!empty($val["starttime"])){
-                            //$param['starttime'] = $val["starttime"];
-                            //$param['starttimetest'] = date_add(date_create(date(DATE_ISO8601, $val["starttime"])),date_interval_create_from_date_string($timeStr));
-                            $param['starttime'] = date_timestamp_get(date_add(date_create(date(DATE_ISO8601, $val["starttime"])),date_interval_create_from_date_string($timeStr)));
-                        }
-                        if(!empty($val["endtime"])){
-                            //$param['endtime'] = $val["endtime"];
-                            //$param['endtimetest'] = date_add(date_create(date(DATE_ISO8601, $val["endtime"])),date_interval_create_from_date_string($timeStr));
-                            $param['endtime'] = date_timestamp_get(date_add(date_create(date(DATE_ISO8601, $val["endtime"])),date_interval_create_from_date_string($timeStr)));
-                        }
-                        $param['courseStatus'] = $val["courseStatus"];
-                        $param['online'] = $val["online"];
-                        $param['updateFlag'] = $val["updateFlag"];
-                        $param['teacherid'] = $val["teacherid"];
-                    
-                        array_push($data, $param);
+                        //echo $orderlistdetail->_sql();
+                        
+                        /* $test=array();
+                        array_push($test, $data); */
                     }
+                    //$this->apiSuccess($this->successMsg["create"], null, $test);
                     
-                    foreach($data as $v){
-                        $orderlistdetail=$model->table(C(DB_PREFIX)."orderlistdetail");
-                        $orderlistdetail->add($v);
-                    }
-                    //echo $orderlistdetail->_sql();
                 }
             }
             
@@ -457,6 +507,7 @@ class OrderController extends ApiController
             $model->rollback();
             $this->apiError("6008", $this->errMsg["6008"]);
         }
+        //创建订单--end
         
         unset($ret);
         $ret['orderid'] = $tag;

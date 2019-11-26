@@ -74,6 +74,21 @@
 									(-)
 									</if>
 									</if>
+									<br/>
+										<php>
+											//dump($vo['schedule']);
+											foreach($vo['schedule'] as $k=>$v){
+												if($v['teacherid'])
+													echo '老师：'  .  $v['nickname'] . '；<br/>周期：' . $v['intervalStr'] . '；<br/>首次：' . $v['starttime'].'~'.$v['endtime'];
+												else{
+													if($k===0){
+														echo $v['intervalStr'].'：<br/>';
+													}
+													echo ($k+1).'。'. $v['starttime'].'~'.$v['endtime']. '；<br/>';
+												}													
+											}
+										</php>
+									
 	   </div>
 	   <div class="item-price">¥{$vo["price"]}</div>
 	   <div class="item-quantitybox">

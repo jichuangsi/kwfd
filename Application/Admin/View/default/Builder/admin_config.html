@@ -883,6 +883,23 @@
 										}	
 									</php>
 								];
+						        
+						        db.fields = [
+						        	{ name: "id", type: "text", visible: false},
+						        	<php>if($field["opt"]["teachers"]){</php>
+						        	{ title: "老师", name: "teacher", type: "select", items: db.teachers, valueField: "Id", textField: "Name" },
+						        	<php>}</php>
+						        	{ title: "间距", name: "interval", type: "select", items: db.interval, valueField: "Id", textField: "Name" },
+						        	{ title: "开始时间", name: "starttime", type: "date", validate: "required" },
+						        	{ title: "结束时间", name: "endtime", type: "date", validate: "required" },
+						            /* { name: "Name", type: "text", width: 150, validate: "required" },
+						            { name: "Age", type: "number", width: 50 },
+						            { name: "Address", type: "text", width: 200 },
+						            { name: "Country", type: "select", items: db.countries, valueField: "Id", textField: "Name" },
+						            { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+						            { name: "Birthday", type: "date" }, */
+						            { type: "control" }
+						        ];
 
 					        	db.schedules = [];
 					        	db.submit = [];
@@ -926,20 +943,7 @@
 						        
 						        data: db.schedules,
 						
-						        fields: [
-						        	{ name: "id", type: "text", visible: false},
-						        	{ title: "老师", name: "teacher", type: "select", items: db.teachers, valueField: "Id", textField: "Name" },
-						        	{ title: "间距", name: "interval", type: "select", items: db.interval, valueField: "Id", textField: "Name" },
-						        	{ title: "开始时间", name: "starttime", type: "date", validate: "required" },
-						        	{ title: "结束时间", name: "endtime", type: "date", validate: "required" },
-						            /* { name: "Name", type: "text", width: 150, validate: "required" },
-						            { name: "Age", type: "number", width: 50 },
-						            { name: "Address", type: "text", width: 200 },
-						            { name: "Country", type: "select", items: db.countries, valueField: "Id", textField: "Name" },
-						            { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
-						            { name: "Birthday", type: "date" }, */
-						            { type: "control" }
-						        ],
+						        fields: db.fields,
 						    
 						        /* onItemInserted: function(args) {
 						   	        console.log(args);

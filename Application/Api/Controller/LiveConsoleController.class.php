@@ -56,7 +56,7 @@ class LiveConsoleController extends ApiController
     
     public function login(){
         
-        $loginInfo = $this->parseJosonInRequest();
+        $loginInfo = $this->parseJasonInRequest();
         
         if(!$loginInfo||empty($loginInfo)){
             $this->apiError("9003", $this->errMsg["9003"]);
@@ -200,7 +200,7 @@ class LiveConsoleController extends ApiController
         }else{
             $map['l.uid']=$this->get_uid();
             
-            $courses = $this->orderlistmodel->alias("l")->field('l.id as oid, c.id as cid, c.title, c.orgId, c.orgName, c.image, c.price, c.teacherid, c.categoryid')
+            $courses = $this->orderlistmodel->alias("l")->field('l.id as oid, c.id as cid, c.title, c.orgId, c.orgName, c.image, c.price, d.teacherid, c.categoryid')
                         ->join(C('DB_PREFIX').'orderlistdetail d ON d.orderlistid=l.id','INNER')
                         ->join(C('DB_PREFIX').'order o ON o.id=l.orderid','INNER')
                         ->join(C('DB_PREFIX').'live c ON c.id=l.goodid','INNER')
@@ -284,7 +284,7 @@ class LiveConsoleController extends ApiController
         $map['id'] = $cid;
         $map['orgId'] = $orgId;
         $option['where'] = $map;
-        $course = $this->coursemodel->field('id,title,image,teacherid,orgId,orgName,starttime,endtime,period,price')->find($option);
+        $course = $this->coursemodel->field('id,title,image,orgId,orgName,teacherid,starttime,endtime,period,price')->find($option);
         if (!$course) {
             $this->apiError("9006", $this->errMsg["9006"]);
         }
@@ -295,7 +295,7 @@ class LiveConsoleController extends ApiController
             $course['imageurl'] = NULL;
         }        
         
-        unset($map);
+        /* unset($map);
         unset($option);
         $map['m.uid'] = $course['teacherid'];
         $option['where'] = $map;
@@ -306,7 +306,7 @@ class LiveConsoleController extends ApiController
             $course['teacher'] = $teacher;
         }else{
             $course['teacher'] = NULL;
-        }
+        } */
         
         unset($map);
         $map['o.goodid'] = $cid;
@@ -333,13 +333,20 @@ class LiveConsoleController extends ApiController
         
         $course['c_tot'] = $this->orderlistdetailmodel->alias("d")->field('d.*')->join(C('DB_PREFIX').'orderlist l ON l.id=d.orderlistid','INNER')->where($map)->order('d.starttime desc')->count();
         
-        $classes = $this->orderlistdetailmodel->alias("d")->field('d.*, (d.endtime-d.starttime)/3600 as duraion')->join(C('DB_PREFIX').'orderlist l ON l.id=d.orderlistid','INNER')->where($map)->order('d.starttime desc')->page($p, $r)->select();
+        $classes = $this->orderlistdetailmodel->alias("d")->field('d.*, (d.endtime-d.starttime)/3600 as duraion,m.uid,m.nickname,m.sex,m.status,m.isteacher,CASE WHEN ISNULL(a.path) THEN "Addons/Avatar/default.jpg" ELSE CONCAT("Uploads/Avatar/",a.path) end as path')
+                    ->join(C('DB_PREFIX').'orderlist l ON l.id=d.orderlistid','INNER')
+                    ->join(C('DB_PREFIX').'member m ON m.uid=d.teacherid','INNER')
+                    ->join(C('DB_PREFIX').'avatar a ON m.uid=a.uid','LEFT')        
+                    ->where($map)->order('d.starttime asc')->page($p, $r)->select();
         //echo $this->orderlistdetailmodel->_sql();exit;
         if($classes&&!empty($classes)){
+            foreach($classes as &$v){
+                $v['avatarurl'] = $this->protocol .'/'. $v['path'];
+            }
             $course['classes'] = $classes;
             if(!$end){
                 $course['rest'] = count($classes);
-            }
+            }   
         }else{
             $course['classes'] = NULL;
             if(!$end) $course['rest'] = 0;            
@@ -368,7 +375,7 @@ class LiveConsoleController extends ApiController
     
     public function getEventMaterial($cid='', $orgId=''){
         if(!is_login()){
-         $this->apiError("9005", $this->errMsg["9005"]);
+            $this->apiError("9005", $this->errMsg["9005"]);
          }
         
         if(empty($cid)||empty($orgId)){
@@ -499,7 +506,7 @@ class LiveConsoleController extends ApiController
          $this->apiError("9005", $this->errMsg["9005"]);
          }
         
-        $commentInfo = $this->parseJosonInRequest();
+        $commentInfo = $this->parseJasonInRequest();
         
         if(!$commentInfo||empty($commentInfo)){
             $this->apiError("9004", $this->errMsg["9004"]);
@@ -569,7 +576,7 @@ class LiveConsoleController extends ApiController
         $this->orderlistdetailmodel->alias('d')->where($map)->setField(['courseStatus'=>4]);
     }
     
-    private function parseJosonInRequest(){
+    private function parseJasonInRequest(){
         
         return json_decode(file_get_contents("php://input"), true);
     }
