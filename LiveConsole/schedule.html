@@ -28,7 +28,7 @@
     </div>
     <script>
     	var today=new Date()
-    	today = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate()
+    	today = today.getFullYear() + "-" + (today.getMonth()<9?"0"+(today.getMonth() + 1):(today.getMonth() + 1)) + "-" + today.getDate()
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
 
